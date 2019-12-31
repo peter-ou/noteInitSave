@@ -169,7 +169,6 @@ git push origin master
 
 <br/>
 
-
 | 行为        | 命令                                   | 备注                               |
 |---------|------------------------------------|--------------------------------|
 | 设置用户名     | config \-\-global user\.name "你的用户名" |                                  |
@@ -181,7 +180,6 @@ git push origin master
 | 从远程仓库同步   | pull                                 | 在本地版本低于远程仓库版本的时候，获取远程仓库的commit   |
 
 <br/>
-
 
 3，可以用一张图直观地看出以上主要的命令对仓库的影响。
 <div align='center'><img src=./images/git-Demo/git-Demo_2019-12-31-16-09-17.png width='80%'/></div><br/>
