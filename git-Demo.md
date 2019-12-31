@@ -2,11 +2,27 @@
 
 <!-- GFM-TOC -->
 
-- [git和github的相关联实现](#git和github的相关联实现)
-- [git如何提交内容到GitHub仓库中](#git如何提交内容到github仓库中)
+- [实现的总体思路](#实现的总体思路)
+- [git和github的相关联具体操作](#git和github的相关联具体操作)
+- [后续git提交内容到GitHub仓库中操作](#后续git提交内容到github仓库中操作)
+- [使用常用命令（表格命令前要加git）](#使用常用命令表格命令前要加git)
+- [git学习参考教程](#git学习参考教程)
 
+# 实现的总体思路
+```
+1、在本地创建一个版本库（即文件夹），通过git init把它变成Git仓库；
 
-# git和github的相关联实现
+2、把项目复制到这个文件夹里面，再通过git add .把项目添加到仓库；
+
+3、再通过git commit -m "注释内容"把项目提交到仓库；
+
+4、在Github上设置好SSH密钥后，新建一个远程仓库，通过git remote add origin https://github.com/guyibang/TEST2.git将本地仓库和远程仓库进行关联；
+
+5、最后通过git push -u origin master把本地仓库的项目推送到远程仓库（也就是Github）上；（若新建远程仓库的时候自动创建了README文件会报错，解决办法看上面）。
+
+```
+
+# git和github的相关联具体操作
 
 1，下载Git软件：https://git-scm.com/downloads，据说ios自带的有git软件，这个我就不太清楚了。
 
@@ -83,10 +99,35 @@ git add .   //全部提交到暂存区，包含修改和增加的，但不包含
 git add -u  //全部提交到暂存区，包含修改和删除的，但不包含新增的
 git add -A  //  . 并且 -u
 ```
+<div align='center'><img src=./images/git-Demo/git-Demo_2019-12-31-15-17-14.png width='80%'/></div><br/>
 
+13, 用git commit -m "注释" 把项目提交到本地Git仓库。
 
+```
+暂存区提交到历史区
+git commit ：提交到历史区（此提交方式注意：需要备注操作信息）
+git commit -m 'xxx' （操作描述）：提交到历史区
+git log ： 查看提交记录
+git reflog ：查看所有历史记录
+```
 
-# git如何提交内容到GitHub仓库中
+<div align='center'><img src=./images/git-Demo/git-Demo_2019-12-31-15-18-43.png width='80%'/></div><br/>
+
+14, 现在GitHub仓库 和 本地git仓库及内容都已经准备好了。接下来我们进行本地git仓库和GitHub仓库的关联，实现将本地git仓库内容托管到GitHub上
+```
+1, git remote add origin git@github.com:peter-ou/noteInitSave.git(第9点复制的GitHub仓库地址)  // 添加远程仓库地址
+2, git push -u origin master //关联好之后我们就可以把本地库的所有内容推送到远程仓库（也就是Github）上了. 
+3, git push origin master //由于新建的远程仓库是空的，所以要加上-u 这个参数，等远程仓库里面有了内容之后，下次再从本地库上传内容的时候只需这样就可以了.
+ 
+```
+<div align='center'><img src=./images/git-Demo/git-Demo_2019-12-31-15-42-21.png width='80%'/></div><br/>
+
+15, 去GitHub上看我们提交的内容如下：
+<div align='center'><img src=./images/git-Demo/git-Demo_2019-12-31-15-45-30.png width='80%'/></div><br/>
+
+如上我们已经成功关联本地Git仓库和GitHub仓库，并托管GitHub成功。
+
+# 后续git提交内容到GitHub仓库中操作
 
 - 命令如下：
 ```
@@ -100,3 +141,42 @@ git push origin master
 - 实操如下：
   <div align='center'><img src=./images/git-Demo/git-Demo_2019-12-30-23-56-43.png width='80%'/></div><br/>
 
+- github上下载项目，直接：git clone 复制的地址
+
+# 使用常用命令（表格命令前要加git）
+1.个人本地使用
+| 行为         | 命令                 | 备注                                                   |
+|------------|--------------------|------------------------------------------------------|
+| 初始化        | init               | 在本地的当前目录里初始化git仓库                                    |
+|            | clone 地址           | 从网络上某个地址拷贝仓库\(repository\)到本地                        |
+| 查看当前状态     | status             | 查看当前仓库的状态。碰到问题不知道怎么办的时候，可以通过看它给出的提示来解决问题             |
+| 查看不同       | diff               | 查看当前状态和最新的commit之间不同的地方                              |
+|            | diff 版本号1 版本号2     | 查看两个指定的版本之间不同的地方。这里的版本号指的是commit的hash值               |
+| 添加文件       | add \-A            | 这算是相当通用的了。在commit之前要先add                             |
+| 撤回stage的东西 | checkout \-\- \.   | 这里用小数点表示撤回所有修改，在\-\-的前后都有空格                          |
+| 提交         | commit \-m "提交信息"  | 提交信息最好能体现更改了什么                                       |
+| 删除未tracked | clean \-xf         | 删除当前目录下所有没有track过的文件。不管它是否是\.gitignore文件里面指定的文件夹和文件  |
+| 查看提交记录     | log                | 查看当前版本及之前的commit记录                                   |
+|            | reflog             | HEAD的变更记录                                            |
+| 版本回退       | reset \-\-hard 版本号 | 回退到指定版本号的版本，该版本之后的修改都被删除。同时也是通过这个命令回到最新版本。需要reflog配合 |
+
+2.个人使用远程仓库：
+| 行为        | 命令                                   | 备注                               |
+|-----------|--------------------------------------|----------------------------------|
+| 设置用户名     | config \-\-global user\.name "你的用户名" |                                  |
+| 设置邮箱      | config \-\-global user\.email "你的邮箱" |                                  |
+| 生成ssh key | ssh\-keygen \-t rsa \-C "你的邮箱"       | 这条命令前面不用加git                     |
+| 添加远程仓库    | remote add origin 你复制的地址             | 设置origin                         |
+| 上传并指定默认   | push \-u origin master               | 指定origin为默认主机，以后push默认上传到origin上 |
+| 提交到远程仓库   | push                                 | 将当前分支增加的commit提交到远程仓库            |
+| 从远程仓库同步   | pull                                 | 在本地版本低于远程仓库版本的时候，获取远程仓库的commit   |
+
+3，可以用一张图直观地看出以上主要的命令对仓库的影响。
+<div align='center'><img src=./images/git-Demo/git-Demo_2019-12-31-16-09-17.png width='80%'/></div><br/>
+
+下面图片来自：工作区和暂存区 - 廖雪峰的官方网站 （做了点修改）
+<div align='center'><img src=./images/git-Demo/git-Demo_2019-12-31-16-09-54.png width='80%'/></div><br/>
+
+# git学习参考教程
+- [廖雪峰的Git教程](https://www.liaoxuefeng.com/wiki/896043488029600)
+- [1小时学会Git](https://www.cnblogs.com/best/p/7474442.html#_label0)
