@@ -9,12 +9,14 @@
 - 方式一： 工作区中找到.vscode下的setting.json 设置粘贴图片的路径参数
 
 ```
+{
     "pasteImage.insertPattern": "<div align='center'><img src=${imageFilePath} width='80%'/></div><br/>",
     "pasteImage.namePrefix": "${currentFileNameWithoutExt}_",
     "pasteImage.path": "${currentFileDir}/images/${currentFileNameWithoutExt}",
     "pasteImage.basePath": "${currentFileDir}",
     "pasteImage.forceUnixStyleSeparator": true,
     "pasteImage.prefix": "./",
+}
 ```
 
 - 方式二：直接在插件中设置 相关参数
