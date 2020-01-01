@@ -129,7 +129,7 @@ git reflog ：查看所有历史记录
 
 # 后续git提交内容到GitHub仓库中操作
 
-- 命令如下：
+- **命令如下（重要，常用）：**
 ```
 //add只是将文件或目录添加到了index暂存区
 //使用commit可以实现将暂存区的文件提交到git本地仓库，[message]为备注信息
@@ -138,7 +138,35 @@ git add .
 git commit -m "message"
 git push origin master
 // origin 为远程创库别名，也可以是其他名字，例如为GitHub
-// git remote -v 命令可以查看远程仓库别名
+// 自定义远程仓库名称
+1， git remote -v 命令可以查看远程仓库名称
+
+2，删除GIt默认远程库名称
+//git默认远程库名称的别名为origin
+$ git remote rm origin
+
+3，分别关联Gitee和GitHub并设置名称
+//关联gitee并设置别名为gitee
+$ git remote add gitee @git/gitee.com:admin/demo.git
+
+//关联github并设置别名为github
+$ git remote add github @git/github.com:admin/demo.git
+
+4，推送到远程仓库的命令变化成：
+//推送到Gitee
+$ git push gitee master
+//推送到GitHub
+$ git push github master
+
+5，如果报错则先拉取下来再推送，拉取命令为：
+ //从 Gitee上拉取下来
+ $ git pull gitee master
+ //从 GitHub 上拉取下来
+ $ git pull github master
+
+6, 强制推送到GitHub上指令，
+//使用强制推送不会对项目造成影响,一般不推荐强制push。初始化的新项目可以用的。
+ $ git push github master -f
 
 ```
 - 实操如下：
