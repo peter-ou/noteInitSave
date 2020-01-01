@@ -136,8 +136,9 @@ git reflog ：查看所有历史记录
 // 将本地git仓库内容提交到关联好了的 GitHub 仓库 
 git add .
 git commit -m "message"
-git push origin master
-// origin 为远程创库别名，也可以是其他名字，例如为GitHub
+git push origin master  // origin 为远程创库别名，也可以是其他名字，例如为GitHub
+
+
 // 自定义远程仓库名称
 1， git remote -v 命令可以查看远程仓库名称
 
