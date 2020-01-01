@@ -137,6 +137,9 @@ git reflog ：查看所有历史记录
 git add .
 git commit -m "message"
 git push origin master
+// origin 为远程创库别名，也可以是其他名字，例如为GitHub
+// git remote -v 命令可以查看远程仓库别名
+
 ```
 - 实操如下：
   <div align='center'><img src=./images/git-Demo/git-Demo_2019-12-30-23-56-43.png width='80%'/></div><br/>
