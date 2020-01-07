@@ -8,6 +8,9 @@
   - [说说HashMap是如何进行扩容的可以吗？](#说说hashmap是如何进行扩容的可以吗)
   - [说说synchronized关键字的底层原理是什么？](#说说synchronized关键字的底层原理是什么)
   - [能聊聊你对CAS的理解以及其底层实现原理可以吗 ?](#能聊聊你对cas的理解以及其底层实现原理可以吗-)
+  - [ConcurrentHashMap实现线程安全的底层原理到底是什么？](#concurrenthashmap实现线程安全的底层原理到底是什么)
+  - [你对JDK中的AQS理解吗？AQS的实现原理是什么？](#你对jdk中的aqs理解吗aqs的实现原理是什么)
+  - [说说线程池的底层工作原理可以吗？](#说说线程池的底层工作原理可以吗)
 
 ## java 取模与取余的区别
 
@@ -256,35 +259,123 @@ synchronized(myObject) {  // 类的class对象来走的,加锁，一般来说都
 
 <div align='center'><img src=./images/java-基础01/java-基础01_2020-01-06-17-19-23.png width='100%'/></div><br/>
 
+CAS:取值，询问，修改
 
-取值，询问，修改
- 
 多个线程他们可能要访问同一个数据
  
 HashMap map = new HashMap();
  
 此时有多个线程要同时读写类似上面的这种内存里的数据，此时必然出现多线程的并发安全问题。
  
-我们可能要用到并发包下面的很多技术，synchronized
+我们可能要用到并发包下面的很多技术，例如：synchronized
 
 synchronized(map) {
    // 对map里的数据进行复杂的读写处理
 }
  
-并发包下面的其他的一些技术
+并发包下面的其他的一些技术，例如CAS
  
-CAS
- 
-一段代码：
+一段代码（非CAS实现）：
  
 <div align='center'><img src=./images/java-基础01/java-基础01_image.png.png width='80%'/></div><br/>
  
 此时，synchronized他的意思就是针对当前执行这个方法的myObject对象进行加锁
  
-只有一个线程可以成功的堆myObject加锁，可以对他关联的monitor的计数器去加1，加锁，一旦多个线程并发的去进行synchronized加锁，串行化，效率并不是太高，很多线程，都需要排队去执行
+只有一个线程可以成功的堆myObject加锁，可以对他关联的monitor的计数器去加1，加锁，一旦多个线程并发的去进行synchronized加锁，串行化，效率并不是太高，很多线程，都需要排队去执行。
+
+CAS的全称：compare and set 比较和设置。
+CAS去进行安全的累加代码：
 
 <div align='center'><img src=./images/java-基础01/java-基础01_2020-01-06-17-21-00.png width='80%'/></div><br/>
  
-CAS的全称：compare and set 比较和设置
- 
 CAS在底层的硬件级别给你保证一定是原子的，同一时间只有一个线程可以执行CAS，先比较再设置，其他的线程的CAS同时间去执行此时会失败
+
+## ConcurrentHashMap实现线程安全的底层原理到底是什么？
+
+1，JDK 1.8以前，多个数组，分段加锁，一个数组一个锁。
+
+2，JDK 1.8以后，优化细粒度，一个数组，每个元素先进行CAS，如果失败说明有人put过值了，此时synchronized对这个数组元素加锁，链表+红黑树处理。jdk1.8+是对数组每个元素加锁。
+
+- 多个线程要访问同一个数据，synchronized加锁，CAS去进行安全的累加，去实现多线程场景下的安全的更新一个数据的效果，比较多的一个场景下，可能就是多个线程同时读写一个HashMap,如果给HashMap加一个synchronized，效率将会很低，也没这个必要。
+  
+```
+// 多个线程过来，线程1要put的位置是数组[5]，线程2要put的位置是数组[21]，
+//这种情况下根本不需要synchronized同步，同步了反而会降低效率，明显不好。
+map.put(xxxxx,xxx);
+//数组里有很多的元素，除非是对同一个元素执行put操作，此时的多线程是需要进行同步的
+```
+
+- 所以 JDK并发包里推出了一个ConcurrentHashMap，他默认实现了线程安全性。实现过程如下：
+
+> HashMap的一个底层的原理，本身是一个大的一个数组，[有很多的元素]
+
+（1），在JDK 1.7以及之前的版本里，将这个大的数组分段成多个数组
+ 
+[数组1] , [数组2]，[数组3] -> 每个数组都对应一个锁，分段加锁
+ 
+// 多个线程过来，线程1要put的位置是数组1[5]，线程2要put的位置是数组2[21]
+
+（2），JDK 1.8以及之后，做了一些优化和改进，锁粒度的细化。
+ 
+[一个大的数组]，数组里每个元素进行put操作，都是有一个不同的锁，刚开始进行put的时候，如果两个线程都是在数组[5]这个位置进行put，这个时候，对数组[5]这个位置进行put的时候，采取的是CAS的策略
+ 
+同一个时间，只有一个线程能成功执行这个CAS，就是说他刚开始先获取一下数组[5]这个位置的值，null，线程1然后执行CAS，put进去我的这条数据，同时，其他的线程执行CAS，都会失败
+ 
+通过对数组每个元素执行CAS的策略，如果是很多线程对数组里不同的元素执行put，大家是没有关系的，如果其他人失败了，其他人此时会发现说，数组[5]这位置，已经有人放进去值了，synchronized对数组这个元素加锁。
+
+## 你对JDK中的AQS理解吗？AQS的实现原理是什么？
+
+1，AQS ：Abstract Queue Synchronizer，抽象队列同步器。
+
+```
+ReentrantLock lock = new ReentrantLock(true);  => 公平锁
+//ReentrantLock lock = new ReentrantLock();  => 非公平锁，默认是非公平锁
+// 多个线程过来，都尝试
+lock.lock();
+// 进来的线程 执行的一堆代码TODO
+lock.unlock();
+
+```
+
+上面代码ReentrantLock对象使用时的执行过程
+state变量 -> CAS -> 失败后进入队列等待 -> 释放锁后唤醒
+
+2， 实现原理图
+
+<div align='center'><img src=./images/java-基础01/java-基础01_2020-01-07-16-08-08.png width='80%'/></div><br/>
+
+<div align='center'><img src=./images/java-基础01/java-基础01_2020-01-07-16-21-22.png width='80%'/></div><br/>
+
+<div align='center'><img src=./images/java-基础01/java-基础01_2020-01-07-16-28-09.png width='80%'/></div><br/>
+
+> 公平锁执行原理图中： 线程3 先看一下等待队列是否 有人排队，有，直接进入等待队列排队。没有，当然是去获取锁咯。
+
+## 说说线程池的底层工作原理可以吗？
+
+原理图1：
+
+<div align='center'><img src=./images/java-基础01/java-基础01_2020-01-07-17-37-28.png width='80%'/></div><br/>
+
+原理图2：
+
+<div align='center'><img src=./images/java-基础01/java-基础01_2020-01-07-17-40-24.png width='80%'/></div><br/>
+
+代码：
+
+```
+ExecutorService threadPool = Executors.newFixedThreadPool(3) // 3: corePoolSize
+ 
+threadPool.submit(new Callable() {
+       public void run() {}
+})；
+```
+
+提交任务，先看一下线程池里的线程数量是否小于corePoolSize，也就是3，如果小于，直接创建一个线程出来执行你的任务
+ 
+如果执行完你的任务之后，这个线程是不会死掉的，他会尝试从一个无界的LinkedBlockingQueue里获取新的任务，如果没有新的任务，此时就会阻塞住，等待新的任务到来
+ 
+你持续提交任务，上述流程反复执行，只要线程池的线程数量小于corePoolSize，都会直接创建新线程来执行这个任务，执行完了就尝试从无界队列里获取任务，直到线程池里有corePoolSize个线程
+ 
+接着再次提交任务，会发现线程数量已经跟corePoolSize一样大了，此时就直接把任务放入队列中就可以了，线程会争抢获取任务执行的，如果所有的线程此时都在执行任务，那么无界队列里的任务就可能会越来越多
+ 
+fixed，队列，LinkedBlockingQueue，无界阻塞队列
