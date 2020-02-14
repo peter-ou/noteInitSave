@@ -113,7 +113,7 @@ git reflog ：查看所有历史记录
 
 <div align='center'><img src=./images/git-Demo/git-Demo_2019-12-31-15-18-43.png width='80%'/></div><br/>
 
-14, 现在GitHub仓库 和 本地git仓库及内容都已经准备好了。接下来我们进行本地git仓库和GitHub仓库的关联，实现将本地git仓库内容托管到GitHub上
+14, 现在远程gitGitHub仓库 和 本地git仓库及内容都已经准备好了。接下来我们进行本地git仓库和GitHub仓库的关联，实现将本地git仓库内容托管到GitHub上
 ```
 1, git remote add origin git@github.com:peter-ou/noteInitSave.git(第9点复制的GitHub仓库地址)  // 添加远程仓库地址
 2, git push -u origin master //关联好之后我们就可以把本地库的所有内容推送到远程仓库（也就是Github）上了. 
