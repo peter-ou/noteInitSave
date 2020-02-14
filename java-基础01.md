@@ -23,6 +23,7 @@
   - [了解过cglib动态代理吗？他跟jdk动态代理的区别是什么？](#了解过cglib动态代理吗他跟jdk动态代理的区别是什么)
   - [能说说Spring中的Bean是线程安全的吗？](#能说说spring中的bean是线程安全的吗)
   - [Spring的事务实现原理是什么？能聊聊你对事务传播机制的理解吗？](#spring的事务实现原理是什么能聊聊你对事务传播机制的理解吗)
+  - [能画一张图说说Spring Boot的核心架构吗？](#能画一张图说说spring-boot的核心架构吗)
 
 ## java 取模与取余的区别
 
@@ -716,3 +717,8 @@ Transactions 事务,
 <div align='center'><img src=./images/java-基础01/java-基础01_2020-01-09-19-17-46.png width='80%'/></div><br/>
 
 ## Spring的事务实现原理是什么？能聊聊你对事务传播机制的理解吗？
+
+
+## 能画一张图说说Spring Boot的核心架构吗？
+
+

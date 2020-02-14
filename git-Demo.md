@@ -80,7 +80,7 @@ git@github.com:peter-ou/noteInitSave.git
 `
 <div align='center'><img src=./images/git-Demo/git-Demo_2019-12-31-14-50-45.png width='80%'/></div><br/>
 
-10, 把要上传的到GitHub的文件夹放入 本地git仓库：D:\studyNote\noteInit 中
+10, 把要上传的到GitHub的文件夹放入 本地git仓库：例如, D:\studyNote\noteInit 中
 
 11，git status来查看你当前的状态，如果文件内有东西会出现红色的字，不是绿色，这是正常的。
 >查看代码或文件的状态（所处哪个区域）
