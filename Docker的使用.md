@@ -86,7 +86,9 @@
 
     > + 也可指定拉取版本 例如:拉取标签为1.15.5的nginx镜像
 
-    `docker pull nginx:1.15.5`
+    ```linux
+    docker pull nginx:1.15.5
+    ```
 
 3. 查看获取到的镜像文件
 
@@ -120,20 +122,20 @@
 6. 第4点中报错的原因（是Linux和docker版本兼容问题），报错解决办法：（这里以nginx为例，若是我们已经启动nginx容器）。
 
     + 查看当前正在运行的容器（当然也可以直接docker ps|grep nginx找到最精确的）
-        > docker ps
+        `docker ps`
 
     + 查看正在运行中的所有容器,包括未运行的
-        > docker ps -a
+        `docker ps -a`
 
     + 停止正在运行的容器(根据容器名称停止（当然也可以是id）)
-        > docker stop name
+        `docker stop name`
 
     + 删除所有nginx的容器，运行的和未运行的
-        > docker rm 容器id
+        `docker rm 容器id`
 
     + 再查询nginx 的镜像
 
-        >docker images
+        `docker images`
 
     + 删除nginx镜像(#注意命令中相比容器多了一个i )
 
