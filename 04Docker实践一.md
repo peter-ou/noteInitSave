@@ -1,11 +1,12 @@
-# Docker的使用
+# Docker的使用（在阿里云的 云服务器 ECS中）
 
 ## 一，如何在Linux服务器使用docker
 
 1. 首先得是64位的系统，内核版本大于3.10。用root用户操作
-内核版本查看指令
+内核版本查看指令。
 
     `uname -r`
+    > 如果链接不上云服务器ECS,请参考第二大点的第7小点
 
 2. 卸载旧版本(如果以前安装过旧版本的话)
 
@@ -68,7 +69,21 @@
 
        `systemctl status docker`
 
-## 使用 docker 拉取nginx镜像和创建容器-nginx
+9. 如何连接上阿里云服务器?
+
+    + 登录阿里云 => 点击右上角的 控制台 => 已开通的云产品中(点击 云服务器ECS)
+
+    + 概览 => 选实例 => 更多 => 重置实例密码 => 设置后 => 重启服务器
+
+<div align='center'><img src=./images/04Docker实践一/04Docker实践一_2020-05-23-12-45-19.png width='80%'/></div><br/>
+
+<div align='center'><img src=./images/04Docker实践一/04Docker实践一_2020-05-23-12-33-06.png width='80%'/></div><br/>
+
+> 远程终端工具SecureCRT 使用上面的ip 和我们设置的账号及密码去连接就可以了。
+
+## 二，使用 docker 拉取nginx镜像和创建容器-nginx
+
++ 镜像（Image）和容器（Container）的关系，就像是面向对象程序设计中的类和实例一样，镜像是静态的定义，容器是镜像运行时的实体。
 
 1. 首先查找nginx镜像
 
@@ -100,14 +115,18 @@
     ubuntu              17.10               1af812152d85        3 weeks ago         98.4MB
     ```
 
-4. 启动nginx 容器
+4. 创建nginx 容器
+
+    `$ docker run --name nginx-test -p 8089:80 -d nginx:latest`
+
+    > --name nginx-test 为容器指定一个名称为nginx-test。 -p: 指定端口映射，格式为：主机(宿主)端口:容器端口。-d: 后台运行容器，并返回容器ID; nginx:latest(REPOSITORY:TAG)指定用哪个镜像启动容器。浏览器访问主机(宿主)端口
 
     ```linux
-    [root@node1 ~]# docker run -d -p 80:80 nginx
-    759d6d37858bcc70867321759df12d2881e6399204f2ba6a4b8b10aaea430da3
+    [root@izwz9dc94s2y45exdo7dy0z ~]# docker run --name nginx-test -p 8089:80 -d nginx:1.18.0
+    df99ac4aa2fdff584df42fe92927c72b294d9106669df4ebe3485e3e2ae919dd
     ```
 
-    + 报错
+    + 报错(请参考同级第6点的解决办法)
   
     ```linux
         [root@izwz9dc94s2y45exdo7dy0z ~]# docker run -d -p 80:80 nginx
@@ -115,11 +134,11 @@
     /usr/bin/docker-current: Error response from daemon: oci runtime error: container_linux.go:235: starting container process caused "process_linux.go:258: applying cgroup configuration for process caused \"Cannot set property TasksAccounting, or unknown property.\"".
     ```
 
-5. 启动后nginx 验证
+5. 启动后nginx 验证（如果不能访问，请参考同级第7点解决办法）
 
-    直接浏览器总输入ip地址访问,出现welcome to nginx。到此通过docker 安装nginx完成。
+    直接浏览器总输入 ip地址+主机(宿主)端口 访问,出现welcome to nginx。到此通过docker 安装nginx完成。
 
-6. 第4点中报错的原因（是Linux和docker版本兼容问题），报错解决办法：（这里以nginx为例，若是我们已经启动nginx容器）。
+6. 同级第4点中报错的原因（是Linux和docker版本兼容问题），报错解决办法：（这里以nginx为例，若是我们已经启动nginx容器）。
 
     + 查看当前正在运行的容器（当然也可以直接docker ps|grep nginx找到最精确的）
         `docker ps`
@@ -179,4 +198,13 @@
             docker virsion  //查看docker的版本
             10、回到(使用 docker 拉取nginx镜像和创建容器-nginx目录下)
         ```
- 
+
+7. 同级第6点中未出现welcome to nginx页面时的解决办法。
+
++ 登录阿里云 => 点击右上角的 控制台 => 已开通的云产品中(点击 云服务器ECS) 进入实例中
+
++ 在实例的界面中的左侧栏中选中 安全与网络 下的 => 安全组 => 配置规则 => 入方向 => 设置好规则后 保存 即可
+
+<div align='center'><img src=./images/04Docker实践一/04Docker实践一_2020-05-23-13-22-09.png width='80%'/></div><br/>
+
+<div align='center'><img src=./images/04Docker实践一/04Docker实践一_2020-05-23-13-35-58.png width='80%'/></div><br/>

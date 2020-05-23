@@ -43,4 +43,13 @@
 
 <div align='center'><img src=./images/vsCode-MD/vsCode-MD_2020-01-01-14-29-11.png width='80%'/></div><br/>
 
+- Paste Image的默认粘贴快捷是 ctrl+alt+v
+- Paste Image 设置粘贴的快捷键（任何其他软件剪切图片到粘贴板都可以）
+ 
+ > + 第一步找到设置快捷键的地方
 
+<div align='center'><img src=./images/vsCode-MD/vsCode-MD_2020-05-23-12-09-06.png width='80%'/></div><br/>
+   
+ > + 查询到Paste Image 的快捷键，编辑成自己想要的快捷键
+
+<div align='center'><img src=./images/vsCode-MD/vsCode-MD_2020-05-23-12-10-34.png width='80%'/></div><br/>
