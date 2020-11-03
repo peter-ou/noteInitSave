@@ -78,6 +78,7 @@
                 #重点是添加location
                 #这个是用alias自定义配置的静态资源(图片)路径
                 location /backgroud/ {
+                    #经过测试：文件夹命名时不能有空格，下划线，中文等。建议用纯小写字母命名文件夹
                     alias  E:/staticpath/cdgbimg/;
                     autoindex on;
                 }
