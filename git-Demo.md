@@ -154,6 +154,10 @@ $ git remote add gitee @git/gitee.com:admin/demo.git
 $ git remote add github @git/github.com:admin/demo.git
 
 4，推送到远程仓库的命令变化成：
+$ git add .
+
+
+
 //推送到Gitee
 $ git push gitee master
 //推送到GitHub
