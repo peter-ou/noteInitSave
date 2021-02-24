@@ -154,10 +154,13 @@ $ git remote add gitee @git/gitee.com:admin/demo.git
 $ git remote add github @git/github.com:admin/demo.git
 
 4，推送到远程仓库的命令变化成：
+// 添加到版本控制
 $ git add .
 
+//提交到本地git仓库，" "中的信息最好能体现更改了什么，例如add,updated等。
+$ git commit -m "add"
 
-
+//变化的地方
 //推送到Gitee
 $ git push gitee master
 //推送到GitHub
@@ -174,12 +177,14 @@ $ git push github master
  $ git push github master -f
 
 ```
+
 - 实操如下：
   <div align='center'><img src=./images/git-Demo/git-Demo_2019-12-30-23-56-43.png width='80%'/></div><br/>
 
 - github上下载项目，直接：git clone 复制的地址
 
 # 使用常用命令（表格命令前要加git）
+
 1.个人本地使用
 
 <br/>
