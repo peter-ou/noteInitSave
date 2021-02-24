@@ -55,3 +55,28 @@
  ，我自己的粘贴的快捷键我设置成了 **ctral+alt+A**
 
 <div align='center'><img src=./images/vsCode-MD/vsCode-MD_2020-05-23-12-10-34.png width='80%'/></div><br/>
+
+# vscode 的终端设置和切换
+
+1,首先肯定是需要打开我们的vscode咯
+
+2,进入终端设置
+<div align='center'><img src=./images/vsCode-MD/vsCode-MD_2021-02-20-15-38-40.png width='90%'/></div><br/>
+
+3,修改setting.json 中"terminal.integrated.shell.windows":"XXX"的路径
+<div align='center'><img src=./images/vsCode-MD/vsCode-MD_2021-02-20-15-41-54.png width='90%'/></div><br/>
+
+4,cmd 和 bash 的终端切换
+
+<div align='center'><img src=./images/vsCode-MD/vsCode-MD_2021-02-20-15-43-52.png width='90%'/></div><br/>
+```shell
+oushuncai@DESKTOP-0S8MN7B MINGW64 ~
+$ cmd
+Microsoft Windows [版本 10.0.19041.746]
+(c) 2020 Microsoft Corporation. 保留所有权利。
+
+C:\Users\oushuncai>bash
+
+oushuncai@DESKTOP-0S8MN7B MINGW64 ~
+$
+```
