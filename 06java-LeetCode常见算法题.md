@@ -6,7 +6,7 @@
 
 **示例:**
 
-```
+```java
 给定 nums = [2, 7, 11, 15], target = 9
 因为 nums[0] + nums[1] = 2 + 7 = 9
 所以返回 [0, 1]
@@ -15,14 +15,14 @@
 思路：一边遍历，一边放入哈希表，如果target-nums[i]在哈希表中，就返回
 
 ```java
-		Map<Integer, Integer> map = new HashMap<>();
-        for (int i = 0; i < nums.length; i++) {
-            int complement = target - nums[i];
-            if (map.containsKey(complement)) {
-                return new int[] { map.get(complement), i };
-            }
-            map.put(nums[i], i);
+Map<Integer, Integer> map = new HashMap<>();
+    for (int i = 0; i < nums.length; i++) {
+        int complement = target - nums[i];
+        if (map.containsKey(complement)) {
+            return new int[] { map.get(complement), i };
         }
+        map.put(nums[i], i);
+    }
 ```
 
 #### [2. 两数相加](https://leetcode-cn.com/problems/add-two-numbers/)【中等】考题
