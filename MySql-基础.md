@@ -55,7 +55,7 @@ limit [offset 偏移行数,rows 取多少条数据] | [rows OFFSET offset ]
 
 ## mysql中的联合查询（内联、左联、外联、右联、全联）
 
-[内联inner join 、左联left outer join 、右联right outer join 、全联full outer join 的好处及用法](!https://www.cnblogs.com/withscorpion/p/9454490.html)
+[内联inner join 、左联left outer join 、右联right outer join 、全联full outer join 的好处及用法](https://www.cnblogs.com/withscorpion/p/9454490.html)
 
 ## 窗口函数
 
@@ -87,7 +87,7 @@ limit [offset 偏移行数,rows 取多少条数据] | [rows OFFSET offset ]
 
 <div align='center'><img src=./images/mysql-基础/mysql-基础_2021-03-16-10-05-08.png width='100%'/></div><br/>
 
-[开窗函数使用参考链接](!https://blog.csdn.net/weixin_39010770/article/details/87862407)
+[开窗函数使用参考链接](https://blog.csdn.net/weixin_39010770/article/details/87862407)
 
 ## 插入语句--如果数据已经存在，请忽略(不支持使用replace操作)
 
