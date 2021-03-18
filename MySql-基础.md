@@ -5,8 +5,13 @@
   - [mysql中的联合查询（内联、左联、外联、右联、全联）](#mysql中的联合查询内联左联外联右联全联)
   - [窗口函数](#窗口函数)
   - [插入语句--如果数据已经存在，请忽略(不支持使用replace操作)](#插入语句--如果数据已经存在请忽略不支持使用replace操作)
+  - [mysql 的批量插入SQL](#mysql-的批量插入sql)
   - [MySQL中给字段创建索引的四种方式](#mysql中给字段创建索引的四种方式)
   - [创建视图](#创建视图)
+  - [字段拼接合并](#字段拼接合并)
+  - [mysql中的强制索引](#mysql中的强制索引)
+  - [mysql如何删除重复记录，保留一条记录。](#mysql如何删除重复记录保留一条记录)
+  - [mysql 中的触发器](#mysql-中的触发器)
 
 ## 1，查询语句--sql执行顺序 （重点）
 
@@ -99,6 +104,80 @@ limit [offset 偏移行数,rows 取多少条数据] | [rows OFFSET offset ]
 insert ignore into actor values("3","ED","CHASE","2006-02-15 12:34:33");
 ```
 
+## mysql 的批量插入SQL
+
+题目一：
+
+请你对于表actor批量插入如下数据(不能有2条insert语句哦!)。
+
+```sql
+//题目已经先执行了如下语句
+drop table if exists actor;
+CREATE TABLE actor (
+   actor_id  smallint(5)  NOT NULL PRIMARY KEY,
+   first_name  varchar(45) NOT NULL,
+   last_name  varchar(45) NOT NULL,
+   last_update  DATETIME NOT NULL)
+```
+
+答案sql
+
+```sql
+INSERT INTO actor(actor_id,
+                  first_name,
+                  last_name,
+                  last_update)
+VALUES(1,'PENELOPE','GUINESS','2006-02-15 12:34:33'),
+      (2,'NICK','WAHLBERG','2006-02-15 12:34:33');
+```
+
+题目二：
+
+题目描述
+对于如下表actor，其对应的数据为:
+
+| actor_id | first_name | last_name | last_update         |
+|----------|------------|-----------|---------------------|
+| 1        | PENELOPE   | GUINESS   | 2006-02-15 12:34:33 |
+| 2        | NICK       | WAHLBERG  | 2006-02-15 12:34:33 |
+
+请你创建一个actor_name表，并且将actor表中的所有first_name以及last_name导入该表。
+
+actor_name表结构如下：
+| 列表         | 类型          | 是否为NULL  | 含义 |
+|------------|-------------|----------|----|
+| first_name | varchar(45) | not null | 名字 |
+| last_name  | varchar(45) | not null | 姓氏 |
+
+答案sql
+
+```sql
+create table if not exists actor_name as
+select first_name,last_name from actor;
+```
+
+或者
+
+```sql
+create table if not exists actor_name (
+    first_name varchar(45) not null,
+    last_name varchar(45) not null
+);
+insert into actor_name select first_name,last_name from actor;
+或者
+insert into actor_name
+(first_name,last_name)
+(select first_name,last_name from actor);
+
+```
+
+>1.用create table 语句建立actor_name 表
+
+>2.用inset into actor select插入子查询的结果集(不需要用values()，()这种形式。这种形式是手工插入单条数据或多条数据时用圆括号分割。插入结果集是不需要）
+
+>3.【重点】如何把一个表中的记录插入另一个表：insert语句中values的部分替换成子查询，并且把values这个词去掉。
+
+
 ## MySQL中给字段创建索引的四种方式
 
 ```sql
@@ -162,4 +241,170 @@ CREATE TABLE  actor  (
 CREATE VIEW actor_name_view as
 SELECT first_name as first_name_v,last_name as last_name_v
 FROM actor;
+```
+
+## 字段拼接合并
+
+将employees表的所有员工的last_name和first_name拼接起来作为Name，中间以一个空格区分
+(注：sqllite,字符串拼接为 || 符号，不支持concat函数，**mysql支持concat()函数**)
+
+```sql
+CREATE TABLE `employees` ( `emp_no` int(11) NOT NULL,
+`birth_date` date NOT NULL,
+`first_name` varchar(14) NOT NULL,
+`last_name` varchar(16) NOT NULL,
+`gender` char(1) NOT NULL,
+`hire_date` date NOT NULL,
+PRIMARY KEY (`emp_no`));
+```
+
+答案sql
+
+```sql
+SELECT CONCAT(last_name, ' ', first_name)Name FROM employees;
+```
+
+## mysql中的强制索引
+
+题目描述
+针对salaries表emp_no字段创建索引idx_emp_no，查询emp_no为10005, 使用强制索引。
+```sql
+CREATE TABLE `salaries` (
+`emp_no` int(11) NOT NULL,
+`salary` int(11) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`from_date`));
+
+create index idx_emp_no on salaries(emp_no);
+```
+
+```sql
+create index idx_emp_no on salaries(emp_no);
+select * from salaries FORCE INDEX (idx_emp_no) where emp_no = 10005;
+```
+
+>解题思路：先创建索引，再创建强制索引查询，（题目这里默认已经创建索引）。索引名一定要加括号，否则错误。
+
+>强制索引：FORCE INDEX(<索引名>);
+
+>SELECT * FROM <表名>  **FORCE** INDEX (<索引名>)
+
+## mysql如何删除重复记录，保留一条记录。
+
+**题目描述**
+
+删除emp_no重复的记录，只保留最小的id对应的记录。
+
+```sql
+CREATE TABLE IF NOT EXISTS titles_test (
+id int(11) not null primary key,
+emp_no int(11) NOT NULL,
+title varchar(50) NOT NULL,
+from_date date NOT NULL,
+to_date date DEFAULT NULL);
+
+insert into titles_test values 
+('1', '10001', 'Senior Engineer', '1986-06-26', '9999-01-01'),
+('2', '10002', 'Staff', '1996-08-03', '9999-01-01'),
+('3', '10003', 'Senior Engineer', '1995-12-03', '9999-01-01'),
+('4', '10004', 'Senior Engineer', '1995-12-03', '9999-01-01'),
+('5', '10001', 'Senior Engineer', '1986-06-26', '9999-01-01'),
+('6', '10002', 'Staff', '1996-08-03', '9999-01-01'),
+('7', '10003', 'Senior Engineer', '1995-12-03', '9999-01-01');
+
+```
+
+删除后titles_test表为
+
+| id | emp_no | title           | from_date | to_date  |
+|----|--------|-----------------|-----------|----------|
+| 1  | 10001  | Senior Engineer | 1986-6-26 | 9999-1-1 |
+| 2  | 10002  | Staff           | 1996-8-3  | 9999-1-1 |
+| 3  | 10003  | Senior Engineer | 1995-12-3 | 9999-1-1 |
+| 4  | 10004  | Senior Engineer | 1995-12-3 | 9999-1-1 |
+
+
+**答案**
+
+#删除指定数据的语句为 delete from 表名 where限制条件
+#思路：不是emp_no分组中的最小id时，删除。因为emp_no不重复时，id唯一，在分组中既是最小值也是最大值。
+语言运行环境：Sql(mysql 8.0)
+
+```sql
+// 这是一个报错的sql。
+// 报错原因：不能先select出同一表中的某些值，然后在同一语句中更改这个相同的表。
+
+delete from titles_test
+where id not in  
+ (select min(id) 
+ from titles_test
+ group by emp_no);
+```
+
+>结果报错：You can't specify target table 'titles_test' for update in FROM clause"
+意思是说，不能先select出同一表中的某些值，然后在同一语句中更改这个表。
+
+解决方法：把用到titles_test这个表的查询作为中间表，用from子查询再查一遍。where中括起来是不管用的。
+
+```sql
+// 能过成功 是因为 t1 和 titles_test 已经不是同一个表了，所以可以修改不同的表。
+delete from titles_test      
+  where id not in(
+    select min_id
+    from
+      (select min(id) as min_id
+      from titles_test
+      group by emp_no)t1);
+```
+
+## mysql 中的触发器
+
+**题目描述**
+
+构造一个触发器audit_log，在向employees_test表中插入一条数据的时候，触发插入相关的数据到audit中。
+
+```sql
+CREATE TABLE employees_test(
+ID INT PRIMARY KEY NOT NULL,
+NAME TEXT NOT NULL,
+AGE INT NOT NULL,
+ADDRESS CHAR(50),
+SALARY REAL
+);
+
+CREATE TABLE audit(
+EMP_no INT NOT NULL,
+NAME TEXT NOT NULL
+);
+```
+
+**解题答案**
+
+构造触发器语句答案
+
+```sql
+CREATE TRIGGER audit_log 
+AFTER INSERT ON employees_test
+FOR EACH ROW
+BEGIN
+    INSERT INTO audit VALUES(new.id,new.name);
+END
+```
+
+在MySQL中，创建触发器语法如下：
+
+```sql
+CREATE TRIGGER trigger_name
+trigger_time trigger_event ON tbl_name
+FOR EACH ROW
+trigger_stmt
+
+其中：
+
+trigger_name：标识触发器名称，用户自行指定；
+trigger_time：标识触发时机，取值为 BEFORE 或 AFTER；
+trigger_event：标识触发事件，取值为 INSERT、UPDATE 或 DELETE；
+tbl_name：标识建立触发器的表名，即在哪张表上建立触发器；
+trigger_stmt：触发器程序体，可以是一句SQL语句，或者用 BEGIN 和 END 包含的多条语句，每条语句结束要分号结尾。
 ```
