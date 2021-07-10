@@ -1,7 +1,7 @@
 # VSCode-Markdown图片复制插件路径配置 
 
 - 我个人比较喜欢 Paste Image，方便一些
-- 我自己的粘贴的快捷键我设置成了 **ctral+alt+A**
+- 我自己的粘贴的快捷键我设置成了 **ctrl+alt+A**
   
 [Paste Image 官方文档](https://marketplace.visualstudio.com/items?itemName=mushan.vscode-paste-image)
 
