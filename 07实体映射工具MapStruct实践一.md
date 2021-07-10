@@ -152,7 +152,7 @@ public interface OrderExportMapper {
 
     OrderExportMapper INSTANCE = Mappers.getMapper(OrderExportMapper.class);
 
-   // expression 表达式可以使用工具类处理，或者是导入的类中方法处理。
+   // expression 表达式可以使用工具类处理，或者是导入的类中方法处理。此处为导入的工具类处理
     @Mapping(target = "orderStatus", expression = "java(DictUtils.getDictLabel(\"order_status\",orderExport.getOrderStatus().toString(),null))")
     OrderExportRes transToOrderExportRes(OrderExport orderExport);
 
