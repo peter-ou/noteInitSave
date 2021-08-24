@@ -4,6 +4,8 @@
   - [在ubuntu20 中安装jdk8](#在ubuntu20-中安装jdk8)
   - [在线安装openjdk8。而oracle Java JDK(Ubuntu20.04实测不行，就不记录了)](#在线安装openjdk8而oracle-java-jdkubuntu2004实测不行就不记录了)
   - [安装Elasticsearch](#安装elasticsearch)
+  - [elasticsearch-analysis-ik 安装ik分词插件](#elasticsearch-analysis-ik-安装ik分词插件)
+  - [安装Kibana 分析和可视化](#安装kibana-分析和可视化)
 
 
 ## 在ubuntu20 中安装jdk8
@@ -106,7 +108,7 @@ export PATH=${JAVA_HOME}/bin:$PATH
   
 `source ~/.bashrc`
 
-以上修改环境变量可能会报错
+以上修改环境变量,重新加载环境配置时可能会报错
 
 ~~~shell
 ~ source ~/.bashrc
@@ -133,6 +135,7 @@ export PATH=${JAVA_HOME}/bin:$PATH
 
  <div align='center'><img src=./images/04ubuntu20中安装ES7.8实践一/04ubuntu20中安装ES7.8实践一_2021-08-21-15-05-42.png width='100%'/></div><br/>
 
+重新加载环境配置，使修改的环境生效
  `source ~/.zshrc`
 
 + 设置默认jdk
@@ -167,7 +170,9 @@ sudo update-alternatives --install /usr/bin/javap javap /usr/lib/jvm/jdk1.8.0_30
 
 `java -version`
 
+//Ubuntu 20.04.2.0 LTS 系统安装过程详解 （从下载镜像到安装系统）
 
+https://blog.csdn.net/weixin_39278265/article/details/117594161
 
 //这里是安装Elasticsearch的参考博客
 
@@ -175,6 +180,10 @@ https://blog.csdn.net/shangshu0707/article/details/89702622?utm_medium=distribut
 
 
 https://www.cnblogs.com/chenqionghe/p/10425751.html
+
+https://blog.csdn.net/u011863024/article/details/115721328
+
+https://www.jianshu.com/p/f239520f21f8
 
 
 ## 安装Elasticsearch
@@ -370,5 +379,130 @@ systemctl disable firewalld.service #关闭防火墙，永久性生效，重启�
 浏览器中输入地址： http://ip:9200/
 
 <div align='center'><img src=./images/04ubuntu20中安装ES7.8实践一/04ubuntu20中安装ES7.8实践一_2021-08-23-16-01-56.png width='100%'/></div><br/>
+
+
+## elasticsearch-analysis-ik 安装ik分词插件
+
++ [下载地址-注意版本的对应](https://github.com/medcl/elasticsearch-analysis-ik/releases/tag/v7.8.0
+)
+
+`https://github.com/medcl/elasticsearch-analysis-ik/releases/tag/v7.8.0`
+>由于 ElasticSearch 默认的分词器不支持中文分词，所以我们需要集成ik 分词器。
+
+>找到对应版本，下载解压到Elasticsearch的/plugins/目录下即可（版本一定要与Elasticsearch版本一致）
+
++ 上传到服务器然后解压到指定文件夹
+
+~~~shell
+
+#解包到 上传到指定文件夹 /usr/local/elasticsearch/es/plugins/
+#解压到当前文件夹
+sudo unzip elasticsearch-analysis-ik-7.8.0.zip
+
+#回到上一级目录plugins
+cd ..
+
+#查看plugins文件夹下的内容
+ls
+
+#然后在es目录下执行 tree plugins/
+sudo tree plugins/
+
+#如果解压好了，则删除压缩包
+#在plugins目录下
+sudo rm -rf elasticsearch-analysis-ik-7.8.0.zip
+~~~
+报错`zsh: command not found: tree`
+
+解决办法：
+
+~~~shell
+
+1、vi .bash_profile 
+在.bash_profile 中添加一行： 
+export PATH=/bin:/usr/bin:/usr/local/bin:$PATH
+
+2、vim .zshrc 
+在.zshrc中添加一行： 
+source ~/.bash_profile
+
+3，重写加载环境配置
+source ~/.zshrc
+~~~
+
+安装tree命令的依赖包 执行命令`sudo apt-get install tree`
+
+错误提示：
+```shell
+E: 无法获得锁 /var/lib/dpkg/lock-frontend。锁正由进程 239002（apt-get）持有
+N: 请注意，直接移除锁文件不一定是合适的解决方案，且可能损坏您的系统。
+E: 无法获取 dpkg 前端锁 (/var/lib/dpkg/lock-frontend)，是否有其他进程正占用它？
+```
+解决办法：
+强制删除，命令行如下
+```shell
+sudo rm /var/lib/dpkg/lock-frontend
+sudo rm /var/lib/dpkg/lock
+```
+再重写执行 `sudo apt-get install tree`
+
+再查看我们的解压包情况 `sudo tree plugins/`
+
+
+## 安装Kibana 分析和可视化
+
+Kibana是一个针对Elasticsearch的开源分析及可视化平台，用来搜索、查看交互存储在Elasticsearch索引中的数据
+选择对应自己Elasticsearch版本和操作系统的Kibana安装包，笔者选择的7.8.0的tar包
+
++ [Kibana官网下载地址](https://www.elastic.co/cn/downloads/kibana)
+
++ 上传，解压安装，修改配置
+
+~~~shell
+#新建目录
+sudo mkdir /usr/local/kibana
+
+#解包
+sudo tar -zxvf kibana-7.8.0-linux-x86_64.tar.gz -C /usr/local/kibana/
+
+#先切换到管理员账号，赋予es_user用户权限
+sudo chown -R es_user:es /usr/local/kibana/
+
+#进入/config/目录修改配置文件
+sudo cp kibana.yml kibana.yml.bak
+sudo vim kibana.yml 
+
+#添加以下内容
+server.host: "0.0.0.0"
+elasticsearch.hosts: ["http://localhost:9200"]
+
+~~~
+
++ 启动Kibana
+
+~~~shell
+#进入/bin/目录，启动kibana
+ cd ..
+ cd bin/
+ ./kibana
+ 
+#访问5601端口，出现下图即安装成功
+http:/ip:5601/
+~~~
+
+<div align='center'><img src=./images/04ubuntu20中安装ES7.8实践一/04ubuntu20中安装ES7.8实践一_2021-08-24-18-12-36.png width='100%'/></div><br/>
+
++ 给Kibana 设置中文
+
+Kibana 7.x 官方支持中文，只需要修改 kibana.yml 即可
+
+~~~shell
+#在/config/kibana.yml文件中添加
+i18n.locale: "zh-CN"
+~~~
+
+修改后重新启动kibana即可
+
+至于其他版本，可以去下载补丁包手动汉化，此处不再赘述。
 
 
