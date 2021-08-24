@@ -4,34 +4,6 @@
   - [在ubuntu20 中安装jdk8](#在ubuntu20-中安装jdk8)
   - [在线安装openjdk8。而oracle Java JDK(Ubuntu20.04实测不行，就不记录了)](#在线安装openjdk8而oracle-java-jdkubuntu2004实测不行就不记录了)
   - [安装Elasticsearch](#安装elasticsearch)
-- [解包到 指定文件夹 /usr/local/elasticsearch](#解包到-指定文件夹-usrlocalelasticsearch)
-- [改名成 es](#改名成-es)
-- [创建用户组 es](#创建用户组-es)
-- [创建用户 es_user](#创建用户-es_user)
-- [用户添加到 es 组](#用户添加到-es-组)
-- [为该用户添加管理员权限(vim /etc/sudoers也可以)，如下图](#为该用户添加管理员权限vim-etcsudoers也可以如下图)
-- [让 es_user 用户拥有对 elasticsearch 的执行权限](#让-es_user-用户拥有对-elasticsearch-的执行权限)
-- [切换用户](#切换用户)
-- [进入config目录](#进入config目录)
-- [cd /usr/local/elasticsearch/es/config](#cd-usrlocalelasticsearchesconfig)
-- [备份配置文件](#备份配置文件)
-- [config目录下执行下列命令](#config目录下执行下列命令)
-- [修改配置文件，添加如下内容](#修改配置文件添加如下内容)
-- [config目录下执行下列命令](#config目录下执行下列命令-1)
-- [加入如下配置](#加入如下配置)
-- [集群name](#集群name)
-- [节点name](#节点name)
-- [端口](#端口)
-- [地址](#地址)
-- [引导启动集群](#引导启动集群)
-- [在文件末尾中增加下面内容](#在文件末尾中增加下面内容)
-- [es_user用户下每个进程可以打开的文件数的限制](#es_user用户下每个进程可以打开的文件数的限制)
-- [在文件末尾中增加下面内容](#在文件末尾中增加下面内容-1)
-- [es_user用户下每个进程可以打开的文件数的限制](#es_user用户下每个进程可以打开的文件数的限制-1)
-- [操作系统级别对每个用户创建的进程数的限制](#操作系统级别对每个用户创建的进程数的限制)
-- [注： * 带表 Linux 所有用户名称](#注--带表-linux-所有用户名称)
-- [在文件中增加下面内容](#在文件中增加下面内容)
-- [一个进程可以拥有的 VMA(虚拟内存区域)的数量,默认值为 65536](#一个进程可以拥有的-vma虚拟内存区域的数量默认值为-65536)
 
 
 ## 在ubuntu20 中安装jdk8
@@ -220,58 +192,59 @@ sudo mkdir /usr/local/elasticsearch
 #进入 local 文件夹执行：
 sudo chmod 777 elasticsearch
 
-# 解包到 指定文件夹 /usr/local/elasticsearch
+#解包到 指定文件夹 /usr/local/elasticsearch
 sudo tar -zxvf elasticsearch-7.8.0-linux-x86_64.tar.gz -C /usr/local/elasticsearch/
 
-# 改名成 es
+#改名成 es
 sudo mv elasticsearch-7.8.0 es
 
-# 创建用户组 es
+#创建用户组 es
 sudo addgroup es
 
-# 创建用户 es_user
+#创建用户 es_user
 sudo adduser es_user
 #输入新密码：es_user
 
-# 用户添加到 es 组
+#用户添加到 es 组
 sudo usermod -g es es_user
 
-# 为该用户添加管理员权限(vim /etc/sudoers也可以)，如下图
+#为该用户添加管理员权限(vim /etc/sudoers也可以)，如下图
 sudo visudo
 ~~~
 <div align='center'><img src=./images/04ubuntu20中安装ES7.8实践一/04ubuntu20中安装ES7.8实践一_2021-08-23-12-48-52.png width='100%'/></div><br/>
 
 ~~~shell
 
-# 让 es_user 用户拥有对 elasticsearch 的执行权限
+#让 es_user 用户拥有对 elasticsearch 的执行权限
 sudo chown -R es_user:es /usr/local/elasticsearch/
 
-# 切换用户
+#切换用户
 su es_user
 #需要输入之前设置的密码：es_user
 
-# 进入config目录
-# cd /usr/local/elasticsearch/es/config
+#进入config目录
+#cd /usr/local/elasticsearch/es/config
 es_user@backend-desktop:/$ cd /usr/local/elasticsearch/es/config
 es_user@backend-desktop:/usr/local/elasticsearch/es/config$ 
 
-# 备份配置文件
-# config目录下执行下列命令
+#备份配置文件
+#config目录下执行下列命令
 cp elasticsearch.yml elasticsearch.yml.bak
 ~~~
 
 + **下列修改配置文件都需要在root权限下或者sudo命令下**
-~~~
-# 修改配置文件，添加如下内容
-# config目录下执行下列命令
+
+~~~shell
+#修改配置文件，添加如下内容
+#config目录下执行下列命令
 cd /usr/local/elasticsearch/es/config
 sudo vim elasticsearch.yml
 ~~~
 
 用vim 命令在配置文件 elasticsearch.yml 中添加以下配置
 
-~~~
-# 加入如下配置
+~~~shell
+#加入如下配置
 cluster.name: elasticsearch
 node.name: node-1
 network.host: 0.0.0.0
@@ -279,52 +252,57 @@ http.port: 9200
 cluster.initial_master_nodes: ["node-1"]
 
 // 下面是注释 说明
-# 集群name
+#集群name
 cluster.name: elasticsearch
-# 节点name
+#节点name
 node.name: node-1
-# 端口
+#端口
 http.port: 9200
-# 地址
+#地址
 network.host: 0.0.0.0
-# 引导启动集群
+#引导启动集群
 cluster.initial_master_nodes: ["node-1"]
 ~~~
 
 修改/etc/security/limits.conf  => sudo vim /etc/security/limits.conf
-~~~
-# 在文件末尾中增加下面内容
-# es_user用户下每个进程可以打开的文件数的限制
+~~~shell
+#在文件末尾中增加下面内容
+#es_user用户下每个进程可以打开的文件数的限制
 es_user soft nofile 65536
 es_user hard nofile 65536
 ~~~
 
 修改/etc/security/limits.d/20-nproc.conf  => sudo vim /etc/security/limits.d/20-nproc.conf 
-~~~
-# 在文件末尾中增加下面内容
-# es_user用户下每个进程可以打开的文件数的限制
+~~~shell
+#在文件末尾中增加下面内容
+#es_user用户下每个进程可以打开的文件数的限制
 es_user soft nofile 65536
 es_user hard nofile 65536
-# 操作系统级别对每个用户创建的进程数的限制
+#操作系统级别对每个用户创建的进程数的限制
 * hard nproc 4096
-# 注： * 带表 Linux 所有用户名称
+#注： * 带表 Linux 所有用户名称
 
 ~~~
 
 修改/etc/sysctl.conf   => sudo vim /etc/sysctl.conf
-~~~
-# 在文件中增加下面内容
-# 一个进程可以拥有的 VMA(虚拟内存区域)的数量,默认值为 65536
+~~~shell
+#在文件中增加下面内容
+#一个进程可以拥有的 VMA(虚拟内存区域)的数量,默认值为 65536
 vm.max_map_count=655360
 ~~~
 
 重新加载
-~~~
+~~~shell
 sudo sysctl -p
 ~~~
 
-+ 使用es_user用户启动 => su es_user
-~~~
++ 使用es_user用户启动elasticsearch
+
+~~~shell
+#切换用户
+su es_user
+#需要输入之前设置的密码：es_user
+
 cd /usr/local/elasticsearch/es/
 #启动
 bin/elasticsearch
@@ -340,7 +318,7 @@ bin/elasticsearch -d
 `sudo chown -R es_user:es /usr/local/elasticsearch/es/`
 
 启动成功是这样的
-~~~
+~~~shell
 es_user@backend-desktop:/usr/local/elasticsearch/es$ bin/elasticsearch
 future versions of Elasticsearch will require Java 11; your Java version from [/usr/lib/jvm/jdk1.8.0_301/jre] does not meet this requirement
 future versions of Elasticsearch will require Java 11; your Java version from [/usr/lib/jvm/jdk1.8.0_301/jre] does not meet this requirement
