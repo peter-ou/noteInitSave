@@ -251,7 +251,7 @@ network.host: 0.0.0.0
 http.port: 9200
 cluster.initial_master_nodes: ["node-1"]
 
-// 下面是注释 说明
+// 下面对上面配置的注释说明
 #集群name
 cluster.name: elasticsearch
 #节点name
