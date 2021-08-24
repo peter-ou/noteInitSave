@@ -180,7 +180,7 @@ https://www.cnblogs.com/chenqionghe/p/10425751.html
 ## 安装Elasticsearch
 
 
-+ 新建目录和解压安装包，创建组及用户
+1, 新建目录和解压安装包，创建组及用户
 ~~~shell
 // 新建目录 install用于存放待解压的安装包
 sudo mkdir /usr/local/install
@@ -232,7 +232,7 @@ es_user@backend-desktop:/usr/local/elasticsearch/es/config$
 cp elasticsearch.yml elasticsearch.yml.bak
 ~~~
 
-+ **下列修改配置文件都需要在root权限下或者sudo命令下**
+2, **下列修改配置文件都需要在root权限下或者sudo命令下**
 
 ~~~shell
 #修改配置文件，添加如下内容
@@ -296,7 +296,7 @@ vm.max_map_count=655360
 sudo sysctl -p
 ~~~
 
-+ 使用es_user用户启动elasticsearch
+3, 使用es_user用户启动elasticsearch
 
 ~~~shell
 #切换用户
@@ -356,7 +356,7 @@ future versions of Elasticsearch will require Java 11; your Java version from [/
 
 ~~~
 
-+ 关闭防火墙
+4, 关闭防火墙
 ~~~shell
 #暂时关闭防火墙
 systemctl stop firewalld
@@ -366,7 +366,7 @@ systemctl disable firewalld.service #关闭防火墙，永久性生效，重启�
 
 ~~~
 
-+ 测试软件
+5, 测试软件
 浏览器中输入地址： http://ip:9200/
 
 <div align='center'><img src=./images/04ubuntu20中安装ES7.8实践一/04ubuntu20中安装ES7.8实践一_2021-08-23-16-01-56.png width='100%'/></div><br/>
