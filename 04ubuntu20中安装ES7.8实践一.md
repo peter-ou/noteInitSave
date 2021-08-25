@@ -10,6 +10,8 @@
 
 ## 在ubuntu20 中安装jdk8
 
+[linux常用命令入门参考地址](https://www.showdoc.com.cn/p/874d965ad7a05931e3a1ede278d99a64)
+
 1,先查询电脑cpu
 
 ```
@@ -392,27 +394,43 @@ systemctl disable firewalld.service #关闭防火墙，永久性生效，重启�
 `https://github.com/medcl/elasticsearch-analysis-ik/releases/tag/v7.8.0`
 >由于 ElasticSearch 默认的分词器不支持中文分词，所以我们需要集成ik 分词器。
 
->找到对应版本，下载解压到Elasticsearch的/plugins/目录下即可（版本一定要与Elasticsearch版本一致）
+>找到对应版本，下载解压到Elasticsearch的/plugins/ik目录下即可（版本一定要与Elasticsearch版本一致）。
 
-+ 上传到服务器然后解压到指定文件夹
++ 必须在plugins文件夹下新建ik或者analysis-ik文件夹，再解压到这新建的 **ik** 或者**analysis-ik**文件夹下。
+如果elasticsearch-analysis-ik-7.8.0.zip版本，直接解压至plugins文件夹后启动es时报错如下图：
+
+<div align='center'><img src=./images/04ubuntu20中安装ES7.8实践一/04ubuntu20中安装ES7.8实践一_2021-08-25-12-36-52.png width='100%'/></div><br/>
+
+原因分析：
+
+刚开始看见某个文件找不到，查看了config文件夹确实没有文件，以为是插件版本不一致的问题。使用./bin/elasticsearch-plugins install elasticsearch-analysis-ik-7.8.0.zip也报插件找不到。
+
+解决方法：
+
+解压elasticsearch-analysis-ik-7.8.0.zip到 /plugins/ik 文件夹下，ik文件夹名字是必须的，因为elasticsearch安装的插件名称，重启elasticsearch一切OK。
+
++ 上传到服务器然后解压到指定文件夹,必须在plugins文件夹下新建ik或者analysis-ik文件夹
 
 ```shell
+#在es的plugins文件夹下，创建ik文件夹，再给ik文件夹设置777权限即读写权限都有
+sudo mkdir ik
+sudo chmod 777 ik
 
-#解包到 上传到指定文件夹 /usr/local/elasticsearch/es/plugins/
+#解包到 上传到指定文件夹 /usr/local/elasticsearch/es/plugins/ik
 #解压到当前文件夹
 sudo unzip elasticsearch-analysis-ik-7.8.0.zip
 
-#回到上一级目录plugins
+#回到上一级目录ik
 cd ..
 
-#查看plugins文件夹下的内容
+#查看plugins/ik文件夹下的内容
 ls
 
-#然后在es目录下执行 tree plugins/
-sudo tree plugins/
+#然后在es/plugins目录下执行 tree ik
+sudo tree ik/
 
 #如果解压好了，则删除压缩包
-#在plugins目录下
+#在ik目录下
 sudo rm -rf elasticsearch-analysis-ik-7.8.0.zip
 ```
 
@@ -421,7 +439,6 @@ sudo rm -rf elasticsearch-analysis-ik-7.8.0.zip
 解决办法：
 
 ```shell
-
 1、vi .bash_profile 
 在.bash_profile 中添加一行： 
 export PATH=/bin:/usr/bin:/usr/local/bin:$PATH
@@ -450,8 +467,35 @@ sudo rm /var/lib/dpkg/lock
 ```
 再重写执行 `sudo apt-get install tree`
 
-再查看我们的解压包情况 `sudo tree plugins/`
+再查看我们的解压包情况 `sudo tree ik` 执行命令及展示结果如下：
 
+```shell
+➜  / cd /usr/local/elasticsearch/es/plugins
+➜  plugins sudo tree ik/
+ik/
+├── commons-codec-1.9.jar
+├── commons-logging-1.2.jar
+├── config
+│   ├── extra_main.dic
+│   ├── extra_single_word.dic
+│   ├── extra_single_word_full.dic
+│   ├── extra_single_word_low_freq.dic
+│   ├── extra_stopword.dic
+│   ├── IKAnalyzer.cfg.xml
+│   ├── main.dic
+│   ├── preposition.dic
+│   ├── quantifier.dic
+│   ├── stopword.dic
+│   ├── suffix.dic
+│   └── surname.dic
+├── elasticsearch-analysis-ik-7.8.0.jar
+├── httpclient-4.5.2.jar
+├── httpcore-4.4.4.jar
+├── plugin-descriptor.properties
+└── plugin-security.policy
+
+1 directory, 19 files
+```
 
 ## 安装Kibana 分析和可视化
 
@@ -508,5 +552,4 @@ i18n.locale: "zh-CN"
 修改后重新启动kibana即可
 
 至于其他版本，可以去下载补丁包手动汉化，此处不再赘述。
-
 
