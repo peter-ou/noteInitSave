@@ -14,7 +14,7 @@
 
 1,先查询电脑cpu
 
-```
+```shell
 还可以使用命令“uname -a”查看，
 输出的结果中，如果有x86_64就是64位(X64)，没有就是32位(X86)。
 
@@ -82,7 +82,10 @@ chmod: 正在更改 'jvm' 的权限: 不允许的操作
 + 解压上传的文件
 
 ```shell
+#jdk8
 sudo tar -zxvf jdk-8u301-linux-x64.tar.gz -C /usr/lib/jvm
+#jdk11
+sudo tar -zxvf jdk-11.0.12_linux-x64_bin.tar.gz -C /usr/lib/jvm
 ```
 
 
@@ -99,7 +102,10 @@ vim 命令说明：
 + 文件末尾追加如下内容
 
 ```shell
-# set oracle jdk environment
+# jdk-11.0.12
+# export JAVA_HOME=/usr/lib/jvm/jdk-11.0.12
+
+# set oracle jdk8 environment
 export JAVA_HOME=/usr/lib/jvm/jdk1.8.0_301
 export JRE_HOME=${JAVA_HOME}/jre  
 export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib  
@@ -128,6 +134,9 @@ export PATH=${JAVA_HOME}/bin:$PATH
 `sudo vim ~/.zshrc`
 
 ```shell
+# jdk-11.0.12
+# export JAVA_HOME=/usr/lib/jvm/jdk-11.0.12
+
 #set oracle jdk environment
 export JAVA_HOME=/usr/lib/jvm/jdk1.8.0_301
 export JRE_HOME=${JAVA_HOME}/jre  
@@ -143,16 +152,29 @@ export PATH=${JAVA_HOME}/bin:$PATH
 + 设置默认jdk
 
 ```shell
+#jdk8
 sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk1.8.0_301/bin/java 300  
 sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/jdk1.8.0_301/bin/javac 300  
 sudo update-alternatives --install /usr/bin/jar jar /usr/lib/jvm/jdk1.8.0_301/bin/jar 300   
 sudo update-alternatives --install /usr/bin/javah javah /usr/lib/jvm/jdk1.8.0_301/bin/javah 300   
-sudo update-alternatives --install /usr/bin/javap javap /usr/lib/jvm/jdk1.8.0_301/bin/javap 300 
+sudo update-alternatives --install /usr/bin/javap javap /usr/lib/jvm/jdk1.8.0_301/bin/javap 300
+
+#jdk11
+sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk-11.0.12/bin/java 300  
+sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/jdk-11.0.12/bin/javac 300  
+sudo update-alternatives --install /usr/bin/jar jar /usr/lib/jvm/jdk-11.0.12/bin/jar 300   
+sudo update-alternatives --install /usr/bin/javah javah /usr/lib/jvm/jdk-11.0.12/bin/javah 300   
+sudo update-alternatives --install /usr/bin/javap javap /usr/lib/jvm/jdk-11.0.12/bin/javap 300 
+
 ```
 
 + 执行
 
-`sudo update-alternatives --config java`
+```shell
+#前面带有 * 号的表示当前有效路径,可以选择编号来选择有效路径
+sudo update-alternatives --config java
+```
+
 
 
 + 测试是否安装成功
@@ -173,6 +195,7 @@ sudo update-alternatives --install /usr/bin/javap javap /usr/lib/jvm/jdk1.8.0_30
 
 `java -version`
 
+
 //Ubuntu 20.04.2.0 LTS 系统安装过程详解 （从下载镜像到安装系统）
 
 https://blog.csdn.net/weixin_39278265/article/details/117594161
@@ -188,6 +211,9 @@ https://blog.csdn.net/u011863024/article/details/115721328
 
 https://www.jianshu.com/p/f239520f21f8
 
+
+es启动报错解决1
+https://www.cnblogs.com/biehongli/p/15136408.html
 
 ## 安装Elasticsearch
 
@@ -324,12 +350,69 @@ bin/elasticsearch
 bin/elasticsearch -d 
 ```
 
-如果启动时报以下的错误
+3.1, 启动时报错汇总
+
++ 如果启动时报以下的错误
 <div align='center'><img src=./images/04ubuntu20中安装ES7.8实践一/04ubuntu20中安装ES7.8实践一_2021-08-23-15-08-06.png width='100%'/></div><br/>
 
 > 报错原因说明：启动时，会动态生成文件，如果文件所属用户不匹配，会发生错误，需要重新进行修改用户和用户组
 > 这时需要从新执行一下，让用户拥有操作生成文件的权限
-`sudo chown -R es_user:es /usr/local/elasticsearch/es/`
+
+```shell
+sudo chown -R es_user:es /usr/local/elasticsearch/es/
+```
+
++ 后端已经启动，重复启动时报错1：
+
+```shell
+[2021-08-25T17:00:38,255][ERROR][o.e.b.ElasticsearchUncaughtExceptionHandler] [node-1] uncaught exception in thread [main]
+org.elasticsearch.bootstrap.StartupException: java.lang.IllegalStateException: failed to obtain node locks, tried [[/usr/local/elasticsearch/es/data]] with lock id [0]; maybe these locations are not writable or multiple nodes were started without increasing [node.max_local_storage_nodes] (was [1])?
+	at org.elasticsearch.bootstrap.Elasticsearch.init(Elasticsearch.java:174) ~[elasticsearch-7.8.0.jar:7.8.0]
+	at org.elasticsearch.bootstrap.Elasticsearch.execute(Elasticsearch.java:161) ~[elasticsearch-7.8.0.jar:7.8.0]
+	at org.elasticsearch.cli.EnvironmentAwareCommand.execute(EnvironmentAwareCommand.java:86) ~[elasticsearch-7.8.0.jar:7.8.0]
+	at org.elasticsearch.cli.Command.mainWithoutErrorHandling(Command.java:127) ~[elasticsearch-cli-7.8.0.jar:7.8.0]
+	at org.elasticsearch.cli.Command.main(Command.java:90) ~[elasticsearch-cli-7.8.0.jar:7.8.0]
+	at org.elasticsearch.bootstrap.Elasticsearch.main(Elasticsearch.java:126) ~[elasticsearch-7.8.0.jar:7.8.0]
+	at org.elasticsearch.bootstrap.Elasticsearch.main(Elasticsearch.java:92) ~[elasticsearch-7.8.0.jar:7.8.0]
+Caused by: java.lang.IllegalStateException: failed to obtain node locks, tried [[/usr/local/elasticsearch/es/data]] with lock id [0]; maybe these locations are not writable or multiple nodes were started without increasing [node.max_local_storage_nodes] (was [1])?
+
+```
+解决方案：
+>  场景描述,后端已经启动，重复启动时，或者 在启动elastichsearch之前使用了root账号进行启动，启动失败之后，直接使用elsearch自己创建得这个账号启动es，发现报错
+
+>解决方法是将es安装目录下面得data目录下面的nodes全部删除，重新使用elsearch启动es即可。
+
++ 后端已经启动，重复启动时报错2：解决错误1将报这个错误 9200端口号被占用错误
+
+```shell
+[2021-08-25T17:13:31,823][ERROR][o.e.b.ElasticsearchUncaughtExceptionHandler] [node-1] uncaught exception in thread [main]
+org.elasticsearch.bootstrap.StartupException: BindHttpException[Failed to bind to 0.0.0.0:9200]; nested: BindException[地址已在使用];
+	at org.elasticsearch.bootstrap.Elasticsearch.init(Elasticsearch.java:174) ~[elasticsearch-7.8.0.jar:7.8.0]
+	at org.elasticsearch.bootstrap.Elasticsearch.execute(Elasticsearch.java:161) ~[elasticsearch-7.8.0.jar:7.8.0]
+	at org.elasticsearch.cli.EnvironmentAwareCommand.execute(EnvironmentAwareCommand.java:86) ~[elasticsearch-7.8.0.jar:7.8.0]
+	at org.elasticsearch.cli.Command.mainWithoutErrorHandling(Command.java:127) ~[elasticsearch-cli-7.8.0.jar:7.8.0]
+	at org.elasticsearch.cli.Command.main(Command.java:90) ~[elasticsearch-cli-7.8.0.jar:7.8.0]
+	at org.elasticsearch.bootstrap.Elasticsearch.main(Elasticsearch.java:126) ~[elasticsearch-7.8.0.jar:7.8.0]
+	at org.elasticsearch.bootstrap.Elasticsearch.main(Elasticsearch.java:92) ~[elasticsearch-7.8.0.jar:7.8.0]
+Caused by: org.elasticsearch.http.BindHttpException: Failed to bind to 0.0.0.0:9200
+
+```
+
+解决办法（如果一定要重新启动的话）：
+
+```shell
+#查看占用端口的进程号，需要用sudo升级权限执行。
+sudo netstat -anp |grep 9200 
+tcp6       0      0 :::9200                 :::*                    LISTEN      265304/java
+#查看进程号的详细信息
+➜  es ps -aux|grep 265304             
+es_user   265304  0.8  8.3 4646184 1351976 ?     Sl   14:39   1:03 /usr/lib/jvm/jdk1.8.0_301/bin/java -Xshare:auto -Des.networkaddress.cache.ttl=60 -Des.networkaddress.cache.negative.ttl=10 -XX:+AlwaysPreTouch -Xss1m -Djava.awt.headless=true -Dfile.encoding=UTF-8 -Djna.nosys=true -XX:-OmitStackTraceInFastThrow -Dio.netty.noUnsafe=true -Dio.netty.noKeySetOptimization=true -Dio.netty.recycler.maxCapacityPerThread=0 -Dio.netty.allocator.numDirectArenas=0 -Dlog4j.shutdownHookEnabled=false -Dlog4j2.disable.jmx=true -Djava.locale.providers=SPI,JRE -Xms1g -Xmx1g -XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=75 -XX:+UseCMSInitiatingOccupancyOnly -Djava.io.tmpdir=/tmp/elasticsearch-5897008241081191494 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=data -XX:ErrorFile=logs/hs_err_pid%p.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintTenuringDistribution -XX:+PrintGCApplicationStoppedTime -Xloggc:logs/gc.log -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=32 -XX:GCLogFileSize=64m -XX:MaxDirectMemorySize=536870912 -Des.path.home=/usr/local/elasticsearch/es -Des.path.conf=/usr/local/elasticsearch/es/config -Des.distribution.flavor=default -Des.distribution.type=tar -Des.bundled_jdk=true -cp /usr/local/elasticsearch/es/lib/* org.elasticsearch.bootstrap.Elasticsearch -d
+backend   272357  0.0  0.0  17688  2700 pts/4    S+   16:42   0:00 grep --color=auto --exclude-dir=.bzr --exclude-dir=CVS --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.svn --exclude-dir=.idea --exclude-dir=.tox 265304
+#杀掉这个进程
+➜  es sudo kill -9 265304
+
+#再重新启动es
+```
 
 启动成功是这样的
 ```shell
@@ -385,7 +468,21 @@ systemctl disable firewalld.service #关闭防火墙，永久性生效，重启�
 
 <div align='center'><img src=./images/04ubuntu20中安装ES7.8实践一/04ubuntu20中安装ES7.8实践一_2021-08-23-16-01-56.png width='100%'/></div><br/>
 
+6,关闭elasticsearch
 
+```shell
+#查看elastic的进程号 并杀死
+ps aux | grep elasticsearch
+kill -9 进程号
+
+#查看elastic的进程号 并杀死
+ps -ef | grep elastic
+kill -9 2382（进程号）
+
+#重启 -d 后台运行
+./bin/elasticsearch -d
+
+```
 ## elasticsearch-analysis-ik 安装ik分词插件
 
 + [下载地址-注意版本的对应](https://github.com/medcl/elasticsearch-analysis-ik/releases/tag/v7.8.0
@@ -520,13 +617,13 @@ sudo chown -R es_user:es /usr/local/kibana/
 sudo cp kibana.yml kibana.yml.bak
 sudo vim kibana.yml 
 
-#添加以下内容
+#添加以下内容,如何es安装在同一台服务器ip可以用localhost
 server.host: "0.0.0.0"
 elasticsearch.hosts: ["http://localhost:9200"]
 
 ```
 
-+ 启动Kibana
++ 启动Kibana(需要先后台启动es)
 
 ```shell
 #进入/bin/目录，启动kibana
@@ -534,6 +631,12 @@ elasticsearch.hosts: ["http://localhost:9200"]
  cd bin/
  ./kibana
  
+ #通过 ./kibana 启动时， 关闭kibana 用
+ ctrl+C
+
+ #后台启动：
+ ./kibana &
+
 #访问5601端口，出现下图即安装成功
 http:/ip:5601/
 ```
@@ -553,3 +656,57 @@ i18n.locale: "zh-CN"
 
 至于其他版本，可以去下载补丁包手动汉化，此处不再赘述。
 
++ 启动kibana时报错
+
+```shell
+  log   [09:52:36.732] [warning][savedobjects-service] Unable to connect to Elasticsearch. Error: Request Timeout after 30000ms
+  log   [09:52:39.240] [warning][savedobjects-service] Unable to connect to Elasticsearch. Error: [resource_already_exists_exception] index [.kibana_task_manager_1/k_d_-G9bS2m8LPqWuu2Znw] already exists, with { index_uuid="k_d_-G9bS2m8LPqWuu2Znw" & index=".kibana_task_manager_1" }
+  log   [09:52:39.242] [warning][savedobjects-service] Another Kibana instance appears to be migrating the index. Waiting for that migration to complete. If no other Kibana instance is attempting migrations, you can get past this message by deleting index .kibana_task_manager_1 and restarting Kibana.
+  log   [09:52:39.249] [warning][savedobjects-service] Unable to connect to Elasticsearch. Error: [resource_already_exists_exception] index [.kibana_1/ZebhsjZ8SwqJJ3bZVyC-Zw] already exists, with { index_uuid="ZebhsjZ8SwqJJ3bZVyC-Zw" & index=".kibana_1" }
+  log   [09:52:39.250] [warning][savedobjects-service] Another Kibana instance appears to be migrating the index. Waiting for that migration to complete. If no other Kibana instance is attempting migrations, you can get past this message by deleting index .kibana_1 and restarting Kibana.
+```
+> 这已经很明了了，you can get past this message by deleting index .kibana_1 and restarting Kibana。
+
+>查看es的索引，果然发现有.kibana_1这个索引，那么我们就删除该索引。（暂不知道如何查看）
+
+>新搭建es常会有.kibana_1索引
+
+在启动的es中执行`curl -XDELETE http://10.9.11.38:9200/.kibana*` 如下：
+
+```shell
+es_user@backend-desktop:/usr/local/elasticsearch$ curl -XDELETE http://10.9.11.38:9200/.kibana*
+{"acknowledged":true}es_user@backend-desktop:/usr/local/elasticsearch$ 
+```
+
+然后停掉es,再重新启动es（具体操作参照上面的es）
+
+最后再次启动kibana, 后台启动：`./kibana &`
+
+```shell
+es_user@backend-desktop:/usr/local/kibana/kibana-7.8.0-linux-x86_64/bin$ ./kibana &
+  log   [10:18:07.438] [warning][plugins-discovery] Expect plugin "id" in camelCase, but found: apm_oss
+  log   [10:18:07.455] [warning][plugins-discovery] Expect plugin "id" in camelCase, but found: triggers_actions_ui
+  log   [10:18:14.436] [info][plugins-service] Plugin "visTypeXy" is disabled.
+  log   [10:18:14.437] [info][plugins-service] Plugin "endpoint" is disabled.
+  log   [10:18:14.437] [info][plugins-service] Plugin "ingestManager" is disabled.
+  log   [10:18:14.438] [info][plugins-service] Plugin "lists" is disabled.
+  ...
+  log   [10:18:22.835] [info][status][plugin:console_legacy@7.8.0] Status changed from uninitialized to green - Ready
+  log   [10:18:22.841] [info][status][plugin:region_map@7.8.0] Status changed from uninitialized to green - Ready
+  log   [10:18:22.853] [info][status][plugin:ui_metric@7.8.0] Status changed from uninitialized to green - Ready
+  log   [10:18:22.868] [info][listening] Server running at http://0.0.0.0:5601
+  log   [10:18:23.538] [info][server][Kibana][http] http server running at http://0.0.0.0:5601
+
+```
+
++ 浏览器访问`http://10.9.11.38:5601/`
+  
+  <div align='center'><img src=./images/04ubuntu20中安装ES7.8实践一/04ubuntu20中安装ES7.8实践一_2021-08-25-18-42-56.png width='100%'/></div><br/>
+
++ 关闭后台启动kibana
+
+```shell
+#查看elastic的进程号 并杀死
+ps -ef | grep kibana
+kill -9 279265（进程号）
+```
