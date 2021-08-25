@@ -23,7 +23,7 @@
 
 2,查询ubuntu 的版本及内核,选择 jdk-8u301-linux-x64.tar.gz 安装。
 
-~~~
+```shell
 // 1.查看内核版本
 zengdx@ubuntu:~$ cat /proc/version
 Linux version 3.19.0-25-generic (buildd@lgw01-20) (gcc version 4.8.2 (Ubuntu 4.8.2-19ubuntu1) ) #26~14.04.1-Ubuntu SMP Fri Jul 24 21:16:20 UTC 2015
@@ -50,7 +50,7 @@ DISTRIB_DESCRIPTION="Ubuntu 14.04.3 LTS"
 zengdx@ubuntu:~$ cat /etc/issue
 Ubuntu 14.04.3 LTS \n \l
 
-~~~
+```
 
 3,上传jdk包，并解压
 
@@ -60,7 +60,7 @@ Ubuntu 14.04.3 LTS \n \l
 + 上传时报状态错误，解决办法就是修改新建文件的 权限
 
 在jvm 的上一级目录中 执行 sudo chmod 777 jvm
-~~~ shell
+```shell
 ➜  lib chmod 777 jvm   
 chmod: 正在更改 'jvm' 的权限: 不允许的操作
 ➜  lib sudo chmod 777 jvm   
@@ -68,7 +68,7 @@ chmod: 正在更改 'jvm' 的权限: 不允许的操作
 ➜  lib cd jvm       
 ➜  jvm 
 
-~~~
+```
 或者
 <div align='center'><img src=./images/04ubuntu20中安装ES7.8实践一/04ubuntu20中安装ES7.8实践一_2021-08-21-11-55-15.png width='100%'/></div><br/>
 
@@ -79,15 +79,15 @@ chmod: 正在更改 'jvm' 的权限: 不允许的操作
 
 + 解压上传的文件
 
-~~~shell
+```shell
 sudo tar -zxvf jdk-8u301-linux-x64.tar.gz -C /usr/lib/jvm
-~~~
+```
 
 
 + 修改环境变量
 `sudo vim ~/.bashrc`
 
-```
+```shell
 vim 命令说明： 
 输入 i =>  插入 
 按 ESC 退出编辑
@@ -110,7 +110,7 @@ export PATH=${JAVA_HOME}/bin:$PATH
 
 以上修改环境变量,重新加载环境配置时可能会报错
 
-~~~shell
+```shell
 ~ source ~/.bashrc
 /home/backend/.bashrc:16: command not found: shopt
 /home/backend/.bashrc:24: command not found: shopt
@@ -119,13 +119,13 @@ export PATH=${JAVA_HOME}/bin:$PATH
 /usr/share/bash-completion/bash_completion:1512: parse error near `|'
 \[\e]0;\u@\h: \w\a\]\u@\h:\w$ 
 
-~~~
+```
 
 + 如果上面报错，我们将java 的环境变量配置在.zshrc 中
 
 `sudo vim ~/.zshrc`
 
-```
+```shell
 #set oracle jdk environment
 export JAVA_HOME=/usr/lib/jvm/jdk1.8.0_301
 export JRE_HOME=${JAVA_HOME}/jre  
@@ -139,13 +139,14 @@ export PATH=${JAVA_HOME}/bin:$PATH
  `source ~/.zshrc`
 
 + 设置默认jdk
-~~~
+
+```shell
 sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk1.8.0_301/bin/java 300  
 sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/jdk1.8.0_301/bin/javac 300  
 sudo update-alternatives --install /usr/bin/jar jar /usr/lib/jvm/jdk1.8.0_301/bin/jar 300   
 sudo update-alternatives --install /usr/bin/javah javah /usr/lib/jvm/jdk1.8.0_301/bin/javah 300   
 sudo update-alternatives --install /usr/bin/javap javap /usr/lib/jvm/jdk1.8.0_301/bin/javap 300 
-~~~
+```
 
 + 执行
 
@@ -190,7 +191,8 @@ https://www.jianshu.com/p/f239520f21f8
 
 
 1, 新建目录和解压安装包，创建组及用户
-~~~shell
+
+```shell
 // 新建目录 install用于存放待解压的安装包
 sudo mkdir /usr/local/install
 #进入 local 文件夹执行： 
@@ -219,11 +221,12 @@ sudo usermod -g es es_user
 
 #为该用户添加管理员权限(vim /etc/sudoers也可以)，如下图
 sudo visudo
-~~~
+```
+
 <div align='center'><img src=./images/04ubuntu20中安装ES7.8实践一/04ubuntu20中安装ES7.8实践一_2021-08-23-12-48-52.png width='100%'/></div><br/>
 
-~~~shell
 
+```shell
 #让 es_user 用户拥有对 elasticsearch 的执行权限
 sudo chown -R es_user:es /usr/local/elasticsearch/
 
@@ -239,20 +242,20 @@ es_user@backend-desktop:/usr/local/elasticsearch/es/config$
 #备份配置文件
 #config目录下执行下列命令
 cp elasticsearch.yml elasticsearch.yml.bak
-~~~
+```
 
 2, **下列修改配置文件都需要在root权限下或者sudo命令下**
 
-~~~shell
+```shell
 #修改配置文件，添加如下内容
 #config目录下执行下列命令
 cd /usr/local/elasticsearch/es/config
 sudo vim elasticsearch.yml
-~~~
+```
 
 用vim 命令在配置文件 elasticsearch.yml 中添加以下配置
 
-~~~shell
+```shell
 #加入如下配置
 cluster.name: elasticsearch
 node.name: node-1
@@ -271,18 +274,18 @@ http.port: 9200
 network.host: 0.0.0.0
 #引导启动集群
 cluster.initial_master_nodes: ["node-1"]
-~~~
+```
 
 修改/etc/security/limits.conf  => sudo vim /etc/security/limits.conf
-~~~shell
+```shell
 #在文件末尾中增加下面内容
 #es_user用户下每个进程可以打开的文件数的限制
 es_user soft nofile 65536
 es_user hard nofile 65536
-~~~
+```
 
 修改/etc/security/limits.d/20-nproc.conf  => sudo vim /etc/security/limits.d/20-nproc.conf 
-~~~shell
+```shell
 #在文件末尾中增加下面内容
 #es_user用户下每个进程可以打开的文件数的限制
 es_user soft nofile 65536
@@ -291,23 +294,23 @@ es_user hard nofile 65536
 * hard nproc 4096
 #注： * 带表 Linux 所有用户名称
 
-~~~
+```
 
 修改/etc/sysctl.conf   => sudo vim /etc/sysctl.conf
-~~~shell
+```shell
 #在文件中增加下面内容
 #一个进程可以拥有的 VMA(虚拟内存区域)的数量,默认值为 65536
 vm.max_map_count=655360
-~~~
+```
 
 重新加载
-~~~shell
+```shell
 sudo sysctl -p
-~~~
+```
 
 3, 使用es_user用户启动elasticsearch
 
-~~~shell
+```shell
 #切换用户
 su es_user
 #需要输入之前设置的密码：es_user
@@ -317,7 +320,7 @@ cd /usr/local/elasticsearch/es/
 bin/elasticsearch
 #后台启动
 bin/elasticsearch -d 
-~~~
+```
 
 如果启动时报以下的错误
 <div align='center'><img src=./images/04ubuntu20中安装ES7.8实践一/04ubuntu20中安装ES7.8实践一_2021-08-23-15-08-06.png width='100%'/></div><br/>
@@ -327,7 +330,7 @@ bin/elasticsearch -d
 `sudo chown -R es_user:es /usr/local/elasticsearch/es/`
 
 启动成功是这样的
-~~~shell
+```shell
 es_user@backend-desktop:/usr/local/elasticsearch/es$ bin/elasticsearch
 future versions of Elasticsearch will require Java 11; your Java version from [/usr/lib/jvm/jdk1.8.0_301/jre] does not meet this requirement
 future versions of Elasticsearch will require Java 11; your Java version from [/usr/lib/jvm/jdk1.8.0_301/jre] does not meet this requirement
@@ -363,17 +366,17 @@ future versions of Elasticsearch will require Java 11; your Java version from [/
 [2021-08-23T15:52:14,277][INFO ][o.e.l.LicenseService     ] [node-1] license [2fc705d4-6257-4525-87d5-7ea98716a88b] mode [basic] - valid
 [2021-08-23T15:52:14,279][INFO ][o.e.x.s.s.SecurityStatusChangeListener] [node-1] Active license is now [BASIC]; Security is disabled
 
-~~~
+```
 
 4, 关闭防火墙
-~~~shell
+```shell
 #暂时关闭防火墙
 systemctl stop firewalld
 #永久关闭防火墙
 systemctl enable firewalld.service #打开防火墙永久性生效，重启后不会复原
 systemctl disable firewalld.service #关闭防火墙，永久性生效，重启后不会复原
 
-~~~
+```
 
 5, 测试软件
 浏览器中输入地址： http://ip:9200/
@@ -393,7 +396,7 @@ systemctl disable firewalld.service #关闭防火墙，永久性生效，重启�
 
 + 上传到服务器然后解压到指定文件夹
 
-~~~shell
+```shell
 
 #解包到 上传到指定文件夹 /usr/local/elasticsearch/es/plugins/
 #解压到当前文件夹
@@ -411,12 +414,13 @@ sudo tree plugins/
 #如果解压好了，则删除压缩包
 #在plugins目录下
 sudo rm -rf elasticsearch-analysis-ik-7.8.0.zip
-~~~
-报错`zsh: command not found: tree`
+```
+
+报错内容`zsh: command not found: tree`
 
 解决办法：
 
-~~~shell
+```shell
 
 1、vi .bash_profile 
 在.bash_profile 中添加一行： 
@@ -428,7 +432,7 @@ source ~/.bash_profile
 
 3，重写加载环境配置
 source ~/.zshrc
-~~~
+```
 
 安装tree命令的依赖包 执行命令`sudo apt-get install tree`
 
@@ -458,7 +462,7 @@ Kibana是一个针对Elasticsearch的开源分析及可视化平台，用来搜�
 
 + 上传，解压安装，修改配置
 
-~~~shell
+```shell
 #新建目录
 sudo mkdir /usr/local/kibana
 
@@ -476,11 +480,11 @@ sudo vim kibana.yml
 server.host: "0.0.0.0"
 elasticsearch.hosts: ["http://localhost:9200"]
 
-~~~
+```
 
 + 启动Kibana
 
-~~~shell
+```shell
 #进入/bin/目录，启动kibana
  cd ..
  cd bin/
@@ -488,7 +492,7 @@ elasticsearch.hosts: ["http://localhost:9200"]
  
 #访问5601端口，出现下图即安装成功
 http:/ip:5601/
-~~~
+```
 
 <div align='center'><img src=./images/04ubuntu20中安装ES7.8实践一/04ubuntu20中安装ES7.8实践一_2021-08-24-18-12-36.png width='100%'/></div><br/>
 
@@ -496,10 +500,10 @@ http:/ip:5601/
 
 Kibana 7.x 官方支持中文，只需要修改 kibana.yml 即可
 
-~~~shell
+```shell
 #在/config/kibana.yml文件中添加
 i18n.locale: "zh-CN"
-~~~
+```
 
 修改后重新启动kibana即可
 
