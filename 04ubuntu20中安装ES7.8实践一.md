@@ -703,7 +703,7 @@ es_user@backend-desktop:/usr/local/kibana/kibana-7.8.0-linux-x86_64/bin$ ./kiban
   
   <div align='center'><img src=./images/04ubuntu20中安装ES7.8实践一/04ubuntu20中安装ES7.8实践一_2021-08-25-18-42-56.png width='100%'/></div><br/>
 
-+ 关闭后台启动kibana
++ 关闭后台启动的 kibana
 
 ```shell
 #查看elastic的进程号 并杀死
