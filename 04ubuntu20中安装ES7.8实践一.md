@@ -1,12 +1,22 @@
 # ubuntu20中安装ES7.8
 
 - [ubuntu20中安装ES7.8](#ubuntu20中安装es78)
+  - [Ubuntu 20.04.2.0 LTS 系统安装过程详解 （从下载镜像到安装系统）](#ubuntu-200420-lts-系统安装过程详解-从下载镜像到安装系统)
+  - [Postman客户端安装](#postman客户端安装)
   - [在ubuntu20 中安装jdk8](#在ubuntu20-中安装jdk8)
   - [在线安装openjdk8。而oracle Java JDK(Ubuntu20.04实测不行，就不记录了)](#在线安装openjdk8而oracle-java-jdkubuntu2004实测不行就不记录了)
   - [安装Elasticsearch](#安装elasticsearch)
   - [elasticsearch-analysis-ik 安装ik分词插件](#elasticsearch-analysis-ik-安装ik分词插件)
   - [安装Kibana 分析和可视化](#安装kibana-分析和可视化)
 
+## Ubuntu 20.04.2.0 LTS 系统安装过程详解 （从下载镜像到安装系统）
+
+参考地址：https://blog.csdn.net/weixin_39278265/article/details/117594161
+
+##  Postman客户端安装
+
+Postman 官网：https://www.getpostman.com
+Postman 下载：https://www.getpostman.com/apps
 
 ## 在ubuntu20 中安装jdk8
 
@@ -196,9 +206,7 @@ sudo update-alternatives --config java
 `java -version`
 
 
-//Ubuntu 20.04.2.0 LTS 系统安装过程详解 （从下载镜像到安装系统）
 
-https://blog.csdn.net/weixin_39278265/article/details/117594161
 
 //这里是安装Elasticsearch的参考博客
 
@@ -217,6 +225,11 @@ https://www.cnblogs.com/biehongli/p/15136408.html
 
 ## 安装Elasticsearch
 
++ [Elasticsearch官网](!https://www.elastic.co/cn/)
+
++ [Elasticsearch下载地址](!https://www.elastic.co/cn/downloads/past-releases#elasticsearch)
+
+> 下载这个安装包： elasticsearch-7.8.0-linux-x86_64.tar.gz
 
 1, 新建目录和解压安装包，创建组及用户
 
@@ -485,7 +498,7 @@ kill -9 2382（进程号）
 ```
 ## elasticsearch-analysis-ik 安装ik分词插件
 
-+ [下载地址-注意版本的对应](https://github.com/medcl/elasticsearch-analysis-ik/releases/tag/v7.8.0
++ [ik分词插件下载地址](https://github.com/medcl/elasticsearch-analysis-ik/releases/tag/v7.8.0
 )
 
 `https://github.com/medcl/elasticsearch-analysis-ik/releases/tag/v7.8.0`
@@ -601,6 +614,8 @@ Kibana是一个针对Elasticsearch的开源分析及可视化平台，用来搜�
 
 + [Kibana官网下载地址](https://www.elastic.co/cn/downloads/kibana)
 
+> 下载这个安装包： kibana-7.8.0-linux-x86_64.tar.gz
+
 + 上传，解压安装，修改配置
 
 ```shell
@@ -653,7 +668,6 @@ i18n.locale: "zh-CN"
 ```
 
 修改后重新启动kibana即可
-
 至于其他版本，可以去下载补丁包手动汉化，此处不再赘述。
 
 + 启动kibana时报错
