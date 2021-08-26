@@ -11,7 +11,13 @@
 
 ## Ubuntu 20.04.2.0 LTS 系统安装过程详解 （从下载镜像到安装系统）
 
-参考地址：https://blog.csdn.net/weixin_39278265/article/details/117594161
+参考地址：
+
+https://blog.csdn.net/weixin_39278265/article/details/117594161
+
+https://wjw1014.blog.csdn.net/article/details/84961031
+
+https://blog.csdn.net/baidu_36602427/article/details/86548203
 
 ##  Postman客户端安装
 
