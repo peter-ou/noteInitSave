@@ -19,6 +19,21 @@ https://wjw1014.blog.csdn.net/article/details/84961031
 
 https://blog.csdn.net/baidu_36602427/article/details/86548203
 
+[ubuntu 桌面版如何设置固定IP地址](!https://blog.csdn.net/ylzmm/article/details/105435105)
+
+>ubuntu系统中的 ifconfig命令查看ip无效解决方案
+
+```shell
+1 更新或升级系统
+sudo apt-get update
+2 安装ipconfig的工具
+sudo apt install net-tools
+3 查看ip
+ifconfig
+```
+
+[Ubuntu 20.04 开启SSH服务](!https://blog.csdn.net/Eazon_chan/article/details/109809741)
+
 ##  Postman客户端安装
 
 Postman 官网：https://www.getpostman.com
@@ -36,7 +51,6 @@ Postman 下载：https://www.getpostman.com/apps
 
 可以用命令“getconf LONG_BIT”查看，
 如果返回的结果是32则说明是32位(X86)，返回的结果是64则说明是64位(X64)。
-
 ```
 
 2,查询ubuntu 的版本及内核,选择 jdk-8u301-linux-x64.tar.gz 安装。
@@ -67,7 +81,6 @@ DISTRIB_CODENAME=trusty
 DISTRIB_DESCRIPTION="Ubuntu 14.04.3 LTS"
 zengdx@ubuntu:~$ cat /etc/issue
 Ubuntu 14.04.3 LTS \n \l
-
 ```
 
 3,上传jdk包，并解压
@@ -78,6 +91,7 @@ Ubuntu 14.04.3 LTS \n \l
 + 上传时报状态错误，解决办法就是修改新建文件的 权限
 
 在jvm 的上一级目录中 执行 sudo chmod 777 jvm
+
 ```shell
 ➜  lib chmod 777 jvm   
 chmod: 正在更改 'jvm' 的权限: 不允许的操作
@@ -85,8 +99,8 @@ chmod: 正在更改 'jvm' 的权限: 不允许的操作
 [sudo] backend 的密码： 
 ➜  lib cd jvm       
 ➜  jvm 
-
 ```
+
 或者
 <div align='center'><img src=./images/04ubuntu20中安装ES7.8实践一/04ubuntu20中安装ES7.8实践一_2021-08-21-11-55-15.png width='100%'/></div><br/>
 
