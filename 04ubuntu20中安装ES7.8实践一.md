@@ -3,6 +3,10 @@
 - [ubuntu20中安装ES7.8](#ubuntu20中安装es78)
   - [Ubuntu 20.04.2.0 LTS 系统安装过程详解 （从下载镜像到安装系统）](#ubuntu-200420-lts-系统安装过程详解-从下载镜像到安装系统)
   - [3台Ubuntu主机之间实现ssh相互免密登录](#3台ubuntu主机之间实现ssh相互免密登录)
+    - [参考网址：](#参考网址)
+    - [安装ssh](#安装ssh)
+    - [在各个服务器上生成密钥且 将公钥添加到 .ssh/authorized_keys (这时就能在本机免密码登陆了，安装hudoop时需要配置本机免密登录)](#在各个服务器上生成密钥且-将公钥添加到-sshauthorized_keys-这时就能在本机免密码登陆了安装hudoop时需要配置本机免密登录)
+    - [服务器之间远程免密登录配置](#服务器之间远程免密登录配置)
   - [Postman客户端安装](#postman客户端安装)
   - [在ubuntu20 中安装jdk8](#在ubuntu20-中安装jdk8)
   - [在线安装openjdk8。而oracle Java JDK(Ubuntu20.04实测不行，就不记录了)](#在线安装openjdk8而oracle-java-jdkubuntu2004实测不行就不记录了)
@@ -37,7 +41,7 @@ ifconfig
 
 ## 3台Ubuntu主机之间实现ssh相互免密登录
 
-+ 参考网址：
+### 参考网址：
 
 [ubuntu安装SSH服务](!https://www.cnblogs.com/zhongyuan/archive/2013/04/25/3042614.html)
 
@@ -45,7 +49,7 @@ ifconfig
 
 [Ubuntu 16.04主机之间ssh免密码登录](!https://blog.csdn.net/lisuo1234/article/details/52249572)
 
-+ 安装ssh
+### 安装ssh
 
 SSH程序有**客户端openssh-client**和**服务端openssh-server**
 
@@ -97,7 +101,7 @@ backend-desktop
 exit 或者 logout
 ```
 
-+ 在各个服务器上生成密钥且 将公钥添加到 .ssh/authorized_keys (这时就能在本机免密码登陆了，安装hudoop时需要配置本机免密登录)
+### 在各个服务器上生成密钥且 将公钥添加到 .ssh/authorized_keys (这时就能在本机免密码登陆了，安装hudoop时需要配置本机免密登录)
 
 1、执行命令，生成ssh密钥
 
@@ -128,15 +132,15 @@ osc@osc-ThinkPad-W520:~/.ssh$ cat id_rsa.pub
 
 ```
 
-> 分别在三台服务器中执行以上**1-4的步骤**
+> **分别在三台服务器中执行以上1-4的步骤**
+
+### 服务器之间远程免密登录配置
 
 ```shell
 10.9.11.209 ==> A 服务器
 10.9.11.21  ==> B 服务器
 10.9.11.38  ==> C 服务器
 ```
-
-+ 服务器之间远程免密登录配置
 
 1, 思路：
 > + 1, 先把 A服务器 中的 a公钥 写到 C 服务器中的pub_key 文件中
