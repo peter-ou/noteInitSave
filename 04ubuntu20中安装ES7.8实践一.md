@@ -110,7 +110,7 @@ ssh-keygen -t rsa
 ```
 <div align='center'><img src=./images/04ubuntu20中安装ES7.8实践一/04ubuntu20中安装ES7.8实践一_2021-08-31-19-08-52.png width='100%'/></div><br/>
 
-2、执行 cd ~/.ssh就会发现多了如下文件：id_rsa 和id_rsa.pub分别是私钥和公钥。
+2、执行 `cd ~/.ssh` 就会发现多了如下文件：id_rsa 和id_rsa.pub分别是私钥和公钥。
 
 <div align='center'><img src=./images/04ubuntu20中安装ES7.8实践一/04ubuntu20中安装ES7.8实践一_2021-08-31-19-11-25.png width='100%'/></div><br/>
 
