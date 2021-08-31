@@ -2,6 +2,7 @@
 
 - [ubuntu20中安装ES7.8](#ubuntu20中安装es78)
   - [Ubuntu 20.04.2.0 LTS 系统安装过程详解 （从下载镜像到安装系统）](#ubuntu-200420-lts-系统安装过程详解-从下载镜像到安装系统)
+  - [3台Ubuntu主机之间实现ssh相互免密登录](#3台ubuntu主机之间实现ssh相互免密登录)
   - [Postman客户端安装](#postman客户端安装)
   - [在ubuntu20 中安装jdk8](#在ubuntu20-中安装jdk8)
   - [在线安装openjdk8。而oracle Java JDK(Ubuntu20.04实测不行，就不记录了)](#在线安装openjdk8而oracle-java-jdkubuntu2004实测不行就不记录了)
@@ -34,7 +35,207 @@ ifconfig
 
 [Ubuntu 20.04 开启SSH服务](!https://blog.csdn.net/Eazon_chan/article/details/109809741)
 
-##  Postman客户端安装
+## 3台Ubuntu主机之间实现ssh相互免密登录
+
++ 参考网址：
+
+[ubuntu安装SSH服务](!https://www.cnblogs.com/zhongyuan/archive/2013/04/25/3042614.html)
+
+[Linux下实现免密码登录(超详细)](!https://blog.csdn.net/shudaqi2010/article/details/77947600)
+
+[Ubuntu 16.04主机之间ssh免密码登录](!https://blog.csdn.net/lisuo1234/article/details/52249572)
+
++ 安装ssh
+
+SSH程序有**客户端openssh-client**和**服务端openssh-server**
+
+如果只是想登陆别的电脑SSH，只需安装openssh-client，ubuntu有默认安装。
+
+安装openssh-client：
+
+```shell
+sudo apt-get install openssh-client
+```
+
+要让本机开放SSH服务就需要安装openssh-server：
+
+```shell
+sudo apt-get install openssh-server
+```
+
+查看ssh-server是否运行：
+
+```shell
+ps -e |grep ssh
+```
+
+运行sshserver：
+
+```shell
+sudo /etc/init.d/ssh start
+
+ssh-server配置文件位于/etc/ssh/sshd_config，可以自定义SSH的服务端口。
+默认端口是22，自定义端口后需重启SSH服务：
+sudo /etc/init.d/ssh stop
+sudo /etc/init.d/ssh start
+```
+
+一个服务器用ssh 登陆 另一个服务器：
+
+```shell
+ssh username@localhost
+username为localhost机器上的用户，需要输入密码。
+
+//查看当前用户名称username
+~ hostname
+backend-desktop
+```
+
+断开连接：
+
+```shell
+exit 或者 logout
+```
+
++ 在各个服务器上生成密钥且 将公钥添加到 .ssh/authorized_keys (这时就能在本机免密码登陆了，安装hudoop时需要配置本机免密登录)
+
+1、执行命令，生成ssh密钥
+
+```shell
+ssh-keygen -t rsa
+```
+<div align='center'><img src=./images/04ubuntu20中安装ES7.8实践一/04ubuntu20中安装ES7.8实践一_2021-08-31-19-08-52.png width='100%'/></div><br/>
+
+2、执行 cd ~/.ssh就会发现多了如下文件：id_rsa 和id_rsa.pub分别是私钥和公钥。
+
+<div align='center'><img src=./images/04ubuntu20中安装ES7.8实践一/04ubuntu20中安装ES7.8实践一_2021-08-31-19-11-25.png width='100%'/></div><br/>
+
+3、执行如下命令：
+
+```shell
+// 将本机公钥追加到.ssh/authorized_keys中，这时就能在本机免密码登陆了。
+// 这个地方很重要，后面的C服务器 的公钥就是在这个步骤添加到 authorized_keys 文件中的，然后再复制给A和B服务器的
+ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+ ```
+
+4、在 ./ssh 文件下 查看公钥的内容是否追加到 authorized_keys 中。
+
+```shell
+// 查看 authorized_keys 中的内容
+osc@osc-ThinkPad-W520:~/.ssh$ cat authorized_keys 
+// 查看 id_rsa.pub 中的内容
+osc@osc-ThinkPad-W520:~/.ssh$ cat id_rsa.pub
+
+```
+
+> 分别在三台服务器中执行以上**1-4的步骤**
+
+```shell
+10.9.11.209 ==> A 服务器
+10.9.11.21  ==> B 服务器
+10.9.11.38  ==> C 服务器
+```
+
++ 服务器之间远程免密登录配置
+
+1, 思路：
+> + 1, 先把 A服务器 中的 a公钥 写到 C 服务器中的pub_key 文件中
+> + 2, 登录 C服务器 中把 pub_key 中的a公钥 追加到 C服务器中的authorized_keys文件中
+> + 3, 再把 B服务器 中的 b公钥 写到 C 服务器中的pub_key 文件中
+> + 4, 又登录 C服务器 中把 pub_key 中的b公钥 追加到 C服务器中的authorized_keys文件中
+> + 5, 然后 把C 服务器的 authorized_keys文件 内容 分别 复制给 A 服务器 和 B 服务器
+> + 6, 登录验证 ssh username@localhost,这时就不需要输入密码了
+
+2, 执行命令如下：
+
+```shell
+
+//在osc@10.9.11.209中执行scp命令，将 osc 服务器中的公钥写入到backend 服务器中的 pub_key 文件中
+// 如果backend 服务器中的 pub_key 文件不存在，会自动新建此文件，如果存在，将会替换里面的内容
+scp ~/.ssh/id_rsa.pub backend@10.9.11.38:pub_key 
+
+//登录backend@10.9.11.38服务器执行以下命令,将刚刚写入 pub_key 中的内容 追加到authorized_keys文件中
+cat ~/pub_key >>~/.ssh/authorized_keys
+
+
+//在vae@10.9.11.21中执行scp命令，将 vae 服务器中的公钥写入到backend 服务器中的 pub_key 文件中
+// 如果backend 服务器中的 pub_key 文件不存在，会自动新建此文件，如果存在，将会替换里面的内容
+scp ~/.ssh/id_rsa.pub backend@10.9.11.38:pub_key 
+
+//登录backend@10.9.11.38服务器执行以下命令,将刚刚写入 pub_key 中的内容 追加到authorized_keys文件中
+cat ~/pub_key >>~/.ssh/authorized_keys
+```
+
+> 通过以上的操作，三个服务器的公钥 都已经存放在 backend@10.9.11.38服务器的 authorized_keys文件中
+
+3, Xshell 登录 backend@10.9.11.38 服务器, 先查一下authorized_keys文件,看三个服务的公钥是否都在里面？在里面的情况如下展示：
+
+```shell
+➜  .ssh cd ~/.ssh          
+➜  .ssh ll       
+总用量 16K
+-rw-r--r-- 1 backend backend 1.6K 8月  31 18:12 authorized_keys
+-rw------- 1 backend backend 2.6K 8月  30 14:39 id_rsa
+-rw-r--r-- 1 backend backend  577 8月  30 14:39 id_rsa.pub
+-rw-r--r-- 1 backend backend  888 8月  31 18:16 known_hosts
+➜  .ssh cat authorized_keys
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD141fzMc77j7w9o9FlbObbfpBc9LIvn7Uw9dkjsMsjEyYJbqkdwG3gsvTf/3Xz6b2XtEOrN1ZD5j6PcaAiaFJXWUkLinFojBdiI/HtPUUlHrIzHtKLDCouwO3D8h1o44gE27VEw+izosG2AyISS7jXArbNvHV/NSqlYg44R29Vi42WaikE9IZPf5PLKn+tS+oa9sLjNycfOmKbyDpmyIAObSZ2Ld0PCqAKOZbf1KJOeJRJM8VEaIrmj6H4Sq6aqQa2k26yfkgZjXohVDBeQjpqI2ZJ+Nz/ldixv6Cd92LWkS5yyHctPu/NgwjXppBB8eynWNBUn94oQhzUfOc1wuLv vae@ubuntu
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDMEFAVdNwGS1/XCHCic5YWYTqNHnrLxvO+fJQk/d3PgYkzSXhAQV9vMWkr+RN8LhI1vKmOlm69NxsTEV+mNRDOLdSxLIZIgSY32C8XTzhZ2sku4xFLo4bymImtf04ZzWlSr56lwX2IHpzaQ6gpX1bXdfRHFxdzqlQktfuIQdwpBz+2fyny3SqGIXyoeYb4VLAebcFEElVvQ7iuYu9SlxhFbCCpzCdjcyuBy4dpT3UKKO8T36+tj9WM3thw/NuMxmfLfkmihaKKMGGhyXQ59NkIGUkRf+D4KYEnGoonKKgq3hSqd84cso1Gh3ifhSDArWSZ77DbVZb0dPkplEEjsUrP1z9aWChsW+accqmDSu9bJnpaibpx687/3TA/RHflxIObK56EFS8X4XPuXpZBbMG4cYR9NI5qBd+cg52sRBOCQR8+sEt/7K1dXaKpsN04QMA99VPFOv5uykQMoDyGO+pYj/jAga2vIq5GzkQbvap8WuR3ZTiXzqwoj29tpLT+R/c= backend@backend-desktop
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDIDGz/zwRwNEZ9DmvOx/TIuRYSmIYhDItSjDaaEQ92ObawHzFpRfXDxD4CNAjJ0EU6OCfFmxN+77aabKPUxsDGINDakgXc3oYavb8Qk7hhoLTQIJtnEIoPIFhSXW3n6BN1LwiT3mRyW7U4cr0IJA5ad0nXq5X3m42ebmq/eJYpdABnknXr/7RC2dqxuif3L/q9//zDz43AOjXjPznI7ZSA0IbBDEvCPXJaU5EioYru315/Qo7t27ybOgSOJyhsMexOxWZDUSvOtYoCmkl1DcOE5ds1uCM2tHaddL4ca3hLBVjtREwKC5XBbebg2riivsSO7PDDvxjWLyNOay5NECK2Rrjf1c8LYqyB0lqePM9Us45o7wXko4axgcC0teHvK2MhKyDSQ1A1Y7Qmaf/5ranLArgBX4BVgondd8IqvS+DRAxBJO2Fcwfy5GkuGigfeWv4DR2e6D2SyymwiRaL6MJS6wIwJCJi+NeGALRKi1ww+V5Rr2GILw1YxlhWQ7Zcwhk= osc@osc-ThinkPad-W520
+➜  .ssh 
+```
+
+4, 将配置好的ssh免密登录的 authorized_keys文件 分别复制给其他 服务器
+
+```shell
+// 登录 backend@10.9.11.38 服务器 ,分别执行以下命令，
+// 将osc 和 vae 服务器中的authorized_keys文件内容替换成 backend 服务的 authorized_keys 文件中的内容
+scp -p ~/.ssh/authorized_keys vae@10.9.11.21:~/.ssh/authorized_keys
+scp -p ~/.ssh/authorized_keys osc@10.9.11.209:~/.ssh/authorized_keys
+```
+
+5, ssh 免密登录验证，例如在osc 服务器中 ssh 免密登录vae服务器。以下展示表示配置免密登录成功。
+
+```shell
+osc@osc-ThinkPad-W520:~/.ssh$ ssh vae@10.9.11.21
+Welcome to Ubuntu 18.04.5 LTS (GNU/Linux 5.4.0-42-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+
+ * Canonical Livepatch is available for installation.
+   - Reduce system reboots and improve kernel security. Activate at:
+     https://ubuntu.com/livepatch
+
+2 个可升级软件包。
+0 个安全更新。
+
+有新版本“20.04.3 LTS”可供使用
+运行“do-release-upgrade”来升级到新版本。
+
+Your Hardware Enablement Stack (HWE) is supported until April 2023.
+Last login: Tue Aug 31 18:16:57 2021 from 10.9.11.209
+vae@ubuntu:~$ 
+
+```
+
+> 文件含义补充说明
+
+```shell
+    authorized_keys:存放远程免密登录的公钥,主要通过这个文件记录多台机器的公钥
+　　id_rsa : 生成的私钥文件
+　　id_rsa.pub ： 生成的公钥文件
+　　know_hosts : 已知的主机公钥清单
+
+　　　　如果希望ssh公钥生效需满足至少下面两个条件：
+
+　　　　　　1) .ssh目录的权限必须是700 
+　　　　　　2) .ssh/authorized_keys文件权限必须是600
+```
+
+## Postman客户端安装
 
 Postman 官网：https://www.getpostman.com
 Postman 下载：https://www.getpostman.com/apps
@@ -224,8 +425,6 @@ sudo update-alternatives --config java
 + 查看java版本，看看是否安装成功：
 
 `java -version`
-
-
 
 
 //这里是安装Elasticsearch的参考博客
