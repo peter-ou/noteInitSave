@@ -58,7 +58,7 @@
 
 # vscode 的终端设置和切换
 
-## 新版vscode配置git终端
+## 新版vscode-1.6.0配置git终端
 
 1,先打开配置文件
 <div align='center'><img src=./images/vsCode-MD/vsCode-MD_2021-09-03-14-55-22.png width='100%'/></div><br/>
