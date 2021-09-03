@@ -69,6 +69,7 @@
 4,cmd 和 bash 的终端切换
 
 <div align='center'><img src=./images/vsCode-MD/vsCode-MD_2021-02-20-15-43-52.png width='90%'/></div><br/>
+
 ```shell
 oushuncai@DESKTOP-0S8MN7B MINGW64 ~
 $ cmd
