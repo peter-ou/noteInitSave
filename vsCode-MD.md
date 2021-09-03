@@ -7,9 +7,9 @@
 
 [Paste Image 插件的GitHub地址](https://github.com/mushanshitiancai/vscode-paste-image)
 
-- 方式一： 工作区中找到.vscode下的setting.json 设置粘贴图片的路径参数
+- 方式一：设置 > 用户 > 工作区 中找到.vscode下的setting.json 设置粘贴图片的路径参数。
 
-```
+```shell
 {
     "pasteImage.insertPattern": "<div align='center'><img src=${imageFilePath} width='80%'/></div><br/>",
     "pasteImage.namePrefix": "${currentFileNameWithoutExt}_",
