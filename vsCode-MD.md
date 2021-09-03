@@ -81,5 +81,3 @@ C:\Users\oushuncai>bash
 oushuncai@DESKTOP-0S8MN7B MINGW64 ~
 $
 ```
-
-测试一下
