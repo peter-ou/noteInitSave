@@ -58,6 +58,54 @@
 
 # vscode 的终端设置和切换
 
+## 新版vscode配置git终端
+
+1,先打开配置文件
+<div align='center'><img src=./images/vsCode-MD/vsCode-MD_2021-09-03-14-55-22.png width='100%'/></div><br/>
+
+2, 在配置文件settings.json中输入
+
+```javascript
+"terminal.integrated.profiles.windows":{
+        "PowerShell": {
+            "source": "PowerShell",
+            "icon": "terminal-powershell"
+        },
+        "Command Prompt": {
+            "path": [
+                "${env:windir}\\Sysnative\\cmd.exe",
+                "${env:windir}\\System32\\cmd.exe"
+            ],
+            "args": [],
+            "icon": "terminal-cmd"
+        },
+        // "Git Bash": {
+        //    // "source":"Git Bash",
+        //     "path": "D:\\java_dev\\Git\\bin\\bash.exe",
+        //     // "args": [],
+        // },
+        "JavaScript Debug Terminal": {
+            // 自己的安装路径, 是bin下的bash.exe,别写错了
+            "path": "D:\\java_dev\\Git\\bin\\bash.exe",
+              // 使自定义命令的别名生效
+            "args": [
+                "-l"
+                ]
+        },
+    },
+    
+   // 下面这里的这个名称, 换成别的, 会提示有错误, 但是不影响使用
+   // 因为个人有强迫症, 看不得那个圆角提示
+    "terminal.integrated.defaultProfile.windows": "JavaScript Debug Terminal",
+        
+    // "git.path": "‪D:\\java_dev\\Git\\bin\\git.exe",
+    // "terminal.integrated.automationShell.windows": "D:\\java_dev\\Git\\bin\\bash.exe",
+    // "terminal.integrated.defaultProfile.windows": "Git Bash",
+    
+```
+
+## 旧版vscode配置git终端
+
 1,首先肯定是需要打开我们的vscode咯
 
 2,进入终端设置
@@ -81,4 +129,3 @@ C:\Users\oushuncai>bash
 oushuncai@DESKTOP-0S8MN7B MINGW64 ~
 $
 ```
-测试二下
