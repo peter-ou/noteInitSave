@@ -42,7 +42,7 @@ git config --global user.name "user.name"  ##回车
 //双引号中需要输入你的有效邮箱，比如“12131312@qq.com”
 git config --global user.email "yourmail@youremail.com.cn"  ##回车
 // 查看配置结果 
-git config –list  ##回车  
+git config --list  ##回车  
 ```
 5,查看密钥ssh keys 是否存在? 不存在则生成，存在则找到其位置。
 ```
