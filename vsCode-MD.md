@@ -129,3 +129,7 @@ C:\Users\oushuncai>bash
 oushuncai@DESKTOP-0S8MN7B MINGW64 ~
 $
 ```
+
+## 同步vscode的配置-通过GitHub
+
+1, 在vscode 中安装 Settings Sync 插件。后续操作可以百度。

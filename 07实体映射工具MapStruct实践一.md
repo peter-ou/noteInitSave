@@ -177,3 +177,42 @@ List<OrderExportRes> orderExportResEs = orderExportMapper.orderExportsToOrderExp
 
 + [mapstruct 高级用法自定义转换规则-参考案例](https://blog.csdn.net/sunboylife/article/details/115706803?utm_medium=distribute.pc_aggpage_search_result.none-task-blog-2~aggregatepage~first_rank_v2~rank_aggregation-1-115706803.pc_agg_rank_aggregation&utm_term=mapstruct+%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2&spm=1000.2123.3001.4430)
 + [mapstruct+lombok+validator，简化代码三剑客-参考案例](https://blog.csdn.net/MingLiang000/article/details/82726571?utm_medium=distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~default-18.base&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~default-18.base)
+
+## 在 jdk11 中的使用--待验证
+
+1，在pom.xml 文件中
+
+~~~xml
+
+  <properties>
+    <mapstruct.version>1.3.1.Final</mapstruct.version>
+    <maven.compiler.version>3.6.1</maven.compiler.version>
+  </properties>
+
+  <dependency>
+        <groupId>org.mapstruct</groupId>
+        <artifactId>mapstruct-processor</artifactId>
+        <version>${mapstruct.version}</version>
+        <scope>provided</scope>
+  </dependency>
+
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>${maven.compiler.version}</version>
+            <configuration>
+                <annotationProcessorPaths>
+                    <path>
+                        <groupId>org.mapstruct</groupId>
+                        <artifactId>mapstruct-processor</artifactId>
+                        <version>${mapstruct.version}</version>
+                    </path>
+                </annotationProcessorPaths>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+
+~~~
