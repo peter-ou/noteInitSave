@@ -1,93 +1,139 @@
 # spring原理学习-tuling-周瑜
 
 - [spring原理学习-tuling-周瑜](#spring原理学习-tuling-周瑜)
-  - [1、Spring底层核心原理解析](#1spring底层核心原理解析)
-    - [Spring中是如何创建一个对象？](#spring中是如何创建一个对象)
-    - [Bean的创建过程](#bean的创建过程)
-    - [推断构造方法](#推断构造方法)
-    - [AOP大致流程](#aop大致流程)
-    - [Spring事务](#spring事务)
-  - [2、手写模拟Spring底层原理](#2手写模拟spring底层原理)
-  - [3、Spring之底层架构核心概念解析](#3spring之底层架构核心概念解析)
-    - [BeanDefinition](#beandefinition)
-    - [BeanDefinitionReader](#beandefinitionreader)
-    - [AnnotatedBeanDefinitionReader](#annotatedbeandefinitionreader)
-    - [XmlBeanDefinitionReader](#xmlbeandefinitionreader)
-    - [ClassPathBeanDefinitionScanner](#classpathbeandefinitionscanner)
-    - [BeanFactory](#beanfactory)
-    - [ApplicationContext](#applicationcontext)
-    - [AnnotationConfigApplicationContext](#annotationconfigapplicationcontext)
-    - [ClassPathXmlApplicationContext](#classpathxmlapplicationcontext)
-    - [国际化](#国际化)
-    - [资源加载](#资源加载)
-    - [获取运行时环境](#获取运行时环境)
-    - [事件发布](#事件发布)
-    - [类型转化](#类型转化)
-    - [OrderComparator](#ordercomparator)
-    - [BeanPostProcessor](#beanpostprocessor)
-    - [BeanFactoryPostProcessor](#beanfactorypostprocessor)
-    - [FactoryBean](#factorybean)
-    - [ExcludeFilter和IncludeFilter](#excludefilter和includefilter)
-    - [MetadataReader、ClassMetadata、AnnotationMetadata](#metadatareaderclassmetadataannotationmetadata)
-  - [4、Spring之Bean生命周期源码解析（上）](#4spring之bean生命周期源码解析上)
-    - [Bean的生成过程](#bean的生成过程)
-    - [1. 生成BeanDefinition](#1-生成beandefinition)
-    - [2. 合并BeanDefinition](#2-合并beandefinition)
-    - [3. 加载类](#3-加载类)
-    - [4. 实例化前](#4-实例化前)
-    - [5.实例化](#5实例化)
-      - [5.1 Supplier创建对象](#51-supplier创建对象)
-      - [5.2 工厂方法创建对象](#52-工厂方法创建对象)
-      - [5.3 推断构造方法](#53-推断构造方法)
-    - [6. BeanDefinition的后置处理](#6-beandefinition的后置处理)
-    - [7. 实例化后](#7-实例化后)
-    - [8. 自动注入](#8-自动注入)
-    - [9. 处理属性](#9-处理属性)
-    - [10. 执行Aware](#10-执行aware)
-    - [11. 初始化前](#11-初始化前)
-    - [12. 初始化](#12-初始化)
-    - [13. 初始化后](#13-初始化后)
-    - [总结BeanPostProcessor](#总结beanpostprocessor)
-  - [5、Spring之Bean生命周期源码解析（下）](#5spring之bean生命周期源码解析下)
-    - [Bean的销毁过程](#bean的销毁过程)
-  - [6、Spring之依赖注入源码解析（上）](#6spring之依赖注入源码解析上)
-    - [Spring中到底有几种依赖注入的方式？](#spring中到底有几种依赖注入的方式)
-      - [手动注入](#手动注入)
-      - [自动注入](#自动注入)
-        - [XML的autowire自动注入](#xml的autowire自动注入)
-        - [@Autowired注解的自动注入](#autowired注解的自动注入)
-    - [寻找注入点](#寻找注入点)
-      - [static的字段或方法为什么不支持](#static的字段或方法为什么不支持)
-      - [桥接方法](#桥接方法)
-    - [注入点进行注入](#注入点进行注入)
-      - [字段注入](#字段注入)
-      - [Set方法注入](#set方法注入)
-  - [7、Spring之依赖注入源码解析（下）](#7spring之依赖注入源码解析下)
-    - [findAutowireCandidates()实现](#findautowirecandidates实现)
-    - [关于依赖注入中泛型注入的实现](#关于依赖注入中泛型注入的实现)
-    - [@Qualifier的使用](#qualifier的使用)
-    - [@Resource](#resource)
-  - [8、Spring之循环依赖底层源码解析](#8spring之循环依赖底层源码解析)
-    - [什么是循环依赖？](#什么是循环依赖)
-    - [Bean的生命周期](#bean的生命周期)
-    - [三级缓存](#三级缓存)
-    - [解决循环依赖思路分析](#解决循环依赖思路分析)
-    - [总结](#总结)
-      - [反向分析一下singletonFactories](#反向分析一下singletonfactories)
-    - [课上github上issue地址：](#课上github上issue地址)
-  - [9、Spring之推断构造方法源码解析](#9spring之推断构造方法源码解析)
-    - [推断构造方法大致流程](#推断构造方法大致流程)
-    - [源码思路](#源码思路)
-      - [autowireConstructor()](#autowireconstructor)
-    - [为什么分越少优先级越高？](#为什么分越少优先级越高)
-    - [@Bean的情况](#bean的情况)
-  - [10、Spring之启动过程源码解析](#10spring之启动过程源码解析)
-    - [前言分析](#前言分析)
-    - [BeanFactoryPostProcessor](#beanfactorypostprocessor-1)
-    - [BeanDefinitionRegistryPostProcessor](#beandefinitionregistrypostprocessor)
-    - [如何理解refresh()？](#如何理解refresh)
-    - [refresh()底层原理流程](#refresh底层原理流程)
-    - [Lifecycle的使用](#lifecycle的使用)
+	- [1、Spring底层核心原理解析](#1spring底层核心原理解析)
+		- [Spring中是如何创建一个对象？](#spring中是如何创建一个对象)
+		- [Bean的创建过程](#bean的创建过程)
+		- [推断构造方法](#推断构造方法)
+		- [AOP大致流程](#aop大致流程)
+		- [Spring事务](#spring事务)
+	- [2、手写模拟Spring底层原理](#2手写模拟spring底层原理)
+	- [3、Spring之底层架构核心概念解析](#3spring之底层架构核心概念解析)
+		- [BeanDefinition](#beandefinition)
+		- [BeanDefinitionReader](#beandefinitionreader)
+		- [AnnotatedBeanDefinitionReader](#annotatedbeandefinitionreader)
+		- [XmlBeanDefinitionReader](#xmlbeandefinitionreader)
+		- [ClassPathBeanDefinitionScanner](#classpathbeandefinitionscanner)
+		- [BeanFactory](#beanfactory)
+		- [ApplicationContext](#applicationcontext)
+		- [AnnotationConfigApplicationContext](#annotationconfigapplicationcontext)
+		- [ClassPathXmlApplicationContext](#classpathxmlapplicationcontext)
+		- [国际化](#国际化)
+		- [资源加载](#资源加载)
+		- [获取运行时环境](#获取运行时环境)
+		- [事件发布](#事件发布)
+		- [类型转化](#类型转化)
+		- [OrderComparator](#ordercomparator)
+		- [BeanPostProcessor](#beanpostprocessor)
+		- [BeanFactoryPostProcessor](#beanfactorypostprocessor)
+		- [FactoryBean](#factorybean)
+		- [ExcludeFilter和IncludeFilter](#excludefilter和includefilter)
+		- [MetadataReader、ClassMetadata、AnnotationMetadata](#metadatareaderclassmetadataannotationmetadata)
+	- [4、Spring之Bean生命周期源码解析（上）](#4spring之bean生命周期源码解析上)
+		- [Bean的生成过程](#bean的生成过程)
+		- [1. 生成BeanDefinition](#1-生成beandefinition)
+		- [2. 合并BeanDefinition](#2-合并beandefinition)
+		- [3. 加载类](#3-加载类)
+		- [4. 实例化前](#4-实例化前)
+		- [5.实例化](#5实例化)
+			- [5.1 Supplier创建对象](#51-supplier创建对象)
+			- [5.2 工厂方法创建对象](#52-工厂方法创建对象)
+			- [5.3 推断构造方法](#53-推断构造方法)
+		- [6. BeanDefinition的后置处理](#6-beandefinition的后置处理)
+		- [7. 实例化后](#7-实例化后)
+		- [8. 自动注入](#8-自动注入)
+		- [9. 处理属性](#9-处理属性)
+		- [10. 执行Aware](#10-执行aware)
+		- [11. 初始化前](#11-初始化前)
+		- [12. 初始化](#12-初始化)
+		- [13. 初始化后](#13-初始化后)
+		- [总结BeanPostProcessor](#总结beanpostprocessor)
+	- [5、Spring之Bean生命周期源码解析（下）](#5spring之bean生命周期源码解析下)
+		- [Bean的销毁过程](#bean的销毁过程)
+	- [6、Spring之依赖注入源码解析（上）](#6spring之依赖注入源码解析上)
+		- [Spring中到底有几种依赖注入的方式？](#spring中到底有几种依赖注入的方式)
+			- [手动注入](#手动注入)
+			- [自动注入](#自动注入)
+				- [XML的autowire自动注入](#xml的autowire自动注入)
+				- [@Autowired注解的自动注入](#autowired注解的自动注入)
+		- [寻找注入点](#寻找注入点)
+			- [static的字段或方法为什么不支持](#static的字段或方法为什么不支持)
+			- [桥接方法](#桥接方法)
+		- [注入点进行注入](#注入点进行注入)
+			- [字段注入](#字段注入)
+			- [Set方法注入](#set方法注入)
+	- [7、Spring之依赖注入源码解析（下）](#7spring之依赖注入源码解析下)
+		- [findAutowireCandidates()实现](#findautowirecandidates实现)
+		- [关于依赖注入中泛型注入的实现](#关于依赖注入中泛型注入的实现)
+		- [@Qualifier的使用](#qualifier的使用)
+		- [@Resource](#resource)
+	- [8、Spring之循环依赖底层源码解析](#8spring之循环依赖底层源码解析)
+		- [什么是循环依赖？](#什么是循环依赖)
+		- [Bean的生命周期](#bean的生命周期)
+		- [三级缓存](#三级缓存)
+		- [解决循环依赖思路分析](#解决循环依赖思路分析)
+		- [总结](#总结)
+			- [反向分析一下singletonFactories](#反向分析一下singletonfactories)
+		- [课上github上issue地址：](#课上github上issue地址)
+	- [9、Spring之推断构造方法源码解析](#9spring之推断构造方法源码解析)
+		- [spring选择构造方法的4种方式](#spring选择构造方法的4种方式)
+		- [推断构造方法大致流程](#推断构造方法大致流程)
+		- [源码思路](#源码思路)
+			- [autowireConstructor()](#autowireconstructor)
+		- [为什么分越少优先级越高？](#为什么分越少优先级越高)
+		- [@Bean的情况](#bean的情况)
+	- [10、Spring之启动过程源码解析](#10spring之启动过程源码解析)
+		- [前言分析](#前言分析)
+		- [BeanFactoryPostProcessor](#beanfactorypostprocessor-1)
+		- [BeanDefinitionRegistryPostProcessor](#beandefinitionregistrypostprocessor)
+		- [如何理解refresh()？](#如何理解refresh)
+		- [refresh()底层原理流程](#refresh底层原理流程)
+		- [Lifecycle的使用](#lifecycle的使用)
+	- [11、Spring之配置类解析与扫描过程源码解析](#11spring之配置类解析与扫描过程源码解析)
+		- [执行BeanFactoryPostProcessor](#执行beanfactorypostprocessor)
+		- [解析配置类](#解析配置类)
+			- [解析配置类--总结一下](#解析配置类--总结一下)
+	- [12、Spring之整合Mybatis底层源码解析](#12spring之整合mybatis底层源码解析)
+		- [1.3.2版本](#132版本)
+		- [2.0.5版本](#205版本)
+	- [13、Spring之AOP底层源码解析（上）](#13spring之aop底层源码解析上)
+		- [对Spring AOP的理解](#对spring-aop的理解)
+		- [AOP中的概念](#aop中的概念)
+		- [Advice的分类](#advice的分类)
+		- [Advice在Spring AOP中对应API](#advice在spring-aop中对应api)
+		- [Spring AOP中的Advisor](#spring-aop中的advisor)
+		- [创建代理对象的方式](#创建代理对象的方式)
+			- [ProxyFactoryBean](#proxyfactorybean)
+			- [BeanNameAutoProxyCreator](#beannameautoproxycreator)
+			- [DefaultAdvisorAutoProxyCreatorDemo](#defaultadvisorautoproxycreatordemo)
+		- [TargetSource的使用](#targetsource的使用)
+	- [14、Spring之AOP底层源码解析（下）](#14spring之aop底层源码解析下)
+		- [使用ProxyFactory通过编程创建AOP代理](#使用proxyfactory通过编程创建aop代理)
+			- [ProxyFactory的工作原理](#proxyfactory的工作原理)
+			- [JdkDynamicAopProxy创建代理对象过程](#jdkdynamicaopproxy创建代理对象过程)
+			- [JdkDynamicAopProxy创建的代理对象执行过程](#jdkdynamicaopproxy创建的代理对象执行过程)
+			- [ObjenesisCglibAopProxy创建代理对象过程](#objenesiscglibaopproxy创建代理对象过程)
+			- [ObjenesisCglibAopProxy创建的代理对象执行过程](#objenesiscglibaopproxy创建的代理对象执行过程)
+		- [使用“自动代理（autoproxy）”功能](#使用自动代理autoproxy功能)
+			- [BeanNameAutoProxyCreator](#beannameautoproxycreator-1)
+			- [DefaultAdvisorAutoProxyCreator](#defaultadvisorautoproxycreator)
+		- [@EnableAspectJAutoProxy](#enableaspectjautoproxy)
+		- [注解和源码对应关系](#注解和源码对应关系)
+		- [Spring中AOP原理流程图](#spring中aop原理流程图)
+		- [Introduction](#introduction)
+	- [15、Spring之事务底层源码解析](#15spring之事务底层源码解析)
+		- [基本原理](#基本原理)
+		- [开始事务](#开始事务)
+		- [AutoProxyRegistrar](#autoproxyregistrar)
+		- [ProxyTransactionManagementConfiguration](#proxytransactionmanagementconfiguration)
+		- [TransactionInterceptor执行流程:](#transactioninterceptor执行流程)
+		- [简单版流程](#简单版流程)
+		- [传播机制](#传播机制)
+		- [举例子](#举例子)
+			- [情况1](#情况1)
+			- [情况2](#情况2)
+			- [情况3](#情况3)
+			- [情况4](#情况4)
 
 
 
@@ -2209,9 +2255,15 @@ https://github.com/spring-projects/spring-framework/issues/13117
 
 ## 9、Spring之推断构造方法源码解析
 
+### spring选择构造方法的4种方式
+
+<div align='center'><img src=./images/spring-原理-tuling5zy/spring-原理-tuling5zy_2021-09-23-09-54-57.png width='100%'/></div><br/>
+
 ### 推断构造方法大致流程
 
-**推断构造方法流程图**: https://www.processon.com/view/link/5f97bc717d9c0806f291d7eb
+**推断构造方法流程图**:
+
+ https://www.processon.com/view/link/5f97bc717d9c0806f291d7eb
 
 <div align='center'><img src=./images/spring-原理-tuling5zy/spring-原理-tuling5zy_2021-09-22-17-01-05.png width='100%'/></div><br/>
 
@@ -2601,3 +2653,683 @@ public class ZhouyuLifecycle implements SmartLifecycle {
 	}
 }
 ```
+## 11、Spring之配置类解析与扫描过程源码解析
+
+### 执行BeanFactoryPostProcessor
+
+1. 执行通过ApplicationContext添加进来的BeanDefinitionRegistryPostProcessor的postProcessBeanDefinitionRegistry()方法
+2. 执行BeanFactory中实现了PriorityOrdered接口的BeanDefinitionRegistryPostProcessor的postProcessBeanDefinitionRegistry()方法
+3. 执行BeanFactory中实现了Ordered接口的BeanDefinitionRegistryPostProcessor的postProcessBeanDefinitionRegistry()方法
+4. 执行BeanFactory中其他的BeanDefinitionRegistryPostProcessor的postProcessBeanDefinitionRegistry()方法
+5. 执行上面所有的BeanDefinitionRegistryPostProcessor的postProcessBeanFactory()方法
+6. 执行通过ApplicationContext添加进来的BeanFactoryPostProcessor的postProcessBeanFactory()方法
+7. 执行BeanFactory中实现了PriorityOrdered接口的BeanFactoryPostProcessor的postProcessBeanFactory()方法
+8. 执行BeanFactory中实现了Ordered接口的BeanFactoryPostProcessor的postProcessBeanFactory()方法
+9. 执行BeanFactory中其他的BeanFactoryPostProcessor的postProcessBeanFactory()方法
+
+### 解析配置类
+
+解析配置类流程图：
+
+https://www.processon.com/view/link/5f9512d5e401fd06fda0b2dd
+
+<div align='center'><img src=./images/spring-原理-tuling5zy/spring-原理-tuling5zy_2021-09-23-10-20-36.png width='100%'/></div><br/>
+
+1. 在启动Spring时，需要传入一个AppConfig.class给ApplicationContext，ApplicationContext会根据AppConfig类封装为一个BeanDefinition，这种BeanDefinition我们把它称为配置类BeanDefinition。
+2. ConfigurationClassPostProcessor中会把配置类BeanDefinition取出来
+3. 构造一个ConfigurationClassParser用来解析配置类BeanDefinition，并且会生成一个配置类对象ConfigurationClass
+4. 如果配置类上存在@Component注解，那么**解析配置类中的内部类（这里有递归，如果内部类也是配置类的话）**
+5. 如果配置类上存在@PropertySource注解，那么则解析该注解，并得到PropertySource对象，并添加到environment中去
+6. 如果配置类上存在@ComponentScan注解，那么则解析该注解，进行扫描，扫描得到一系列的BeanDefinition对象，然后判断这些BeanDefinition是不是也是配置类BeanDefinition（只要存在@Component注解就是配置类，所以基本上扫描出来的都是配置类），如果是则继续解析该配置类，（**也有递归**），并且会生成对应的ConfigurationClass
+7. 如果配置类上存在@Import注解，那么则判断Import的类的类型：
+
+		a.如果是ImportSelector，那么调用执行selectImports方法得到类名，然后在把这个类当做配置类进行解析（也是递归）
+		b.如果是ImportBeanDefinitionRegistrar，那么则生成一个ImportBeanDefinitionRegistrar实例对象，并添加到配置类对象中（ConfigurationClass）的importBeanDefinitionRegistrars属性中。
+
+8.  如果配置类上存在@ImportResource注解，那么则把导入进来的资源路径存在配置类对象中的**importedResources**属性中。
+9. 如果配置类中存在@Bean的方法，那么则把这些方法封装为BeanMethod对象，并添加到配置类对象中的**beanMethods**属性中。
+10. 如果配置类实现了某些接口，则看这些接口内是否定义了@Bean的默认方法
+11. 如果配置类有父类，则把父类当做配置类进行解析
+12. AppConfig这个配置类会对应一个ConfigurationClass，同时在解析的过程中也会生成另外的一些ConfigurationClass，接下来就利用reader来进一步解析ConfigurationClass
+
+		a. 如果ConfigurationClass是通过@Import注解导入进来的，则把这个类生成一个BeanDefinition，同时解析这个类上@Scope,@Lazy等注解信息，并注册BeanDefinition
+		b. 如果ConfigurationClass中存在一些BeanMethod，也就是定义了一些@Bean，那么则解析这些@Bean，并生成对应的BeanDefinition，并注册
+		c. 如果ConfigurationClass中导入了一些资源文件，比如xx.xml，那么则解析这些xx.xml文件，得到并注册BeanDefinition
+		d. 如果ConfigurationClass中导入了一些ImportBeanDefinitionRegistrar，那么则执行对应的registerBeanDefinitions进行BeanDefinition的注册
+
+#### 解析配置类--总结一下 
+
+1. 解析AppConfig类，生成对应的ConfigurationClass
+2. 再扫描，扫描到的类都会生成对应的BeanDefinition，并且同时这些类也是ConfigurationClass
+3. 再解析ConfigurationClass的其他信息，比如@ImportResource注解的处理，@Import注解的处理，@Bean注解的处理
+## 12、Spring之整合Mybatis底层源码解析
+### 1.3.2版本
+
+1. 通过@MapperScan导入了MapperScannerRegistrar类
+2. MapperScannerRegistrar类实现了ImportBeanDefinitionRegistrar接口，所以Spring在启动时会调用MapperScannerRegistrar类中的registerBeanDefinitions方法
+3. 在registerBeanDefinitions方法中定义了一个ClassPathMapperScanner对象，用来扫描mapper
+4. 设置ClassPathMapperScanner对象可以扫描到接口，因为在Spring中是不会扫描接口的
+5. 同时因为ClassPathMapperScanner中重写了isCandidateComponent方法，导致isCandidateComponent只会认为接口是备选者Component
+6. 通过利用Spring的扫描后，会把接口扫描出来并且得到对应的BeanDefinition
+7. 接下来把扫描得到的BeanDefinition进行修改，把BeanClass修改为MapperFactoryBean，把AutowireMode修改为byType
+8. 扫描完成后，Spring就会基于BeanDefinition去创建Bean了，相当于每个Mapper对应一个FactoryBean（单例的）
+9. 在MapperFactoryBean中的getObject方法中，调用了getSqlSession()去得到一个sqlSession对象，然后根据对应的Mapper接口生成一个代理对象
+10. sqlSession对象是Mybatis中的，一个sqlSession对象需要SqlSessionFactory来产生
+11. MapperFactoryBean的AutowireMode为byType，所以Spring会自动调用set方法，有两个set方法，一个setSqlSessionFactory，一个setSqlSessionTemplate，而这两个方法执行的前提是根据方法参数类型能找到对应的bean，所以Spring容器中要存在SqlSessionFactory类型的bean或者SqlSessionTemplate类型的bean。
+12. 如果你定义的是一个SqlSessionFactory类型的bean，那么最终也会被包装为一个SqlSessionTemplate对象，并且赋值给sqlSession属性
+13. 而在SqlSessionTemplate类中就存在一个getMapper方法，这个方法中就会利用SqlSessionFactory来生成一个代理对象
+
+### 2.0.5版本
+
+1. 通过@MapperScan导入了MapperScannerRegistrar类
+2. MapperScannerRegistrar类实现了ImportBeanDefinitionRegistrar接口，所以Spring在启动时会调用MapperScannerRegistrar类中的registerBeanDefinitions方法
+3. **在registerBeanDefinitions方法中生成了一个MapperScannerConfigurer类型的BeanDefinition**
+4. **而MapperScannerConfigurer实现了实现了BeanDefinitionRegistryPostProcessor接口，所以Spring在启动过程中时会调用它的postProcessBeanDefinitionRegistry()方法**
+5. 在postProcessBeanDefinitionRegistry方法中会生成一个ClassPathMapperScanner对象，然后进行扫描
+6. 后续的逻辑和1.3.2版本一样。
+
+带来的好处是，可以不使用@MapperScan注解，而可以直接定义一个Bean，比如：
+
+```java
+@Bean
+public MapperScannerConfigurer mapperScannerConfigurer() {
+	MapperScannerConfigurer mapperScannerConfigurer = new MapperScannerConfigurer();
+	mapperScannerConfigurer.setBasePackage("com.luban");
+	return mapperScannerConfigurer;
+}
+```
+
+## 13、Spring之AOP底层源码解析（上）
+
+### 对Spring AOP的理解
+
+OOP表示面向对象编程，是一种思想，没有说明到底该如何实现。
+AOP表示面向切面编程，也是一种思想，也没有说明到底该如何实现，也没有说明使用什么技术来实现。
+
+不过随着业界的不断发展，对于AOP的实现抽象出来了几个概念，形成了规范，这几个概念分别是：
+1. Aspect：表示切面
+2. Joint point：表示连接点
+3. Pointcut：表示切点
+4. Advice：表示通知
+5. 等等...，后面详细讲
+
+而目前也有一些项目或框架真正实现了AOP，比如：
+1. AspectJ 
+2. JBoss 4.0
+3. aspectwerkz
+4. spring
+
+这些都实现了AOP，不过实现的最完整的当属AspectJ。并且这些项目和框架实现AOP的底层技术是不一样的：
+1. AspectJ 是在编译时修改字节码，所以如果用AspectJ ，需要单独的编译器
+2. JBoss 4.0是利用的JDK动态代理
+3. aspectwerkz和spring用的是运行是修改字节码，比如Spring中用的cglib技术（当然Spring中也使用了JDK动态代理）
+
+对于Spring而言，它并没有实现全部的AOP功能，但是已经实现了大部分了（对于企业而言已经足够用了），同时Spring也利用了AspectJ中关于Advice、Pointcut等概念的相关源码实现，比如Advice接口，@Pointcut注解等，这些都是AspectJ中所提供的，Spring直接拿来用了，但是对于这些接口和注解的底层实现还是有Spring自己实现的，负责实现的模块就叫做Spring AOP。
+
+所以Spring AOP和AspectJ并不是竞争关系，而且Spring AOP除开利用动态代理实现了AOP之外，还有一个目的就是将AOP和Spring IOC结合起来，这是Spring AOP另外的一个目的。
+
+### AOP中的概念
+
+首先关于AOP中的概念本身是比较难理解的，Spring官网上是这么说的：
+
+```java
+Let us begin by defining some central AOP concepts and terminology. These terms are not Spring-specific. Unfortunately, AOP terminology is not particularly intuitive. However, it would be even more confusing if Spring used its own terminology
+```
+意思是，AOP中的这些概念不是Spring特有的，不幸的是，AOP中的概念不是特别直观的，但是，如果Spring重新定义自己的那可能会导致更加混乱
+
+1. Aspect：表示切面，比如被@Aspect注解的类就是切面，可以在切面中去定义Pointcut、Advice等等
+2. Join point：表示连接点，表示一个程序在执行过程中的一个点，比如一个方法的执行，比如一个异常的处理，在Spring AOP中，一个连接点通常表示一个方法的执行。
+3. Advice：表示通知，表示在一个特定连接点上所采取的动作。Advice分为不同的类型，后面详细讨论，在很多AOP框架中，包括Spring，会用Interceptor拦截器来实现Advice，并且在连接点周围维护一个Interceptor链
+4. Pointcut：表示切点，用来匹配一个或多个连接点，Advice与切点表达式是关联在一起的，Advice将会执行在和切点表达式所匹配的连接点上
+5. Introduction：可以使用@DeclareParents来给所匹配的类添加一个接口，并指定一个默认实现
+6. Target object：表示被嵌入了一个或多个切面的对象，也叫做“advised object”
+7. AOP proxy：表示代理工厂，用来创建代理对象的，在Spring Framework中，要么是JDK动态代理，要么是CGLIB代理
+8. Weaving：表示织入，表示链接切面和应用程序的类或对象来创建一个代理对象，这个动作可以发生在编译时期（比如Aspejctj），或者运行时，比如Spring AOP
+### Advice的分类
+1. Before Advice：方法之前执行
+2. After returning advice：方法return后执行
+3. After throwing advice：方法抛异常后执行
+4. After (finally) advice：方法执行完finally之后执行，这是最后的，比return更后
+5. Around advice：这是功能最强大的Advice，可以自定义执行顺序
+
+看课上给的代码例子将一目了然
+### Advice在Spring AOP中对应API
+
+上面介绍的5种Advice类型，在Aspectj和Spring AOP都有对应的使用API
+
+比如，在AspectJ中就可以通过 以下五个注解来进行对应的使用：
+1. @Before
+2. @AfterReturning
+3. @AfterThrowing
+4. @After
+5. @Around
+
+而Spring AOP也支持这5个注解，不过Spring AOP仅仅只是支持这5个注解，底层实现完全是有自己实现的（动态代理），没有用到Aspectj的底层实现（编译期），
+同时Spring AOP也提供对于这5种Advice的API实现，分别时：
+1. 接口MethodBeforeAdvice，继承了接口BeforeAdvice
+2. 接口AfterReturningAdvice
+3. 接口ThrowsAdvice
+4. 接口AfterAdvice
+5. 接口MethodInterceptor
+
+这六个接口的关系如下:
+
+<div align='center'><img src=./images/spring-原理-tuling5zy/spring-原理-tuling5zy_2021-09-23-10-54-14.png width='100%'/></div><br/>
+
+有两这5个接口，我们在使用Spring AOP时，可以直接通过实现这个几个接口来提供对应的不同类型的Advice，但是其中AfterAdvice是不能用的，它仅仅只是一个标记接口，如果要实现在finally之后进行切面逻辑，那么就得用MethodInterceptor来实现。
+
+需要注意的是，我们现在看到的都是接口，而上面我们也说了Spring AOP中对Aspectj中的@Before等注解也是实现了，各个注解所对应的实现类为：
+1. @Before：AspectJMethodBeforeAdvice，利用的是MethodBeforeAdvice，跟MethodInterceptor没关系
+2. @AfterReturning：AspectJAfterReturningAdvice，利用的是AfterReturningAdvice，跟MethodInterceptor没关系
+3. @AfterThrowing：AspectJAfterThrowingAdvice，利用的是MethodInterceptor，不过也实现了AfterAdvice这个标记接口
+4. @After：AspectJAfterAdvice，利用的是MethodInterceptor，不过也实现了AfterAdvice这个标记接口
+5. @Around：AspectJAroundAdvice，利用的是MethodInterceptor
+
+其中@After和@AfterThrowing对应的实现也是采用了MethodInterceptor来实现的。
+### Spring AOP中的Advisor
+
+Advisor这个概念是Spring AOP中所特有的，是在Aspectj中不存在的，一个Advisor相当于一个小型的切面，特点在于它只有一个单一的Advice和所关联的一个切点，DefaultPointcutAdvisor是最为通用的Advisor实现类。
+
+### 创建代理对象的方式
+#### ProxyFactoryBean
+
+```java
+@Bean
+public ProxyFactoryBean userService(){
+	UserService userService = new UserService();
+	
+    ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
+	proxyFactoryBean.setProxyTargetClass(true);
+	proxyFactoryBean.setTarget(userService);
+	proxyFactoryBean.setInterceptorNames("zhouyuAroundAdvise");
+	return proxyFactoryBean;
+}
+```
+通过这种方法来定义一个UserService的Bean，并且是经过了AOP的。但是这种方式只能针对某一个Bean。
+#### BeanNameAutoProxyCreator
+
+```java
+@Bean
+public BeanNameAutoProxyCreator beanNameAutoProxyCreator() {
+	BeanNameAutoProxyCreator beanNameAutoProxyCreator = new BeanNameAutoProxyCreator();
+	beanNameAutoProxyCreator.setBeanNames("userSe*");
+	beanNameAutoProxyCreator.setInterceptorNames("zhouyuAroundAdvise");
+	beanNameAutoProxyCreator.setProxyTargetClass(true);
+
+    return beanNameAutoProxyCreator;
+}
+```
+通过BeanNameAutoProxyCreator可以对批量的Bean进行AOP
+#### DefaultAdvisorAutoProxyCreatorDemo
+
+```java
+@Bean
+public DefaultPointcutAdvisor defaultPointcutAdvisor(){
+	NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
+	pointcut.addMethodName("test");
+
+    DefaultPointcutAdvisor defaultPointcutAdvisor = new DefaultPointcutAdvisor();
+	defaultPointcutAdvisor.setPointcut(pointcut);
+	defaultPointcutAdvisor.setAdvice(new ZhouyuAfterReturningAdvise());
+
+    return defaultPointcutAdvisor;
+}
+
+@Bean
+public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
+	
+    DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
+	defaultAdvisorAutoProxyCreator.setAdvisorBeanNamePrefix("defaultPoin");
+	defaultAdvisorAutoProxyCreator.setProxyTargetClass(true);
+
+	return defaultAdvisorAutoProxyCreator;
+}
+```
+通过DefaultAdvisorAutoProxyCreator可以直接匹配多个Advisor，而每个Advisor中可以定义切点以及Advice，所以更灵活。
+
+### TargetSource的使用
+
+在我们日常的AOP中，被代理对象就是Bean对象，是有BeanFactory给我们创建出来的，但是Spring AOP中提供了TargetSource机制，可以让我们用来自定义逻辑来创建被代理对象。
+
+```java
+@Bean
+public CommonsPool2TargetSource targetSource(){
+	CommonsPool2TargetSource targetSource = new CommonsPool2TargetSource();
+	targetSource.setTargetBeanName("userServiceTarget");
+	targetSource.setMaxSize(2);
+	return targetSource;
+}
+```
+比如上面用到的CommonsPool2TargetSource就是一个targetSource，它表示被代理对象是两个userServiceTarget，具体可以看课上对于这块的演示。
+
+IDEA中使用Aspectj：https://blog.csdn.net/gavin_john/article/details/80156963
+
+## 14、Spring之AOP底层源码解析（下）
+### 使用ProxyFactory通过编程创建AOP代理
+
+定义一个MyAdvisor
+
+```java
+public class MyAdvisor implements PointcutAdvisor {
+
+	@Override
+	public Pointcut getPointcut() {
+		NameMatchMethodPointcut methodPointcut = new NameMatchMethodPointcut();
+		methodPointcut.addMethodName("test");
+		return methodPointcut;
+	}
+
+	@Override
+	public Advice getAdvice() {
+		MethodBeforeAdvice methodBeforeAdvice = new MethodBeforeAdvice() {
+			@Override
+			public void before(Method method, Object[] args, Object target) throws Throwable {
+				System.out.println("执行方法前"+method.getName());
+			}
+		};
+
+		return methodBeforeAdvice;
+	}
+
+	@Override
+	public boolean isPerInstance() {
+		return false;
+	}
+}
+```
+定义一个UserService
+
+```java
+public class UserService {
+
+	public void test() {
+		System.out.println("111");
+	}
+}
+```
+
+```java
+ProxyFactory factory = new ProxyFactory();
+factory.setTarget(new UserService());
+factory.addAdvisor(new MyAdvisor());
+UserService userService = (UserService) factory.getProxy();
+userService.test();
+```
+
+#### ProxyFactory的工作原理
+
+ProxyFactory就是一个代理对象生产工厂，在生成代理对象之前需要对代理工厂进行配置。
+
+ProxyFactory在生成代理对象之前需要决定到底是使用JDK动态代理还是CGLIB技术：
+
+```java
+// config就是ProxyFactory对象
+
+// optimize为true,或proxyTargetClass为true,或用户没有给ProxyFactory对象添加interface
+if (config.isOptimize() || config.isProxyTargetClass() || hasNoUserSuppliedProxyInterfaces(config)) {
+	Class<?> targetClass = config.getTargetClass();
+	if (targetClass == null) {
+		throw new AopConfigException("TargetSource cannot determine target class: " +
+				"Either an interface or a target is required for proxy creation.");
+	}
+    // targetClass是接口，直接使用Jdk动态代理
+	if (targetClass.isInterface() || Proxy.isProxyClass(targetClass)) {
+		return new JdkDynamicAopProxy(config);
+	}
+    // 使用Cglib
+	return new ObjenesisCglibAopProxy(config);
+}
+else {
+    // 使用Jdk动态代理
+	return new JdkDynamicAopProxy(config);
+}
+```
+#### JdkDynamicAopProxy创建代理对象过程
+
+1. 获取生成代理对象所需要实现的接口集合
+
+		a. 获取通过ProxyFactory.addInterface()所添加的接口，如果没有通过ProxyFactory.addInterface()添加接口，那么则看ProxyFactory.setTargetClass()所设置的targetClass是不是一个接口，把接口添加到结果集合中
+		b. 同时把SpringProxy、Advised、DecoratingProxy这几个接口也添加到结果集合中去
+
+2. 确定好要代理的集合之后，就利用Proxy.newProxyInstance()生成一个代理对象
+
+#### JdkDynamicAopProxy创建的代理对象执行过程
+
+1. 如果通过ProxyFactory.setExposeProxy()把exposeProxy设置为了true，那么则把代理对象设置到一个ThreadLocal（currentProxy）中去。
+2. 获取通过ProxyFactory所设置的target，如果设置的是targetClass，那么target将为null
+3. 根据当前所调用的方法对象寻找ProxyFactory中所添加的并匹配的Advisor，并且把Advisor封装为MethodInterceptor返回，得到MethodInterceptor链叫做chain
+4. 如果chain为空，则直接执行target对应的当前方法，如果target为null会报错
+5. 如果chain不为空，则会依次执行chain中的MethodInterceptor
+		
+		a. 如果当前MethodInterceptor是MethodBeforeAdviceInterceptor，那么则先执行Advisor中所advice的before()方法，然后执行下一个MethodInterceptor
+		b. 如果当前MethodInterceptor是AfterReturningAdviceInterceptor，那么则先执行下一个MethodInterceptor，拿到返回值之后，再执行Advisor中所advice的afterReturning()方法
+
+#### ObjenesisCglibAopProxy创建代理对象过程
+
+1. 创建Enhancer
+2. 设置Enhancer的superClass为通过ProxyFactory.setTarget()所设置的对象的类
+3. 设置Enhancer的interfaces为通过ProxyFactory.addInterface()所添加的接口，以及SpringProxy、Advised接口
+4. 设置Enhancer的Callbacks为DynamicAdvisedInterceptor
+5. 最后通过Enhancer创建一个代理对象
+
+#### ObjenesisCglibAopProxy创建的代理对象执行过程
+
+执行过程主要就看DynamicAdvisedInterceptor中的实现，执行逻辑和JdkDynamicAopProxy中是一样的。
+
+### 使用“自动代理（autoproxy）”功能
+
+"自动代理"表示，只需要在Spring中添加某个Bean，这个Bean是一个BeanPostProcessor，那么Spring在每创建一个Bean时，都会经过这个BeanPostProcessor的判断，去判断当前正在创建的这个Bean是不是需要进行AOP。
+
+我们可以在项目中定义很多个Advisor，定义方式有两种：
+1. 通过实现PointcutAdvisor接口
+2. 通过@Aspect、@Pointcut、@Before等注解
+
+在创建某个Bean时，会根据当前这个Bean的信息，比如对应的类，以及当前Bean中的方法信息，去和定义的所有Advisor进行匹配，如果匹配到了其中某些Advisor，那么就会把这些Advisor给找出来，并且添加到ProxyFactory中去，在利用ProxyFactory去生成代理对象
+
+#### BeanNameAutoProxyCreator
+
+```java
+@Bean
+public BeanNameAutoProxyCreator creator(){
+	BeanNameAutoProxyCreator beanNameAutoProxyCreator = new BeanNameAutoProxyCreator();
+	beanNameAutoProxyCreator.setBeanNames("userService");  
+	beanNameAutoProxyCreator.setInterceptorNames("myAdvisor");
+	return beanNameAutoProxyCreator;
+}
+```
+定义的这个bean，相当于一个“自动代理”器，有了这个Bean之后，可以自动的对setBeanNames中所对应的bean进行代理，代理逻辑为所设置的interceptorNames
+
+#### DefaultAdvisorAutoProxyCreator
+
+**DefaultAdvisorAutoProxyCreator**这个更加强大，只要添加了这个Bean，它就会自动识别所有的Advisor中的PointCut进行代理
+
+<div align='center'><img src=./images/spring-原理-tuling5zy/spring-原理-tuling5zy_2021-09-23-11-10-18.png width='100%'/></div><br/>
+
+**AbstractAutoProxyCreator**实现了SmartInstantiationAwareBeanPostProcessor接口，是一个BeanPostProcessor
+1. 在某个Bean**实例化之前**，查看该AbstractAutoProxyCreator中是不是设置了CustomTargetSource，如果设置了就查看当前Bean是不是需要创建一个TargetSource， 如果需要就会创建一个TargetSource对象，然后进行AOP创建一个代理对象，并返回该代理对象
+2. 如果某个Bean出现了循环依赖，那么会利用getEarlyBeanReference()方法提前进行AOP
+3. 在某个Bean**初始化之后**，会调用wrapIfNecessary()方法进行AOP
+4. 在这个类中提供了一个**抽象方法**：getAdvicesAndAdvisorsForBean()，表示对于某个Bean匹配了哪些Advices和Advisors
+
+**AbstractAdvisorAutoProxyCreator**继承了AbstractAutoProxyCreator，AbstractAdvisorAutoProxyCreator中实现了getAdvicesAndAdvisorsForBean()方法，实现逻辑为：
+1. 调用findEligibleAdvisors()
+
+		a. 调用findCandidateAdvisors，得到所有Advisor类型的Bean
+		b. 按当前正在进行Bean的生命周期的Bean进行过滤
+
+### @EnableAspectJAutoProxy
+
+这个注解主要是添加了一个AnnotationAwareAspectJAutoProxyCreator类型的BeanDefinition
+
+<div align='center'><img src=./images/spring-原理-tuling5zy/spring-原理-tuling5zy_2021-09-23-11-17-49.png width='100%'/></div><br/>
+
+**AspectJAwareAdvisorAutoProxyCreator**继承了AbstractAdvisorAutoProxyCreator，重写了shouldSkip(Class<?> beanClass, String beanName)方法，表示某个bean需不需要进行AOP，在shouldSkip()方法中：
+1. 拿到所有的Advisor
+2. 遍历所有的Advisor，如果当前bean是AspectJPointcutAdvisor，那么则跳过
+
+**AnnotationAwareAspectJAutoProxyCreator**继承了AspectJAwareAdvisorAutoProxyCreator，重写了findCandidateAdvisors()方法，它即可以找到Advisor类型的bean，也能把所有@Aspect注解标注的类扫描出来并生成Advisor
+
+### 注解和源码对应关系
+
+1. @Before对应的是AspectJMethodBeforeAdvice，直接实现MethodBeforeAdvice，在进行动态代理时会把AspectJMethodBeforeAdvice转成MethodBeforeAdviceInterceptor，也就转变成了MethodBeforeAdviceInterceptor
+
+		先执行advice对应的方法
+		再执行MethodInvocation的proceed()，会执行下一个Interceptor，如果没有下一个Interceptor了，会执行target对应的方法
+
+2. @After对应的是AspectJAfterAdvice，直接实现了MethodInterceptor
+
+		先执行MethodInvocation的proceed()，会执行下一个Interceptor，如果没有下一个Interceptor了，会执行target对应的方法
+		再执行advice对应的方法
+
+3. @Around对应的是AspectJAroundAdvice，直接实现了MethodInterceptor
+
+		直接执行advice对应的方法
+
+4. @AfterThrowing对应的是AspectJAfterThrowingAdvice，直接实现了MethodInterceptor
+
+		先执行MethodInvocation的proceed()，会执行下一个Interceptor，如果没有下一个Interceptor了，会执行target对应的方法
+		如果上面抛了Throwable，那么则会执行advice对应的方法
+
+5. @AfterReturning对应的是AspectJAfterReturningAdvice，实现了AfterReturningAdvice，在进行动态代理时会把AspectJAfterReturningAdvice转成AfterReturningAdviceInterceptor，也就转变成了MethodInterceptor
+
+		先执行MethodInvocation的proceed()，会执行下一个Interceptor，如果没有下一个Interceptor了，会执行target对应的方法
+		执行上面的方法后得到最终的方法的返回值
+		再执行Advice对应的方法
+
+### Spring中AOP原理流程图
+
+https://www.processon.com/view/link/5faa4ccce0b34d7a1aa2a9a5
+
+<div align='center'><img src=./images/spring-原理-tuling5zy/spring-原理-tuling5zy_2021-09-23-11-31-28.png width='100%'/></div><br/>
+
+### Introduction
+
+https://www.cnblogs.com/powerwu/articles/5170861.html
+
+## 15、Spring之事务底层源码解析
+
+### 基本原理
+
+一个类上或某个方法上加了@Transactional注解，那么这个类对应的Bean将会是这个类的一个代理对象，在调用代理对象的某个方法时，**简要流程**为：
+1. 先判断当前所调用的方法是否存在@Transactional注解
+2. 如果存在则利用事务管理器新建一个数据库连接
+3. 修改数据库连接的autocommit为false
+4. 执行业务方法，其中就会执行sql
+5. 执行方法后，如果没有抛异常，则提交
+6. 如果抛了异常，则回滚
+
+### 开始事务
+
+我们是通过添加@EnableTransactionManagement注解来开启事务的，而@EnableTransactionManagement注解的作用是向Spring容器中注入了两个bean：
+1. AutoProxyRegistrar
+2. ProxyTransactionManagementConfiguration
+
+### AutoProxyRegistrar
+
+AutoProxyRegistrar主要的作用是向Spring容器中注册了一个InfrastructureAdvisorAutoProxyCreator的Bean。
+而InfrastructureAdvisorAutoProxyCreator继承了**AbstractAdvisorAutoProxyCreator**，所以这个类的主要作用就是**开启自动代理**的作用。
+
+### ProxyTransactionManagementConfiguration
+
+ProxyTransactionManagementConfiguration中定义了三个bean：
+1. BeanFactoryTransactionAttributeSourceAdvisor：一个PointcutAdvisor
+2. AnnotationTransactionAttributeSource：就是Pointcut
+3. TransactionInterceptor：就是代理逻辑Advice
+
+```java
+BeanFactoryTransactionAttributeSourceAdvisor advisor = new BeanFactoryTransactionAttributeSourceAdvisor();
+advisor.setTransactionAttributeSource(transactionAttributeSource); 
+advisor.setAdvice(transactionInterceptor);
+```
+
+BeanFactoryTransactionAttributeSourceAdvisor是一个Advisor，在构造BeanFactoryTransactionAttributeSourceAdvisor这个bean时，需要另外两Bean。
+
+BeanFactoryTransactionAttributeSourceAdvisor中是这么定义PointCut的：
+
+```java
+private final TransactionAttributeSourcePointcut pointcut = new TransactionAttributeSourcePointcut() {
+	@Override
+	@Nullable
+	protected TransactionAttributeSource getTransactionAttributeSource() {
+		return transactionAttributeSource;
+	}
+};
+
+```
+
+构造了一个PointCut, TransactionAttributeSource的实现对象为AnnotationTransactionAttributeSource，在PointCut匹配类时，会利用AnnotationTransactionAttributeSource去检查类上是否有@Transactional注解，在PointCut匹配方法时，会利用AnnotationTransactionAttributeSource去检查方法上是否有@Transactional注解。
+
+所以ProxyTransactionManagementConfiguration的作用就是向Spring容器中添加了一个Advisor，有了Advisor，那么Spring在构造bean时就会查看当前bean是不是匹配所设置的PointCut（也就是beanClass上是否有@Transactional注解或beanClass中某个方法上是否有@Transactional注解），如果匹配，则利用所设置的Advise（也就是TransactionInterceptor）进行AOP，生成代理对象。
+
+### TransactionInterceptor执行流程:
+
+Spring事务执行流程图：https://www.processon.com/view/link/5fab6edf1e0853569633cc06
+
+左边开始部分
+
+<div align='center'><img src=./images/spring-原理-tuling5zy/spring-原理-tuling5zy_2021-09-23-15-36-54.png width='100%'/></div><br/>
+
+右边结束部分
+
+<div align='center'><img src=./images/spring-原理-tuling5zy/spring-原理-tuling5zy_2021-09-23-15-37-46.png width='100%'/></div><br/>
+
+
+### 简单版流程
+
+1. 生成test事务状态对象
+2. test事务doBegin，获取并将数据库连接2825设置到test事务状态对象中
+3. 把test事务信息设置到事务同步管理器中
+4. 执行test业务逻辑方法（可以获取到test事务的信息）
+
+		a. 生成a事务状态对象，并且可以获取到当前线程中已经存在的数据库连接2825
+		b. 判断出来当前线程中已经存在事务
+		c. 如果需要新开始事务，就先挂起数据库连接2825，挂起就是把test事务信息从事务同步管理器中转移到挂起资源对象中，并把当前a事务状态对象中的数据库连接设置为null
+		d. a事务doBegin，新生成一个数据库连接2826，并设置到a事务状态对象中
+		e. 把a事务信息设置到事务同步管理器中
+		f. 执行a业务逻辑方法（可以利用事务同步管理器获取到a事务信息）
+		g. 利用a事务状态对象，执行提交
+		h. 提交之后会恢复所挂起的test事务，这里的恢复，其实只是把挂起资源对象中所保存的信息再转移回事务同步管理器中
+
+5. 继续执行test业务逻辑方法（仍然可以获取到test事务的信息）
+6. 利用test事务状态对象，执行提交
+
+### 传播机制
+
+<div align='center'><img src=./images/spring-原理-tuling5zy/spring-原理-tuling5zy_2021-09-23-11-40-27.png width='100%'/></div><br/>
+
+### 举例子
+
+#### 情况1
+
+```java
+@Component
+public class UserService {
+	@Autowired
+	private UserService userService;
+
+	@Transactional
+	public void test() {
+		// test方法中的sql
+		userService.a();
+	}
+
+	@Transactional
+	public void a() {
+		// a方法中的sql
+	}
+}
+
+```
+
+默认情况下传播机制为REQUIRED
+
+所以上面这种情况的执行流程如下：
+1. 新建一个数据库连接conn
+2. 设置conn的autocommit为false
+3. 执行test方法中的sql
+4. 执行a方法中的sql
+5. 执行conn的commit()方法进行提交
+
+#### 情况2
+
+假如是这种情况
+
+```java
+@Component
+public class UserService {
+	@Autowired
+	private UserService userService;
+
+	@Transactional
+	public void test() {
+		// test方法中的sql
+		userService.a();
+        int result = 100/0;
+	}
+
+	@Transactional
+	public void a() {
+		// a方法中的sql
+	}
+}
+```
+所以上面这种情况的执行流程如下：
+1. 新建一个数据库连接conn
+2. 设置conn的autocommit为false
+3. 执行test方法中的sql
+4. 执行a方法中的sql
+5. 抛出异常
+6. 执行conn的rollback()方法进行回滚
+
+#### 情况3
+
+假如是这种情况：
+
+```java
+@Component
+public class UserService {
+	@Autowired
+	private UserService userService;
+
+	@Transactional
+	public void test() {
+		// test方法中的sql
+		userService.a();
+	}
+
+	@Transactional
+	public void a() {
+		// a方法中的sql
+        int result = 100/0;
+	}
+}
+```
+
+所以上面这种情况的执行流程如下：
+1. 新建一个数据库连接conn
+2. 设置conn的autocommit为false
+3. 执行test方法中的sql
+4. 执行a方法中的sql
+5. 抛出异常
+6. 执行conn的rollback()方法进行回滚
+
+#### 情况4
+
+如果是这种情况：
+
+```java
+@Component
+public class UserService {
+	@Autowired
+	private UserService userService;
+
+	@Transactional
+	public void test() {
+		// test方法中的sql
+		userService.a();
+	}
+
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public void a() {
+		// a方法中的sql
+		int result = 100/0;
+	}
+}
+```
+
+所以上面这种情况的执行流程如下：
+1. 新建一个数据库连接conn
+2. 设置conn的autocommit为false
+3. 执行test方法中的sql
+4. 又新建一个数据库连接conn2
+5. 执行a方法中的sql
+6. 抛出异常
+7. 执行conn2的rollback()方法进行回滚
+8. 继续抛异常
+9. 执行conn的rollback()方法进行回滚
+
+
+
+
+
+
