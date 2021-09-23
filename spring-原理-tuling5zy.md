@@ -2530,7 +2530,7 @@ AnnotationConfigWebApplicationContext继承的是AbstractRefreshableWebApplicati
 
 底层原理流程图：https://www.processon.com/view/link/5f60a7d71e08531edf26a919
 
-<div align='center'><img src=./images/spring-原理-tuling5zy/spring-原理-tuling5zy_2021-09-22-18-30-12.png width='100%'/></div><br/>
+<div align='center'><img src=./images/spring-原理-tuling5zy/spring-原理-tuling5zy_2021-09-23-15-54-09.png width='100%'/></div><br/>
 
 下面以AnnotationConfigApplicationContext为例子，来介绍refresh的底层原理。
 
