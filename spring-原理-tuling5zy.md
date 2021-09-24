@@ -2270,7 +2270,7 @@ https://github.com/spring-projects/spring-framework/issues/13117
 AutowiredAnnotationBeanPostProcessor中推断构造方法不同情况思维脑图：
 https://www.processon.com/view/link/6146def57d9c08198c58bb26
 
-<div align='center'><img src=./images/spring-原理-tuling5zy/spring-原理-tuling5zy_2021-09-22-17-03-29.png width='100%'/></div><br/>
+<div align='center'><img src=./images/spring-原理-tuling5zy/spring-原理-tuling5zy_2021-09-24-10-06-28.png width='100%'/></div><br/>
 
 Spring中的一个bean，需要实例化得到一个对象，而实例化就需要用到构造方法。
 
@@ -2367,13 +2367,13 @@ System.out.println(MethodInvoker.getTypeDifferenceWeight(new Class[]{D.class}, o
 
 首先，Spring会把@Bean修饰的方法解析成BeanDefinition：
 
-1. 如果方法是static的，那么解析出来的BeanDefinition中：
+1. 如果方法不是static的，那么解析出来的BeanDefinition中：
    
         factoryBeanName为AppConfig所对应的beanName，比如"appConfig"
         factoryMethodName为对应的方法名，比如"aService"
         factoryClass为AppConfig.class
 
-2. 如果方法不是static的，那么解析出来的BeanDefinition中：
+2. 如果方法是static的，那么解析出来的BeanDefinition中：
 
         factoryBeanName为null
         factoryMethodName为对应的方法名，比如"aService"
