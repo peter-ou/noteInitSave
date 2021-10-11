@@ -2675,6 +2675,12 @@ https://www.processon.com/view/link/5f9512d5e401fd06fda0b2dd
 
 <div align='center'><img src=./images/spring-原理-tuling5zy/spring-原理-tuling5zy_2021-09-23-10-20-36.png width='100%'/></div><br/>
 
+解析配置类思维脑图：
+
+https://www.processon.com/view/link/614c83cae0b34d7b342f6d14
+
+<div align='center'><img src=./images/spring-原理-tuling5zy/spring-原理-tuling5zy_2021-09-27-10-01-53.png width='100%'/></div><br/>
+
 1. 在启动Spring时，需要传入一个AppConfig.class给ApplicationContext，ApplicationContext会根据AppConfig类封装为一个BeanDefinition，这种BeanDefinition我们把它称为配置类BeanDefinition。
 2. ConfigurationClassPostProcessor中会把配置类BeanDefinition取出来
 3. 构造一个ConfigurationClassParser用来解析配置类BeanDefinition，并且会生成一个配置类对象ConfigurationClass

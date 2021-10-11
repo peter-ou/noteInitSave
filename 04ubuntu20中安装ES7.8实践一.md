@@ -865,7 +865,7 @@ elasticsearch.hosts: ["http://localhost:9200"]
 
 ```shell
 #进入/bin/目录，启动kibana
- cd ..
+ cd /usr/local/kibana/kibana-7.8.0-linux-x86_64
  cd bin/
  ./kibana
  
