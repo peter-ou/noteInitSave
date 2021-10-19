@@ -1,6 +1,6 @@
-# spring原理学习-tuling-周瑜
+# spring原理学习-tuling5-周瑜
 
-- [spring原理学习-tuling-周瑜](#spring原理学习-tuling-周瑜)
+- [spring原理学习-tuling5-周瑜](#spring原理学习-tuling5-周瑜)
 	- [1、Spring底层核心原理解析](#1spring底层核心原理解析)
 		- [Spring中是如何创建一个对象？](#spring中是如何创建一个对象)
 		- [Bean的创建过程](#bean的创建过程)
@@ -88,41 +88,78 @@
 		- [BeanDefinitionRegistryPostProcessor](#beandefinitionregistrypostprocessor)
 		- [如何理解refresh()？](#如何理解refresh)
 		- [refresh()底层原理流程](#refresh底层原理流程)
+		- [执行BeanFactoryPostProcessor](#执行beanfactorypostprocessor)
 		- [Lifecycle的使用](#lifecycle的使用)
 	- [11、Spring之配置类解析与扫描过程源码解析](#11spring之配置类解析与扫描过程源码解析)
-		- [执行BeanFactoryPostProcessor](#执行beanfactorypostprocessor)
 		- [解析配置类](#解析配置类)
 			- [解析配置类--总结一下](#解析配置类--总结一下)
 	- [12、Spring之整合Mybatis底层源码解析](#12spring之整合mybatis底层源码解析)
-		- [1.3.2版本](#132版本)
-		- [2.0.5版本](#205版本)
+		- [整合核心思路](#整合核心思路)
+		- [Mybatis-Spring 1.3.2版本底层源码执行流程](#mybatis-spring-132版本底层源码执行流程)
+		- [Mybatis-Spring  2.0.6版本(最新版)底层源码执行流程](#mybatis-spring--206版本最新版底层源码执行流程)
+		- [Spring整合Mybatis后一级缓存失效问题](#spring整合mybatis后一级缓存失效问题)
 	- [13、Spring之AOP底层源码解析（上）](#13spring之aop底层源码解析上)
-		- [对Spring AOP的理解](#对spring-aop的理解)
-		- [AOP中的概念](#aop中的概念)
+		- [动态代理](#动态代理)
+		- [ProxyFactory](#proxyfactory)
 		- [Advice的分类](#advice的分类)
-		- [Advice在Spring AOP中对应API](#advice在spring-aop中对应api)
-		- [Spring AOP中的Advisor](#spring-aop中的advisor)
+		- [Advisor的理解](#advisor的理解)
 		- [创建代理对象的方式](#创建代理对象的方式)
 			- [ProxyFactoryBean](#proxyfactorybean)
 			- [BeanNameAutoProxyCreator](#beannameautoproxycreator)
-			- [DefaultAdvisorAutoProxyCreatorDemo](#defaultadvisorautoproxycreatordemo)
+			- [DefaultAdvisorAutoProxyCreator](#defaultadvisorautoproxycreator)
+		- [对Spring AOP的理解](#对spring-aop的理解)
+		- [AOP中的概念](#aop中的概念)
+		- [Advice在Spring AOP中对应API](#advice在spring-aop中对应api)
 		- [TargetSource的使用](#targetsource的使用)
+		- [Introduction](#introduction)
+		- [LoadTimeWeaver](#loadtimeweaver)
+		- [对Spring AOP的理解(老版笔记)](#对spring-aop的理解老版笔记)
+		- [AOP中的概念](#aop中的概念-1)
+		- [Advice的分类](#advice的分类-1)
+		- [Advice在Spring AOP中对应API](#advice在spring-aop中对应api-1)
+		- [Spring AOP中的Advisor](#spring-aop中的advisor)
+		- [创建代理对象的方式](#创建代理对象的方式-1)
+			- [ProxyFactoryBean](#proxyfactorybean-1)
+			- [BeanNameAutoProxyCreator](#beannameautoproxycreator-1)
+			- [DefaultAdvisorAutoProxyCreatorDemo](#defaultadvisorautoproxycreatordemo)
+		- [TargetSource的使用](#targetsource的使用-1)
 	- [14、Spring之AOP底层源码解析（下）](#14spring之aop底层源码解析下)
-		- [使用ProxyFactory通过编程创建AOP代理](#使用proxyfactory通过编程创建aop代理)
+		- [ProxyFactory选择cglib或jdk动态代理原理](#proxyfactory选择cglib或jdk动态代理原理)
+		- [代理对象创建过程](#代理对象创建过程)
+			- [JdkDynamicAopProxy](#jdkdynamicaopproxy)
+			- [ObjenesisCglibAopProxy](#objenesiscglibaopproxy)
+		- [代理对象执行过程](#代理对象执行过程)
+				- [各注解对应的MethodInterceptor](#各注解对应的methodinterceptor)
+		- [AbstractAdvisorAutoProxyCreator](#abstractadvisorautoproxycreator)
+		- [@EnableAspectJAutoProxy](#enableaspectjautoproxy)
+		- [Spring中AOP原理流程图（和下面老版图片一致）](#spring中aop原理流程图和下面老版图片一致)
+		- [使用ProxyFactory通过编程创建AOP代理（老版笔记）](#使用proxyfactory通过编程创建aop代理老版笔记)
 			- [ProxyFactory的工作原理](#proxyfactory的工作原理)
 			- [JdkDynamicAopProxy创建代理对象过程](#jdkdynamicaopproxy创建代理对象过程)
 			- [JdkDynamicAopProxy创建的代理对象执行过程](#jdkdynamicaopproxy创建的代理对象执行过程)
 			- [ObjenesisCglibAopProxy创建代理对象过程](#objenesiscglibaopproxy创建代理对象过程)
 			- [ObjenesisCglibAopProxy创建的代理对象执行过程](#objenesiscglibaopproxy创建的代理对象执行过程)
 		- [使用“自动代理（autoproxy）”功能](#使用自动代理autoproxy功能)
-			- [BeanNameAutoProxyCreator](#beannameautoproxycreator-1)
-			- [DefaultAdvisorAutoProxyCreator](#defaultadvisorautoproxycreator)
-		- [@EnableAspectJAutoProxy](#enableaspectjautoproxy)
+			- [BeanNameAutoProxyCreator](#beannameautoproxycreator-2)
+			- [DefaultAdvisorAutoProxyCreator](#defaultadvisorautoproxycreator-1)
+		- [@EnableAspectJAutoProxy](#enableaspectjautoproxy-1)
 		- [注解和源码对应关系](#注解和源码对应关系)
 		- [Spring中AOP原理流程图](#spring中aop原理流程图)
-		- [Introduction](#introduction)
+		- [Introduction](#introduction-1)
 	- [15、Spring之事务底层源码解析](#15spring之事务底层源码解析)
-		- [基本原理](#基本原理)
+		- [@EnableTransactionManagement工作原理](#enabletransactionmanagement工作原理)
+		- [Spring事务基本执行原理](#spring事务基本执行原理)
+		- [Spring事务详细执行流程（和下面的老版一致）](#spring事务详细执行流程和下面的老版一致)
+		- [Spring事务传播机制](#spring事务传播机制)
+		- [Spring事务传播机制分类](#spring事务传播机制分类)
+		- [案例分析](#案例分析)
+			- [情况1](#情况1)
+			- [情况2](#情况2)
+			- [情况3](#情况3)
+			- [情况4](#情况4)
+		- [Spring事务强制回滚](#spring事务强制回滚)
+		- [TransactionSynchronization](#transactionsynchronization)
+		- [spring事物基本原理（老版笔记）](#spring事物基本原理老版笔记)
 		- [开始事务](#开始事务)
 		- [AutoProxyRegistrar](#autoproxyregistrar)
 		- [ProxyTransactionManagementConfiguration](#proxytransactionmanagementconfiguration)
@@ -130,10 +167,10 @@
 		- [简单版流程](#简单版流程)
 		- [传播机制](#传播机制)
 		- [举例子](#举例子)
-			- [情况1](#情况1)
-			- [情况2](#情况2)
-			- [情况3](#情况3)
-			- [情况4](#情况4)
+			- [情况1](#情况1-1)
+			- [情况2](#情况2-1)
+			- [情况3](#情况3-1)
+			- [情况4](#情况4-1)
 
 
 
@@ -2624,6 +2661,19 @@ AnnotationConfigWebApplicationContext继承的是AbstractRefreshableWebApplicati
         c. 发布ContextRefreshedEvent事件
 
 
+### 执行BeanFactoryPostProcessor
+
+1. 执行通过ApplicationContext添加进来的BeanDefinitionRegistryPostProcessor的postProcessBeanDefinitionRegistry()方法
+2. 执行BeanFactory中实现了PriorityOrdered接口的BeanDefinitionRegistryPostProcessor的postProcessBeanDefinitionRegistry()方法
+3. 执行BeanFactory中实现了Ordered接口的BeanDefinitionRegistryPostProcessor的postProcessBeanDefinitionRegistry()方法
+4. 执行BeanFactory中其他的BeanDefinitionRegistryPostProcessor的postProcessBeanDefinitionRegistry()方法
+5. 执行上面所有的BeanDefinitionRegistryPostProcessor的postProcessBeanFactory()方法
+6. 执行通过ApplicationContext添加进来的BeanFactoryPostProcessor的postProcessBeanFactory()方法
+7. 执行BeanFactory中实现了PriorityOrdered接口的BeanFactoryPostProcessor的postProcessBeanFactory()方法
+8. 执行BeanFactory中实现了Ordered接口的BeanFactoryPostProcessor的postProcessBeanFactory()方法
+9. 执行BeanFactory中其他的BeanFactoryPostProcessor的postProcessBeanFactory()方法
+
+
 ### Lifecycle的使用
 
 Lifecycle表示的是ApplicationContext的生命周期，可以定义一个SmartLifecycle来监听ApplicationContext的启动和关闭：
@@ -2654,18 +2704,6 @@ public class ZhouyuLifecycle implements SmartLifecycle {
 }
 ```
 ## 11、Spring之配置类解析与扫描过程源码解析
-
-### 执行BeanFactoryPostProcessor
-
-1. 执行通过ApplicationContext添加进来的BeanDefinitionRegistryPostProcessor的postProcessBeanDefinitionRegistry()方法
-2. 执行BeanFactory中实现了PriorityOrdered接口的BeanDefinitionRegistryPostProcessor的postProcessBeanDefinitionRegistry()方法
-3. 执行BeanFactory中实现了Ordered接口的BeanDefinitionRegistryPostProcessor的postProcessBeanDefinitionRegistry()方法
-4. 执行BeanFactory中其他的BeanDefinitionRegistryPostProcessor的postProcessBeanDefinitionRegistry()方法
-5. 执行上面所有的BeanDefinitionRegistryPostProcessor的postProcessBeanFactory()方法
-6. 执行通过ApplicationContext添加进来的BeanFactoryPostProcessor的postProcessBeanFactory()方法
-7. 执行BeanFactory中实现了PriorityOrdered接口的BeanFactoryPostProcessor的postProcessBeanFactory()方法
-8. 执行BeanFactory中实现了Ordered接口的BeanFactoryPostProcessor的postProcessBeanFactory()方法
-9. 执行BeanFactory中其他的BeanFactoryPostProcessor的postProcessBeanFactory()方法
 
 ### 解析配置类
 
@@ -2709,7 +2747,18 @@ https://www.processon.com/view/link/614c83cae0b34d7b342f6d14
 2. 再扫描，扫描到的类都会生成对应的BeanDefinition，并且同时这些类也是ConfigurationClass
 3. 再解析ConfigurationClass的其他信息，比如@ImportResource注解的处理，@Import注解的处理，@Bean注解的处理
 ## 12、Spring之整合Mybatis底层源码解析
-### 1.3.2版本
+
+
+### 整合核心思路
+
+
+由很多框架都需要和Spring进行整合，而整合的核心思想就是把其他框架所产生的对象放到Spring容器中，让其成为Bean。
+​
+
+比如Mybatis，Mybatis框架可以单独使用，而单独使用Mybatis框架就需要用到Mybatis所提供的一些类构造出对应的对象，然后使用该对象，就能使用到Mybatis框架给我们提供的功能，和Mybatis整合Spring就是为了将这些对象放入Spring容器中成为Bean，只要成为了Bean，在我们的Spring项目中就能很方便的使用这些对象了，也就能很方便的使用Mybatis框架所提供的功能了。
+
+
+### Mybatis-Spring 1.3.2版本底层源码执行流程
 
 1. 通过@MapperScan导入了MapperScannerRegistrar类
 2. MapperScannerRegistrar类实现了ImportBeanDefinitionRegistrar接口，所以Spring在启动时会调用MapperScannerRegistrar类中的registerBeanDefinitions方法
@@ -2724,15 +2773,22 @@ https://www.processon.com/view/link/614c83cae0b34d7b342f6d14
 11. MapperFactoryBean的AutowireMode为byType，所以Spring会自动调用set方法，有两个set方法，一个setSqlSessionFactory，一个setSqlSessionTemplate，而这两个方法执行的前提是根据方法参数类型能找到对应的bean，所以Spring容器中要存在SqlSessionFactory类型的bean或者SqlSessionTemplate类型的bean。
 12. 如果你定义的是一个SqlSessionFactory类型的bean，那么最终也会被包装为一个SqlSessionTemplate对象，并且赋值给sqlSession属性
 13. 而在SqlSessionTemplate类中就存在一个getMapper方法，这个方法中就会利用SqlSessionFactory来生成一个代理对象
+14. 到时候，当执行该代理对象的某个方法时，就会进入到Mybatis框架的底层执行流程，详细的请看下图
 
-### 2.0.5版本
+Spring整合Mybatis之后SQL执行流程：
+
+[https://www.processon.com/view/link/6152cc385653bb6791db436c](https://www.processon.com/view/link/6152cc385653bb6791db436c)
+
+<div align='center'><img src=./images/spring-原理-tuling5zy/spring-原理-tuling5zy_2021-10-18-23-50-07.png width='100%'/></div><br/>
+
+### Mybatis-Spring  2.0.6版本(最新版)底层源码执行流程
 
 1. 通过@MapperScan导入了MapperScannerRegistrar类
-2. MapperScannerRegistrar类实现了ImportBeanDefinitionRegistrar接口，所以Spring在启动时会调用MapperScannerRegistrar类中的registerBeanDefinitions方法
-3. **在registerBeanDefinitions方法中生成了一个MapperScannerConfigurer类型的BeanDefinition**
-4. **而MapperScannerConfigurer实现了实现了BeanDefinitionRegistryPostProcessor接口，所以Spring在启动过程中时会调用它的postProcessBeanDefinitionRegistry()方法**
-5. 在postProcessBeanDefinitionRegistry方法中会生成一个ClassPathMapperScanner对象，然后进行扫描
-6. 后续的逻辑和1.3.2版本一样。
+1. MapperScannerRegistrar类实现了ImportBeanDefinitionRegistrar接口，所以Spring在启动时会调用MapperScannerRegistrar类中的registerBeanDefinitions方法
+1. **在registerBeanDefinitions方法中注册一个MapperScannerConfigurer类型的BeanDefinition**
+1. 而MapperScannerConfigurer实现了BeanDefinitionRegistryPostProcessor接口，所以Spring在启动过程中时会调用它的postProcessBeanDefinitionRegistry()方法
+1. 在postProcessBeanDefinitionRegistry方法中会生成一个ClassPathMapperScanner对象，然后进行扫描
+1. 后续的逻辑和1.3.2版本一样。
 
 带来的好处是，可以不使用@MapperScan注解，而可以直接定义一个Bean，比如：
 
@@ -2744,10 +2800,452 @@ public MapperScannerConfigurer mapperScannerConfigurer() {
 	return mapperScannerConfigurer;
 }
 ```
+### Spring整合Mybatis后一级缓存失效问题
+
+
+先看下图：
+Spring整合Mybatis之后SQL执行流程：
+
+[https://www.processon.com/view/link/6152cc385653bb6791db436c](https://www.processon.com/view/link/6152cc385653bb6791db436c)
+​
+
+Mybatis中的一级缓存是基于SqlSession来实现的，所以在执行同一个sql时，如果使用的是同一个SqlSession对象，那么就能利用到一级缓存，提高sql的执行效率。
+
+但是在Spring整合Mybatis后，如果没有执行某个方法时，该方法上没有加@Transactional注解，也就是没有开启Spring事务，那么后面在执行具体sql时，没执行一个sql时都会新生成一个SqlSession对象来执行该sql，这就是我们说的一级缓存失效（也就是没有使用同一个SqlSession对象），而如果开启了Spring事务，那么该Spring事务中的多个sql，在执行时会使用同一个SqlSession对象，从而一级缓存生效，具体的底层执行流程在上图。
+​
+个人理解：实际上Spring整合Mybatis后一级缓存失效并**不是问题**，是正常的实现，因为，一个方法如果没有开启Spring事务，那么在执行sql时候，那就是每个sql单独一个事务来执行，也就是单独一个SqlSession对象来执行该sql，如果开启了Spring事务，那就是多个sql属于同一个事务，那自然就应该用一个SqlSession来执行这多个sql。所以，在没有开启Spring事务的时候，SqlSession的一级缓存并不是**失效**了，而是存在的生命周期太短了（执行完一个sql后就被销毁了，下一个sql执行时又是一个新的SqlSession了）。
+​
 
 ## 13、Spring之AOP底层源码解析（上）
 
+有道云链接：http://note.youdao.com/noteshare?id=f30e818e00f2c3eb6d4f26e6c0b70ade&sub=854D9B3F17A64B1DA9F965B2448E9EA6
+
+### 动态代理
+代理模式的解释：为**其他对象**提供一种**代理**以控制对这个对象的访问，增强一个类中的某个方法，对程序进行扩展。
+
+
+比如，现在存在一个UserService类：
+```java
+public class UserService  {
+
+	public void test() {
+		System.out.println("test...");
+	}
+
+}
+```
+此时，我们new一个UserService对象，然后执行test()方法，结果是显而易见的。
+
+
+如果我们现在想在**不修改UserService类的源码**前提下，给test()增加额外逻辑，那么就可以使用动态代理机制来创建UserService对象了，比如：
+```java
+UserService target = new UserService();
+
+// 通过cglib技术
+Enhancer enhancer = new Enhancer();
+enhancer.setSuperclass(UserService.class);
+
+// 定义额外逻辑，也就是代理逻辑
+enhancer.setCallbacks(new Callback[]{new MethodInterceptor() {
+	@Override
+	public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
+		System.out.println("before...");
+		Object result = methodProxy.invoke(target, objects);
+		System.out.println("after...");
+		return result;
+	}
+}});
+
+// 动态代理所创建出来的UserService对象
+UserService userService = (UserService) enhancer.create();
+
+// 执行这个userService的test方法时，就会额外会执行一些其他逻辑
+userService.test();
+```
+得到的都是UserService对象，但是执行test()方法时的效果却不一样了，这就是代理所带来的效果。
+
+上面是通过cglib来实现的代理对象的创建，是基于**父子类**的，被代理类（UserService）是父类，代理类是子类，代理对象就是代理类的实例对象，代理类是由cglib创建的，对于程序员来说不用关心。
+​
+
+除开cglib技术，jdk本身也提供了一种创建代理对象的动态代理机制，但是它只能代理接口，也就是UserService得先有一个接口才能利用jdk动态代理机制来生成一个代理对象，比如：
+```java
+public interface UserInterface {
+	public void test();
+}
+
+public class UserService implements UserInterface {
+
+	public void test() {
+		System.out.println("test...");
+	}
+
+}
+```
+
+利用JDK动态代理来生成一个代理对象：
+
+```java
+UserService target = new UserService();
+
+// UserInterface接口的代理对象
+Object proxy = Proxy.newProxyInstance(UserService.class.getClassLoader(), new Class[]{UserInterface.class}, new InvocationHandler() {
+	@Override
+	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+		System.out.println("before...");
+		Object result = method.invoke(target, args);
+		System.out.println("after...");
+		return result;
+	}
+});
+
+UserInterface userService = (UserInterface) proxy;
+userService.test();
+```
+如果你把new Class[]{UserInterface.class}，替换成new Class[]{UserService.class}，允许代码会直接报错：
+```java
+Exception in thread "main" java.lang.IllegalArgumentException: com.zhouyu.service.UserService is not an interface
+```
+表示一定要是个接口。
+​
+
+由于这个限制，所以产生的代理对象的类型是UserInterface，而不是UserService，这是需要注意的。
+
+
+### ProxyFactory
+上面我们介绍了两种动态代理技术，那么在Spring中进行了封装，封装出来的类叫做ProxyFactory，表示是创建代理对象的一个工厂，使用起来会比上面的更加方便，比如：
+```java
+UserService target = new UserService();
+
+ProxyFactory proxyFactory = new ProxyFactory();
+proxyFactory.setTarget(target);
+proxyFactory.addAdvice(new MethodInterceptor() {
+	@Override
+	public Object invoke(MethodInvocation invocation) throws Throwable {
+		System.out.println("before...");
+		Object result = invocation.proceed();
+		System.out.println("after...");
+		return result;
+	}
+});
+
+UserInterface userService = (UserInterface) proxyFactory.getProxy();
+userService.test();
+```
+通过ProxyFactory，我们可以不再关系到底是用cglib还是jdk动态代理了，ProxyFactory会帮我们去判断，如果UserService实现了接口，那么ProxyFactory底层就会用jdk动态代理，如果没有实现接口，就会用cglib技术，上面的代码，就是由于UserService实现了UserInterface接口，所以最后产生的代理对象是UserInterface类型。
+
+
+### Advice的分类
+
+1. Before Advice：方法之前执行
+1. After returning advice：方法return后执行
+1. After throwing advice：方法抛异常后执行
+1. After (finally) advice：方法执行完finally之后执行，这是最后的，比return更后
+1. Around advice：这是功能最强大的Advice，可以自定义执行顺序
+
+​
+
+看课上给的代码例子将一目了然
+​
+
+### Advisor的理解
+跟Advice类似的还有一个Advisor的概念，一个Advisor是有一个Pointcut和一个Advice组成的，通过Pointcut可以指定要需要被代理的逻辑，比如一个UserService类中有两个方法，按上面的例子，这两个方法都会被代理，被增强，那么我们现在可以通过Advisor，来控制到具体代理哪一个方法，比如：
+
+```java
+		UserService target = new UserService();
+
+		ProxyFactory proxyFactory = new ProxyFactory();
+		proxyFactory.setTarget(target);
+		proxyFactory.addAdvisor(new PointcutAdvisor() {
+			@Override
+			public Pointcut getPointcut() {
+				return new StaticMethodMatcherPointcut() {
+					@Override
+					public boolean matches(Method method, Class<?> targetClass) {
+						return method.getName().equals("testAbc");
+					}
+				};
+			}
+
+			@Override
+			public Advice getAdvice() {
+				return new MethodInterceptor() {
+					@Override
+					public Object invoke(MethodInvocation invocation) throws Throwable {
+						System.out.println("before...");
+						Object result = invocation.proceed();
+						System.out.println("after...");
+						return result;
+					}
+				};
+			}
+
+			@Override
+			public boolean isPerInstance() {
+				return false;
+			}
+		});
+
+		UserInterface userService = (UserInterface) proxyFactory.getProxy();
+		userService.test();
+```
+上面代码表示，产生的代理对象，只有在执行testAbc这个方法时才会被增强，会执行额外的逻辑，而在执行其他方法时是不会增强的。
+​
+
+### 创建代理对象的方式
+
+
+上面介绍了Spring中所提供了ProxyFactory、Advisor、Advice、PointCut等技术来实现代理对象的创建，但是我们在使用Spring时，我们并不会直接这么去使用ProxyFactory，比如说，我们希望ProxyFactory所产生的代理对象能直接就是Bean，能直接从Spring容器中得到UserSerivce的代理对象，而这些，Spring都是支持的，只不过，作为开发者的我们肯定得告诉Spring，那些类需要被代理，代理逻辑是什么。
+
+
+#### ProxyFactoryBean
+```java
+@Bean
+public ProxyFactoryBean userServiceProxy(){
+	UserService userService = new UserService();
+
+	ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
+	proxyFactoryBean.setTarget(userService);
+	proxyFactoryBean.addAdvice(new MethodInterceptor() {
+		@Override
+		public Object invoke(MethodInvocation invocation) throws Throwable {
+			System.out.println("before...");
+			Object result = invocation.proceed();
+			System.out.println("after...");
+			return result;
+		}
+	});
+	return proxyFactoryBean;
+}
+
+```
+通过这种方法来定义一个UserService的Bean，并且是经过了AOP的。但是这种方式**只能针对某一个Bean**。它是一个FactoryBean，所以利用的就是FactoryBean技术，间接的将UserService的代理对象作为了Bean。
+​
+
+ProxyFactoryBean还有额外的功能，比如可以把某个Advise或Advisor定义成为Bean，然后在ProxyFactoryBean中进行设置
+```java
+@Bean
+public MethodInterceptor zhouyuAroundAdvise(){
+	return new MethodInterceptor() {
+		@Override
+		public Object invoke(MethodInvocation invocation) throws Throwable {
+			System.out.println("before...");
+			Object result = invocation.proceed();
+			System.out.println("after...");
+			return result;
+		}
+	};
+}
+
+@Bean
+public ProxyFactoryBean userService(){
+	UserService userService = new UserService();
+	
+    ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
+	proxyFactoryBean.setTarget(userService);
+	proxyFactoryBean.setInterceptorNames("zhouyuAroundAdvise");
+	return proxyFactoryBean;
+}
+```
+​
+
+#### BeanNameAutoProxyCreator
+
+
+ProxyFactoryBean得自己指定被代理的对象，那么我们可以通过BeanNameAutoProxyCreator来通过指定某个bean的名字，来对该bean进行代理
+```java
+@Bean
+public BeanNameAutoProxyCreator beanNameAutoProxyCreator() {
+	BeanNameAutoProxyCreator beanNameAutoProxyCreator = new BeanNameAutoProxyCreator();
+	beanNameAutoProxyCreator.setBeanNames("userSe*");
+	beanNameAutoProxyCreator.setInterceptorNames("zhouyuAroundAdvise");
+	beanNameAutoProxyCreator.setProxyTargetClass(true);
+
+    return beanNameAutoProxyCreator;
+}
+```
+通过BeanNameAutoProxyCreator可以对批量的Bean进行AOP，并且指定了代理逻辑，指定了一个InterceptorName，也就是一个Advise，前提条件是这个Advise也得是一个Bean，这样Spring才能找到的，但是BeanNameAutoProxyCreator的缺点很明显，它只能根据beanName来指定想要代理的Bean。
+​
+
+#### DefaultAdvisorAutoProxyCreator
+```java
+@Bean
+public DefaultPointcutAdvisor defaultPointcutAdvisor(){
+	NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
+	pointcut.addMethodName("test");
+
+    DefaultPointcutAdvisor defaultPointcutAdvisor = new DefaultPointcutAdvisor();
+	defaultPointcutAdvisor.setPointcut(pointcut);
+	defaultPointcutAdvisor.setAdvice(new ZhouyuAfterReturningAdvise());
+
+    return defaultPointcutAdvisor;
+}
+
+@Bean
+public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
+	
+    DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
+
+	return defaultAdvisorAutoProxyCreator;
+}
+```
+通过DefaultAdvisorAutoProxyCreator会直接去找所有Advisor类型的Bean，根据Advisor中的PointCut和Advice信息，确定要代理的Bean以及代理逻辑。
+
+
+但是，我们发现，通过这种方式，我们得依靠某一个类来实现定义我们的Advisor，或者Advise，或者Pointcut，那么这个步骤能不能更加简化一点呢？
+​
+
+对的，通过**注解**！
+
+
+比如我们能不能只定义一个类，然后通过在类中的方法上通过某些注解，来定义PointCut以及Advice，可以的，比如：
+```java
+@Aspect
+@Component
+public class ZhouyuAspect {
+
+	@Before("execution(public void com.zhouyu.service.UserService.test())")
+	public void zhouyuBefore(JoinPoint joinPoint) {
+		System.out.println("zhouyuBefore");
+	}
+
+}
+```
+
+
+通过上面这个类，我们就直接定义好了所要代理的方法(通过一个表达式)，以及代理逻辑（被@Before修饰的方法），简单明了，这样对于Spring来说，它要做的就是来解析这些注解了，解析之后得到对应的Pointcut对象、Advice对象，生成Advisor对象，扔进ProxyFactory中，进而产生对应的代理对象，具体怎么解析这些注解就是**@EnableAspectJAutoProxy注解**所要做的事情了，后面详细分析。
+
+
 ### 对Spring AOP的理解
+OOP表示面向对象编程，是一种编程思想，AOP表示面向切面编程，也是一种编程思想，而我们上面所描述的就是Spring为了让程序员更加方便的做到面向切面编程所提供的技术支持，换句话说，就是Spring提供了一套机制，可以让我们更加容易的来进行AOP，所以这套机制我们也可以称之为Spring AOP。
+​
+
+但是值得注意的是，上面所提供的注解的方式来定义Pointcut和Advice，Spring并不是首创，首创是AspectJ，而且也不仅仅只有Spring提供了一套机制来支持AOP，还有比如 JBoss 4.0、aspectwerkz等技术都提供了对于AOP的支持。而刚刚说的注解的方式，Spring是依赖了AspectJ的，或者说，Spring是直接把AspectJ中所定义的那些注解直接拿过来用，自己没有再重复定义了，不过也仅仅只是把注解的定义赋值过来了，每个注解具体底层是怎么解析的，还是Spring自己做的，所以我们在用Spring时，如果你想用@Before、@Around等注解，是需要单独引入aspecj相关jar包的，比如：
+```java
+compile group: 'org.aspectj', name: 'aspectjrt', version: '1.9.5'
+compile group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.5'
+```
+
+
+值得注意的是：AspectJ是在编译时对字节码进行了修改，是直接在UserService类对应的字节码中进行增强的，也就是可以理解为是在编译时就会去解析@Before这些注解，然后得到代理逻辑，加入到被代理的类中的字节码中去的，所以如果想用AspectJ技术来生成代理对象 ，是需要用单独的AspectJ编译器的。我们在项目中很少这么用，我们仅仅只是用了@Before这些注解，而我们在启动Spring的过程中，Spring会去解析这些注解，然后利用动态代理机制生成代理对象的。
+​
+
+IDEA中使用Aspectj：[https://blog.csdn.net/gavin_john/article/details/80156963](https://blog.csdn.net/gavin_john/article/details/80156963)
+
+
+### AOP中的概念
+上面我们已经提到Advisor、Advice、PointCut等概念了，还有一些其他的概念，首先关于AOP中的概念本身是比较难理解的，Spring官网上是这么说的：
+> Let us begin by defining some central AOP concepts and terminology. These terms are not Spring-specific. Unfortunately, AOP terminology is not particularly intuitive. However, it would be even more confusing if Spring used its own terminology
+
+意思是，AOP中的这些概念不是Spring特有的，不幸的是，AOP中的概念不是特别直观的，但是，如果Spring重新定义自己的那可能会导致更加混乱
+
+1. Aspect：表示切面，比如被@Aspect注解的类就是切面，可以在切面中去定义Pointcut、Advice等等
+1. Join point：表示连接点，表示一个程序在执行过程中的一个点，比如一个方法的执行，比如一个异常的处理，在Spring AOP中，一个连接点通常表示一个方法的执行。
+1. Advice：表示通知，表示在一个特定连接点上所采取的动作。Advice分为不同的类型，后面详细讨论，在很多AOP框架中，包括Spring，会用Interceptor拦截器来实现Advice，并且在连接点周围维护一个Interceptor链
+1. Pointcut：表示切点，用来匹配一个或多个连接点，Advice与切点表达式是关联在一起的，Advice将会执行在和切点表达式所匹配的连接点上
+1. Introduction：可以使用@DeclareParents来给所匹配的类添加一个接口，并指定一个默认实现
+1. Target object：目标对象，被代理对象
+1. AOP proxy：表示代理工厂，用来创建代理对象的，在Spring Framework中，要么是JDK动态代理，要么是CGLIB代理
+1. Weaving：表示织入，表示创建代理对象的动作，这个动作可以发生在编译时期（比如Aspejctj），或者运行时，比如Spring AOP
+
+
+### Advice在Spring AOP中对应API
+上面说到的Aspject中的注解，其中有五个是用来定义Advice的，表示代理逻辑，以及执行时机：
+
+1. @Before
+1. @AfterReturning
+1. @AfterThrowing
+1. @After
+1. @Around
+
+我们前面也提到过，Spring自己也提供了类似的执行实际的实现类：
+
+1. 接口MethodBeforeAdvice，继承了接口BeforeAdvice
+1. 接口AfterReturningAdvice
+1. 接口ThrowsAdvice
+1. 接口AfterAdvice
+1. 接口MethodInterceptor
+
+Spring会把五个注解解析为对应的Advice类：
+
+1. @Before：AspectJMethodBeforeAdvice，实际上就是一个MethodBeforeAdvice
+1. @AfterReturning：AspectJAfterReturningAdvice，实际上就是一个AfterReturningAdvice
+1. @AfterThrowing：AspectJAfterThrowingAdvice，实际上就是一个MethodInterceptor
+1. @After：AspectJAfterAdvice，实际上就是一个MethodInterceptor
+1. @Around：AspectJAroundAdvice，实际上就是一个MethodInterceptor
+
+### TargetSource的使用
+
+在我们日常的AOP中，被代理对象就是Bean对象，是由BeanFactory给我们创建出来的，但是Spring AOP中提供了TargetSource机制，可以让我们用来自定义逻辑来创建**被代理对象**。
+​
+比如之前所提到的@Lazy注解，当加在属性上时，会产生一个代理对象赋值给这个属性，产生代理对象的代码为：
+```java
+protected Object buildLazyResolutionProxy(final DependencyDescriptor descriptor, final @Nullable String beanName) {
+		BeanFactory beanFactory = getBeanFactory();
+		Assert.state(beanFactory instanceof DefaultListableBeanFactory,
+				"BeanFactory needs to be a DefaultListableBeanFactory");
+		final DefaultListableBeanFactory dlbf = (DefaultListableBeanFactory) beanFactory;
+
+		TargetSource ts = new TargetSource() {
+			@Override
+			public Class<?> getTargetClass() {
+				return descriptor.getDependencyType();
+			}
+			@Override
+			public boolean isStatic() {
+				return false;
+			}
+			@Override
+			public Object getTarget() {
+				Set<String> autowiredBeanNames = (beanName != null ? new LinkedHashSet<>(1) : null);
+				Object target = dlbf.doResolveDependency(descriptor, beanName, autowiredBeanNames, null);
+				if (target == null) {
+					Class<?> type = getTargetClass();
+					if (Map.class == type) {
+						return Collections.emptyMap();
+					}
+					else if (List.class == type) {
+						return Collections.emptyList();
+					}
+					else if (Set.class == type || Collection.class == type) {
+						return Collections.emptySet();
+					}
+					throw new NoSuchBeanDefinitionException(descriptor.getResolvableType(),
+							"Optional dependency not present for lazy injection point");
+				}
+				if (autowiredBeanNames != null) {
+					for (String autowiredBeanName : autowiredBeanNames) {
+						if (dlbf.containsBean(autowiredBeanName)) {
+							dlbf.registerDependentBean(autowiredBeanName, beanName);
+						}
+					}
+				}
+				return target;
+			}
+			@Override
+			public void releaseTarget(Object target) {
+			}
+		};
+
+		ProxyFactory pf = new ProxyFactory();
+		pf.setTargetSource(ts);
+		Class<?> dependencyType = descriptor.getDependencyType();
+		if (dependencyType.isInterface()) {
+			pf.addInterface(dependencyType);
+		}
+		return pf.getProxy(dlbf.getBeanClassLoader());
+	}
+```
+这段代码就利用了ProxyFactory来生成代理对象，以及使用了TargetSource，以达到代理对象在执行某个方法时，调用TargetSource的getTarget()方法实时得到一个**被代理对象**。
+
+### Introduction
+[https://www.cnblogs.com/powerwu/articles/5170861.html](https://www.cnblogs.com/powerwu/articles/5170861.html)
+​
+### LoadTimeWeaver
+[https://www.cnblogs.com/davidwang456/p/5633609.html](https://www.cnblogs.com/davidwang456/p/5633609.html)
+
+
+----------------------------------- 以下为老版笔记 ----------------------------------------
+### 对Spring AOP的理解(老版笔记)
 
 OOP表示面向对象编程，是一种思想，没有说明到底该如何实现。
 AOP表示面向切面编程，也是一种思想，也没有说明到底该如何实现，也没有说明使用什么技术来实现。
@@ -2911,7 +3409,99 @@ public CommonsPool2TargetSource targetSource(){
 IDEA中使用Aspectj：https://blog.csdn.net/gavin_john/article/details/80156963
 
 ## 14、Spring之AOP底层源码解析（下）
-### 使用ProxyFactory通过编程创建AOP代理
+
+有道云链接：http://note.youdao.com/noteshare?id=8ae9d210cbb3a9bea75d8a142152f011&sub=F6098FC783F649CE85530DDC2456085D
+
+### ProxyFactory选择cglib或jdk动态代理原理
+ProxyFactory在生成代理对象之前需要决定到底是使用JDK动态代理还是CGLIB技术：
+```java
+// config就是ProxyFactory对象
+
+// optimize为true,或proxyTargetClass为true,或用户没有给ProxyFactory对象添加interface
+if (config.isOptimize() || config.isProxyTargetClass() || hasNoUserSuppliedProxyInterfaces(config)) {
+	Class<?> targetClass = config.getTargetClass();
+	if (targetClass == null) {
+		throw new AopConfigException("TargetSource cannot determine target class: " +
+				"Either an interface or a target is required for proxy creation.");
+	}
+    // targetClass是接口，直接使用Jdk动态代理
+	if (targetClass.isInterface() || Proxy.isProxyClass(targetClass)) {
+		return new JdkDynamicAopProxy(config);
+	}
+    // 使用Cglib
+	return new ObjenesisCglibAopProxy(config);
+}
+else {
+    // 使用Jdk动态代理
+	return new JdkDynamicAopProxy(config);
+}
+```
+
+### 代理对象创建过程
+#### JdkDynamicAopProxy
+
+1. 在构造JdkDynamicAopProxy对象时，会先拿到被代理对象自己所实现的接口，并且额外的增加SpringProxy、Advised、DecoratingProxy三个接口，组合成一个Class[]，并赋值给proxiedInterfaces属性
+1. 并且检查这些接口中是否定义了equals()、hashcode()方法
+1. 执行`Proxy.newProxyInstance(classLoader, this.proxiedInterfaces, this)`，得到代理对象，**JdkDynamicAopProxy**作为InvocationHandler，代理对象在执行某个方法时，会进入到JdkDynamicAopProxy的**invoke()**方法中
+#### ObjenesisCglibAopProxy
+
+1. 创建Enhancer对象
+1. 设置Enhancer的superClass为通过ProxyFactory.setTarget()所设置的对象的类
+1. 设置Enhancer的interfaces为通过ProxyFactory.addInterface()所添加的接口，以及SpringProxy、Advised、DecoratingProxy接口
+1. 设置Enhancer的Callbacks为DynamicAdvisedInterceptor
+1. 最后创建一个代理对象，代理对象在执行某个方法时，会进入到DynamicAdvisedInterceptor的intercept()方法中
+
+### 代理对象执行过程
+
+1. 在使用ProxyFactory创建代理对象之前，需要往ProxyFactory先添加Advisor
+1. 代理对象在执行某个方法时，会把ProxyFactory中的Advisor拿出来和当前正在执行的方法进行匹配筛选
+1. 把和方法所匹配的Advisor适配成MethodInterceptor
+1. 把和当前方法匹配的MethodInterceptor链，以及被代理对象、代理对象、代理类、当前Method对象、方法参数封装为MethodInvocation对象
+1. 调用MethodInvocation的proceed()方法，开始执行各个MethodInterceptor以及被代理对象的对应方法
+1. 按顺序调用每个MethodInterceptor的invoke()方法，并且会把MethodInvocation对象传入invoke()方法
+1. 直到执行完最后一个MethodInterceptor了，就会调用invokeJoinpoint()方法，从而执行被代理对象的当前方法
+
+##### 各注解对应的MethodInterceptor
+
+- **@Before**对应的是AspectJMethodBeforeAdvice，在进行动态代理时会把AspectJMethodBeforeAdvice转成**MethodBeforeAdviceInterceptor**
+   - 先执行advice对应的方法
+   - 再执行MethodInvocation的proceed()，会执行下一个Interceptor，如果没有下一个Interceptor了，会执行target对应的方法
+- **@After**对应的是AspectJAfterAdvice，直接实现了**MethodInterceptor**
+   - 先执行MethodInvocation的proceed()，会执行下一个Interceptor，如果没有下一个Interceptor了，会执行target对应的方法
+   - 再执行advice对应的方法
+- **@Around**对应的是AspectJAroundAdvice，直接实现了**MethodInterceptor**
+   - 直接执行advice对应的方法，由@Around自己决定要不要继续往后面调用
+- **@AfterThrowing**对应的是AspectJAfterThrowingAdvice，直接实现了**MethodInterceptor**
+   - 先执行MethodInvocation的proceed()，会执行下一个Interceptor，如果没有下一个Interceptor了，会执行target对应的方法
+   - 如果上面抛了Throwable，那么则会执行advice对应的方法
+- **@AfterReturning**对应的是AspectJAfterReturningAdvice，在进行动态代理时会把AspectJAfterReturningAdvice转成**AfterReturningAdviceInterceptor**
+   - 先执行MethodInvocation的proceed()，会执行下一个Interceptor，如果没有下一个Interceptor了，会执行target对应的方法
+   - 执行上面的方法后得到最终的方法的返回值
+   - 再执行Advice对应的方法
+
+### AbstractAdvisorAutoProxyCreator
+
+DefaultAdvisorAutoProxyCreator的父类是AbstractAdvisorAutoProxyCreator。
+
+**AbstractAdvisorAutoProxyCreator**非常强大以及重要，只要Spring容器中存在这个类型的Bean，就相当于开启了AOP，AbstractAdvisorAutoProxyCreator实际上就是一个BeanPostProcessor，所以在创建某个Bean时，就会进入到它对应的生命周期方法中，比如：在某个Bean**初始化之后**，会调用wrapIfNecessary()方法进行AOP，底层逻辑是，AbstractAdvisorAutoProxyCreator会找到所有的Advisor，然后判断当前这个Bean是否存在某个Advisor与之匹配（根据Pointcut），如果匹配就表示当前这个Bean有对应的切面逻辑，需要进行AOP，需要产生一个代理对象。
+
+### @EnableAspectJAutoProxy
+
+这个注解主要就是往Spring容器中添加了一个AnnotationAwareAspectJAutoProxyCreator类型的Bean。
+
+<div align='center'><img src=./images/spring-原理-tuling5zy/spring-原理-tuling5zy_2021-10-19-01-03-08.png width='100%'/></div><br/>
+
+**AspectJAwareAdvisorAutoProxyCreator**继承了**AbstractAdvisorAutoProxyCreator**，重写了findCandidateAdvisors()方法，**AbstractAdvisorAutoProxyCreator**只能找到所有Advisor类型的Bean对象，但是**AspectJAwareAdvisorAutoProxyCreator**除开可以找到所有Advisor类型的Bean对象，还能把@Aspect注解所标注的Bean中的@Before等注解及方法进行解析，并生成对应的Advisor对象。
+​
+所以，我们可以理解@EnableAspectJAutoProxy，其实就是像Spring容器中添加了一个AbstractAdvisorAutoProxyCreator类型的Bean，从而开启了AOP，并且还会解析@Before等注解生成Advisor。
+### Spring中AOP原理流程图（和下面老版图片一致）
+
+[https://www.processon.com/view/link/5faa4ccce0b34d7a1aa2a9a5](https://www.processon.com/view/link/5faa4ccce0b34d7a1aa2a9a5)
+
+<div align='center'><img src=./images/spring-原理-tuling5zy/spring-原理-tuling5zy_2021-09-23-11-31-28.png width='100%'/></div><br/>
+
+-----------------------------------以下是老版笔记--------------------------------------
+### 使用ProxyFactory通过编程创建AOP代理（老版笔记）
 
 定义一个MyAdvisor
 
@@ -3106,15 +3696,343 @@ public BeanNameAutoProxyCreator creator(){
 
 https://www.processon.com/view/link/5faa4ccce0b34d7a1aa2a9a5
 
-<div align='center'><img src=./images/spring-原理-tuling5zy/spring-原理-tuling5zy_2021-09-23-11-31-28.png width='100%'/></div><br/>
-
 ### Introduction
 
 https://www.cnblogs.com/powerwu/articles/5170861.html
 
 ## 15、Spring之事务底层源码解析
 
-### 基本原理
+有道云链接：
+
+http://note.youdao.com/noteshare?id=73adfd2c0d72e9be2f8f613a75008f71&sub=75CD877539EA4470960CCD82C2077264
+​
+### @EnableTransactionManagement工作原理
+开启Spring事务本质上就是增加了一个Advisor，但我们使用@EnableTransactionManagement注解来开启Spring事务是，该注解代理的功能就是向Spring容器中添加了两个Bean：
+
+1. AutoProxyRegistrar
+1. ProxyTransactionManagementConfiguration
+
+AutoProxyRegistrar主要的作用是向Spring容器中注册了一个**InfrastructureAdvisorAutoProxyCreator**的Bean。
+而InfrastructureAdvisorAutoProxyCreator继承了**AbstractAdvisorAutoProxyCreator**，所以这个类的主要作用就是**开启自动代理**的作用，也就是一个BeanPostProcessor，会在初始化后步骤中去寻找Advisor类型的Bean，并判断当前某个Bean是否有匹配的Advisor，是否需要利用动态代理产生一个代理对象。
+
+
+ProxyTransactionManagementConfiguration是一个配置类，它又定义了另外三个bean：
+
+1. BeanFactoryTransactionAttributeSourceAdvisor：一个Advisor
+1. AnnotationTransactionAttributeSource：相当于BeanFactoryTransactionAttributeSourceAdvisor中的Pointcut
+1. TransactionInterceptor：相当于BeanFactoryTransactionAttributeSourceAdvisor中的Advice
+
+**AnnotationTransactionAttributeSource**就是用来判断某个类上是否存在@Transactional注解，或者判断某个方法上是否存在@Transactional注解的。
+​
+**TransactionInterceptor**就是代理逻辑，当某个类中存在@Transactional注解时，到时就产生一个代理对象作为Bean，代理对象在执行某个方法时，最终就会进入到TransactionInterceptor的invoke()方法。
+
+### Spring事务基本执行原理
+
+一个Bean在执行Bean的创建生命周期时，会经过InfrastructureAdvisorAutoProxyCreator的初始化后的方法，会判断当前当前Bean对象是否和BeanFactoryTransactionAttributeSourceAdvisor匹配，匹配逻辑为判断该Bean的类上是否存在@Transactional注解，或者类中的某个方法上是否存在@Transactional注解，如果存在则表示该Bean需要进行动态代理产生一个代理对象作为Bean对象。
+​
+
+该代理对象在执行某个方法时，会再次判断当前执行的方法是否和BeanFactoryTransactionAttributeSourceAdvisor匹配，如果匹配则执行该Advisor中的TransactionInterceptor的invoke()方法，执行基本流程为：
+
+1. 利用所配置的PlatformTransactionManager事务管理器新建一个数据库连接
+1. 修改数据库连接的autocommit为false
+1. 执行MethodInvocation.proceed()方法，简单理解就是执行业务方法，其中就会执行sql
+1. 如果没有抛异常，则提交
+1. 如果抛了异常，则回滚
+
+### Spring事务详细执行流程（和下面的老版一致）
+
+Spring事务执行流程图：
+
+[https://www.processon.com/view/link/5fab6edf1e0853569633cc06](https://www.processon.com/view/link/5fab6edf1e0853569633cc06)
+
+左边开始部分
+
+<div align='center'><img src=./images/spring-原理-tuling5zy/spring-原理-tuling5zy_2021-09-23-15-36-54.png width='100%'/></div><br/>
+
+右边结束部分
+
+<div align='center'><img src=./images/spring-原理-tuling5zy/spring-原理-tuling5zy_2021-09-23-15-37-46.png width='100%'/></div><br/>
+
+### Spring事务传播机制
+在开发过程中，经常会出现一个方法调用另外一个方法，那么这里就涉及到了多种场景，比如a()调用b()：
+
+1. a()和b()方法中的所有sql需要在同一个事务中吗？
+1. a()和b()方法需要单独的事务吗？
+1. a()需要在事务中执行，b()还需要在事务中执行吗？
+1. 等等情况...
+
+所以，这就要求Spring事务能支持上面各种场景，这就是Spring事务传播机制的由来。那Spring事务传播机制是如何实现的呢?
+
+
+先来看上述几种场景中的一种情况，a()在一个事务中执行，调用b()方法时需要新开一个事务执行：
+​
+1. 首先，代理对象执行a()方法前，先利用事务管理器新建一个数据库连接a
+1. 将数据库连接a的autocommit改为false
+1. 把数据库连接a设置到ThreadLocal中
+1. 执行a()方法中的sql
+1. 执行a()方法过程中，调用了b()方法（注意用代理对象调用b()方法）
+   1. 代理对象执行b()方法前，判断出来了当前线程中已经存在一个数据库连接a了，表示当前线程其实已经拥有一个Spring事务了，则进行**挂起**
+   1. 挂起就是把ThreadLocal中的数据库连接a从ThreadLocal中移除，并放入一个**挂起资源对象**中
+   1. 挂起完成后，再次利用事务管理器新建一个数据库连接b
+   1. 将数据库连接b的autocommit改为false
+   1. 把数据库连接b设置到ThreadLocal中
+   1. 执行b()方法中的sql
+   1. b()方法正常执行完，则从ThreadLocal中拿到数据库连接b进行提交
+   1. 提交之后会恢复所挂起的数据库连接a，这里的恢复，其实只是把在**挂起资源对象**中所保存的数据库连接a再次设置到ThreadLocal中
+6. a()方法正常执行完，则从ThreadLocal中拿到数据库连接a进行提交
+
+这个过程中最为核心的是：**在执行某个方法时，判断当前是否已经存在一个事务，就是判断当前线程的ThreadLocal中是否存在一个数据库连接对象，如果存在则表示已经存在一个事务了。**
+
+### Spring事务传播机制分类
+​
+**其中，以非事务方式运行，表示以非Spring事务运行，表示在执行这个方法时，Spring事务管理器不会去建立数据库连接，执行sql时，由Mybatis或JdbcTemplate自己来建立数据库连接来执行sql。**
+
+### 案例分析
+
+#### 情况1
+```java
+@Component
+public class UserService {
+	@Autowired
+	private UserService userService;
+
+	@Transactional
+	public void test() {
+		// test方法中的sql
+		userService.a();
+	}
+
+	@Transactional
+	public void a() {
+		// a方法中的sql
+	}
+}
+```
+默认情况下传播机制为**REQUIRED，表示当前如果没有事务则新建一个事务，如果有事务则在当前事务中执行。**
+**​**
+
+所以上面这种情况的执行流程如下：
+
+1. 新建一个数据库连接conn
+1. 设置conn的autocommit为false
+1. 执行test方法中的sql
+1. 执行a方法中的sql
+1. 执行conn的commit()方法进行提交
+
+#### 情况2
+假如是这种情况
+```java
+@Component
+public class UserService {
+	@Autowired
+	private UserService userService;
+
+	@Transactional
+	public void test() {
+		// test方法中的sql
+		userService.a();
+        int result = 100/0;
+	}
+
+	@Transactional
+	public void a() {
+		// a方法中的sql
+	}
+}
+```
+所以上面这种情况的执行流程如下：
+
+1. 新建一个数据库连接conn
+1. 设置conn的autocommit为false
+1. 执行test方法中的sql
+1. 执行a方法中的sql
+1. 抛出异常
+1. 执行conn的rollback()方法进行回滚，所以两个方法中的sql都会回滚掉
+
+#### 情况3
+假如是这种情况：
+```java
+@Component
+public class UserService {
+	@Autowired
+	private UserService userService;
+
+	@Transactional
+	public void test() {
+		// test方法中的sql
+		userService.a();
+	}
+
+	@Transactional
+	public void a() {
+		// a方法中的sql
+        int result = 100/0;
+	}
+}
+```
+所以上面这种情况的执行流程如下：
+
+1. 新建一个数据库连接conn
+1. 设置conn的autocommit为false
+1. 执行test方法中的sql
+1. 执行a方法中的sql
+1. 抛出异常
+1. 执行conn的rollback()方法进行回滚，所以两个方法中的sql都会回滚掉
+
+#### 情况4
+如果是这种情况：
+```java
+@Component
+public class UserService {
+	@Autowired
+	private UserService userService;
+
+	@Transactional
+	public void test() {
+		// test方法中的sql
+		userService.a();
+	}
+
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public void a() {
+		// a方法中的sql
+		int result = 100/0;
+	}
+}
+```
+所以上面这种情况的执行流程如下：
+
+1. 新建一个数据库连接conn
+1. 设置conn的autocommit为false
+1. 执行test方法中的sql
+1. 又新建一个数据库连接conn2
+1. 执行a方法中的sql
+1. 抛出异常
+1. 执行conn2的rollback()方法进行回滚
+1. **继续抛异常，对于test()方法而言，它会接收到一个异常，然后抛出**
+1. 执行conn的rollback()方法进行回滚，最终还是两个方法中的sql都回滚了
+
+### Spring事务强制回滚
+
+正常情况下，a()调用b()方法时，如果b()方法抛了异常，但是在a()方法捕获了，那么a()的事务还是会正常提交的，但是有的时候，我们捕获异常可能仅仅只是不把异常信息返回给客户端，而是为了返回一些更友好的错误信息，而这个时候，我们还是希望事务能回滚的，那这个时候就得告诉Spring把当前事务回滚掉，做法就是：
+
+```java
+@Transactional
+public void test(){
+	
+    // 执行sql
+	try {
+		b();
+	} catch (Exception e) {
+		// 构造友好的错误信息返回
+		TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+	}
+    
+}
+
+public void b() throws Exception {
+	throw new Exception();
+}
+```
+### TransactionSynchronization
+
+Spring事务有可能会提交，回滚、挂起、恢复，所以Spring事务提供了一种机制，可以让程序员来监听当前Spring事务所处于的状态。
+​
+```java
+@Component
+public class UserService {
+
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
+	@Autowired
+	private UserService userService;
+
+	@Transactional
+	public void test(){
+		TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+
+			@Override
+			public void suspend() {
+				System.out.println("test被挂起了");
+			}
+
+			@Override
+			public void resume() {
+				System.out.println("test被恢复了");
+			}
+
+			@Override
+			public void beforeCommit(boolean readOnly) {
+				System.out.println("test准备要提交了");
+			}
+
+			@Override
+			public void beforeCompletion() {
+				System.out.println("test准备要提交或回滚了");
+			}
+
+			@Override
+			public void afterCommit() {
+				System.out.println("test提交成功了");
+			}
+
+			@Override
+			public void afterCompletion(int status) {
+				System.out.println("test提交或回滚成功了");
+			}
+		});
+
+		jdbcTemplate.execute("insert into t1 values(1,1,1,1,'1')");
+		System.out.println("test");
+		userService.a();
+	}
+
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public void a(){
+		TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+
+			@Override
+			public void suspend() {
+				System.out.println("a被挂起了");
+			}
+
+			@Override
+			public void resume() {
+				System.out.println("a被恢复了");
+			}
+
+			@Override
+			public void beforeCommit(boolean readOnly) {
+				System.out.println("a准备要提交了");
+			}
+
+			@Override
+			public void beforeCompletion() {
+				System.out.println("a准备要提交或回滚了");
+			}
+
+			@Override
+			public void afterCommit() {
+				System.out.println("a提交成功了");
+			}
+
+			@Override
+			public void afterCompletion(int status) {
+				System.out.println("a提交或回滚成功了");
+			}
+		});
+
+		jdbcTemplate.execute("insert into t1 values(2,2,2,2,'2')");
+		System.out.println("a");
+	}
+
+
+}
+```
+
+----------------------------------下面为老版笔记----------------------------------
+### spring事物基本原理（老版笔记）
 
 一个类上或某个方法上加了@Transactional注解，那么这个类对应的Bean将会是这个类的一个代理对象，在调用代理对象的某个方法时，**简要流程**为：
 1. 先判断当前所调用的方法是否存在@Transactional注解
@@ -3170,15 +4088,6 @@ private final TransactionAttributeSourcePointcut pointcut = new TransactionAttri
 ### TransactionInterceptor执行流程:
 
 Spring事务执行流程图：https://www.processon.com/view/link/5fab6edf1e0853569633cc06
-
-左边开始部分
-
-<div align='center'><img src=./images/spring-原理-tuling5zy/spring-原理-tuling5zy_2021-09-23-15-36-54.png width='100%'/></div><br/>
-
-右边结束部分
-
-<div align='center'><img src=./images/spring-原理-tuling5zy/spring-原理-tuling5zy_2021-09-23-15-37-46.png width='100%'/></div><br/>
-
 
 ### 简单版流程
 
