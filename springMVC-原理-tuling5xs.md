@@ -547,7 +547,7 @@ https://www.processon.com/view/link/610e6a167d9c082be334ec49
 
     https://www.processon.com/view/link/616c2f6007912906b2a64b9d
 
-图待插入
+<div align='center'><img src=./images/springMVC-原理-tuling5xs/springMVC-原理-tuling5xs_2021-10-19-19-37-00.png width='100%'/></div><br/>
 
 3. 找到所有WebApplicationInitializer的实现类后， 不是接口、不是抽象则通过反射进行实例化（所以，你会发现内部实现类都是抽象的，你想让其起作用我们必须添加一个自定义实现类，在下文提供我的自定义实现类）
 
@@ -555,11 +555,13 @@ https://www.processon.com/view/link/610e6a167d9c082be334ec49
 
 <div align='center'><img src=./images/springMVC-原理-tuling5xs/springMVC-原理-tuling5xs_2021-10-19-17-01-43.png width='100%'/></div><br/>
 
-4-1图待插入
+<div align='center'><img src=./images/springMVC-原理-tuling5xs/springMVC-原理-tuling5xs_2021-10-19-19-58-20.png width='100%'/></div><br/>
 
-4-2图待插入
+<div align='center'><img src=./images/springMVC-原理-tuling5xs/springMVC-原理-tuling5xs_4-1图待插入.png width='100%'/></div><br/>
 
-5. 首先来到AbstractDispatcherServletInitializer#onStartup再执行super.onStartup(servletContext);
+<div align='center'><img src=./images/springMVC-原理-tuling5xs/springMVC-原理-tuling5xs_2021-10-19-19-51-45.png width='100%'/></div><br/>
+
+1. 首先来到AbstractDispatcherServletInitializer#onStartup再执行super.onStartup(servletContext);
 
 ```java
 @Override
@@ -620,7 +622,7 @@ public void onStartup(ServletContext servletContext) throws ServletException {
 
 ### 4. 初始化ContextLoaderListener
 
-5图待插入
+<div align='center'><img src=./images/springMVC-原理-tuling5xs/springMVC-原理-tuling5xs_2021-10-19-19-59-22.png width='100%'/></div><br/>
 
 ContextLoaderListener加载过程比较简单：
 外置tomcat会帮我们调用ContextLoaderListener#contextInitialized 进行初始化
@@ -634,7 +636,7 @@ ContextLoaderListener加载过程比较简单：
 
 ### 5. 初始化DispatcherServlet
 
-6图待插入
+<div align='center'><img src=./images/springMVC-原理-tuling5xs/springMVC-原理-tuling5xs_2021-10-19-20-00-45.png width='100%'/></div><br/>
 
 可以看到流程比ContextLoaderListener流程更多
 外置tomcat会帮我们调用DispatcherServlet#init()   进行初始化--->重点关注：initWebApplicationContext方法
@@ -778,5 +780,4 @@ if (parentBeanFactory != null && !containsBeanDefinition(beanName)) {
 虽然可以这么做不过一般应该是不推荐这么去做的，一般人也不会这么干的。**如果你的项目里有用到事物、或者aop记得也需要把这部分配置需要放到Spring-mvc子容器的配置文件来，不然一部分内容在子容器和一部分内容在父容器,可能就会导致你的事物或者AOP不生效。**
 
 所以如果aop或事物如果不生效也有可能是通过父容器(spring)去增强子容器(Springmvc)，也就无法增强 这也是很多同学会遇到的问题。
-
 
