@@ -527,7 +527,7 @@ SPI的方式SpringMVC启动流程：
 
 https://www.processon.com/view/link/610e6a167d9c082be334ec49
 
-<div align='center'><img src=./images/springMVC-原理-tuling5xs/springMVC-原理-tuling5xs_图待插入.png width='100%'/></div><br/>
+<div align='center'><img src=./images/springMVC-原理-tuling5xs/springMVC-原理-tuling5xs_springmvc.png width='100%'/></div><br/>
 
 #### 源码流程
 
