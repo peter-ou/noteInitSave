@@ -21,7 +21,7 @@
     - [5. 初始化DispatcherServlet](#5-初始化dispatcherservlet)
     - [6. 总结](#6-总结)
       - [用几道面试题做个总结:](#用几道面试题做个总结)
-    - [springIOC流程图](#springioc流程图)
+    - [springIOC流程图==test](#springioc流程图test)
 
 
 ## 16-SpringMVC —请求源码流程
@@ -782,4 +782,4 @@ if (parentBeanFactory != null && !containsBeanDefinition(beanName)) {
 
 所以如果aop或事物如果不生效也有可能是通过父容器(spring)去增强子容器(Springmvc)，也就无法增强 这也是很多同学会遇到的问题。
 
-### springIOC流程图
+### springIOC流程图==test
