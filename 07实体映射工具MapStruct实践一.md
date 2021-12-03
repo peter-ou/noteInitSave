@@ -16,14 +16,15 @@
 
 ### pom.xml文件中引入：
 
-+ 方案一
++ 方案一: jdk1.8 以上能使用，jdk1.8和jdk11已经验证过了，指定对应的jdk版本即可，其他不变。
   
 ~~~xml
 
 <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <!-- <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target> -->
+    <!-- 版本1.4.0.Final 和 1.4.1.Final 都可以 -->
     <org.mapstruct.version>1.4.1.Final</org.mapstruct.version>
     <org.projectlombok.version>1.18.12</org.projectlombok.version>
 </properties>
@@ -60,6 +61,7 @@
             <artifactId>maven-compiler-plugin</artifactId>
             <version>3.8.1</version>
             <configuration>
+            <!-- 选择maven编译时jdk的版本 1.8 或者 11-->
                 <source>1.8</source>
                 <target>1.8</target>
                 <annotationProcessorPaths>
@@ -84,6 +86,7 @@
 + 方案二
   
 ```xml
+
 <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -178,41 +181,63 @@ List<OrderExportRes> orderExportResEs = orderExportMapper.orderExportsToOrderExp
 + [mapstruct 高级用法自定义转换规则-参考案例](https://blog.csdn.net/sunboylife/article/details/115706803?utm_medium=distribute.pc_aggpage_search_result.none-task-blog-2~aggregatepage~first_rank_v2~rank_aggregation-1-115706803.pc_agg_rank_aggregation&utm_term=mapstruct+%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2&spm=1000.2123.3001.4430)
 + [mapstruct+lombok+validator，简化代码三剑客-参考案例](https://blog.csdn.net/MingLiang000/article/details/82726571?utm_medium=distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~default-18.base&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~default-18.base)
 
-## 在 jdk11 中的使用--待验证
+## 在低于jdk8版本中mapstruct的使用--待验证
 
-1，在pom.xml 文件中
+1、在pom.xml 文件中
 
 ~~~xml
 
-  <properties>
-    <mapstruct.version>1.3.1.Final</mapstruct.version>
-    <maven.compiler.version>3.6.1</maven.compiler.version>
-  </properties>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter</artifactId>
+        <version>2.0.4.RELEASE</version>
+        <relativePath/>
+    </parent>
 
-  <dependency>
-        <groupId>org.mapstruct</groupId>
-        <artifactId>mapstruct-processor</artifactId>
-        <version>${mapstruct.version}</version>
-        <scope>provided</scope>
-  </dependency>
+    <dependencies>
 
-<build>
-    <plugins>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>${maven.compiler.version}</version>
-            <configuration>
-                <annotationProcessorPaths>
-                    <path>
-                        <groupId>org.mapstruct</groupId>
-                        <artifactId>mapstruct-processor</artifactId>
-                        <version>${mapstruct.version}</version>
-                    </path>
-                </annotationProcessorPaths>
-            </configuration>
-        </plugin>
-    </plugins>
-</build>
+   <!--模板对象与实体对象转换-->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <!-- jdk8以下就使用mapstruct -->
+            <artifactId>mapstruct-jdk8</artifactId>
+            <version>1.2.0.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <version>1.2.0.Final</version>
+        </dependency>
+
+        <!-- 添加lombok依赖 -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.20</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>spring_boot</finalName>
+        <!-- 添加Spring boot的maven插件,可以不写版本号,在spring-boot-starter-parent已经包含  -->
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 ~~~
+
+2、在低于jdk8版本中mapstruct的使用的例子
+
++ [对应的参考例子地址：](https://github.com/mmzsblog/mapstructDemo)
