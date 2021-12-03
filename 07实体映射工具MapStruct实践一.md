@@ -89,8 +89,8 @@
 
 <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+  <!--  <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target> -->
     <org.mapstruct.version>1.4.1.Final</org.mapstruct.version>
     <org.projectlombok.version>1.18.12</org.projectlombok.version>
 </properties>
@@ -240,4 +240,4 @@ List<OrderExportRes> orderExportResEs = orderExportMapper.orderExportsToOrderExp
 
 2、在低于jdk8版本中mapstruct的使用的例子
 
-+ [对应的参考例子地址：](https://github.com/mmzsblog/mapstructDemo)
++ [对应的参考例子githup地址](https://github.com/mmzsblog/mapstructDemo)
