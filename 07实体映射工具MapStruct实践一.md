@@ -191,7 +191,7 @@ List<OrderExportRes> orderExportResEs = orderExportMapper.orderExportsToOrderExp
 
 ## 六， Mapstruct - 如何在Generated Mapper类中注入spring依赖项
 
-+ 如果需要在生成的mapper实现中注入一个spring服务类,以便我可以通过它来使用它 
++ 如果需要在生成的mapper实现中注入一个spring服务类,以便我可以通过表达式来使用它
   
   `@Mapping(target="x", expression="java(myservice.findById(id))")"`
 
