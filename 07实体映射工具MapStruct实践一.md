@@ -265,7 +265,7 @@ public class ResourceTagQueryServiceImpl implements ResourceTagQueryService {
 
 ```
 
-+ [Mapstruct - 如何在Generated Mapper类中注入spring依赖项的参考链接](https://app.yinxiang.com/fx/77938c8e-291d-4f5f-b970-ec71a5f33f90)
++ [Mapstruct - 如何在Generated Mapper类中注入spring依赖项的博客参考链接](https://app.yinxiang.com/fx/77938c8e-291d-4f5f-b970-ec71a5f33f90)
 
 ## 在低于jdk8版本中mapstruct的使用--待验证
 
