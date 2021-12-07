@@ -194,9 +194,9 @@ List<OrderExportRes> orderExportResEs = orderExportMapper.orderExportsToOrderExp
 + 如果需要在生成的mapper实现中注入一个spring服务类,以便我可以通过它来使用它 `@Mapping(target="x", expression="java(myservice.findById(id))")"`
 
 + 我发现这一点的唯一方法是:
-1、将我的mapper接口转换为抽象类
-2、在抽象类中注入服务
-3、注入的服务使用protected修饰,以便抽象类的"实现"具有访问权限
+    1、将我的mapper接口转换为抽象类
+    2、在抽象类中注入服务
+    3、注入的服务使用protected修饰,以便抽象类的"实现"具有访问权限
 
 正在使用的CDI,但它应该与Spring相同
 
@@ -260,7 +260,7 @@ public class ResourceTagQueryServiceImpl implements ResourceTagQueryService {
 
 ```
 
-+ [Mapstruct - 如何在Generated Mapper类中注入spring依赖项的参考链接](!https://app.yinxiang.com/fx/77938c8e-291d-4f5f-b970-ec71a5f33f90)
++ [Mapstruct - 如何在Generated Mapper类中注入spring依赖项的参考链接](https://app.yinxiang.com/fx/77938c8e-291d-4f5f-b970-ec71a5f33f90)
 
 ## 在低于jdk8版本中mapstruct的使用--待验证
 
