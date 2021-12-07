@@ -186,8 +186,8 @@ List<OrderExportRes> orderExportResEs = orderExportMapper.orderExportsToOrderExp
 
 ## 五，使用案例参考
 
-+ [mapstruct 高级用法自定义转换规则-参考案例](https://blog.csdn.net/sunboylife/article/details/115706803?utm_medium=distribute.pc_aggpage_search_result.none-task-blog-2~aggregatepage~first_rank_v2~rank_aggregation-1-115706803.pc_agg_rank_aggregation&utm_term=mapstruct+%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2&spm=1000.2123.3001.4430)
-+ [mapstruct+lombok+validator，简化代码三剑客-参考案例](https://blog.csdn.net/MingLiang000/article/details/82726571?utm_medium=distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~default-18.base&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~default-18.base)
++ [mapstruct 高级用法自定义转换规则-参考案例](https://blog.csdn.net/sunboylife/article/details/115706803)
++ [mapstruct+lombok+validator，简化代码三剑客-参考案例](https://blog.csdn.net/MingLiang000/article/details/82726571)
 
 ## 六， Mapstruct - 如何在Generated Mapper类中注入spring依赖项
 
@@ -196,10 +196,12 @@ List<OrderExportRes> orderExportResEs = orderExportMapper.orderExportsToOrderExp
   `@Mapping(target="x", expression="java(myservice.findById(id))")"`
 
 + 我发现这一点的唯一方法是:
-  
+
+```text
     1、将我的mapper接口转换为抽象类
     2、在抽象类中注入服务
     3、注入的服务使用protected修饰,以便抽象类的"实现"具有访问权限
+```
 
 + 正在使用的CDI,但它应该与Spring相同
 
