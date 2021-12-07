@@ -75,6 +75,14 @@
                         <artifactId>mapstruct-processor</artifactId>
                         <version>${org.mapstruct.version}</version>
                     </path>
+                      <!-- additional annotation processor required as of Lombok 1.18.16 -->
+                      <!-- 如果lombok 的版本是1.18.16 及以上版本时， 需要引入这个编译依赖包 -->
+                    <path>
+                        <groupId>org.projectlombok</groupId>
+                        <artifactId>lombok-mapstruct-binding</artifactId>
+                        <!-- 版本0.1.0 有可能会出现生成了mapstruct实现类，但是该类创建了对象，没有赋值的情况   -->
+                        <version>0.2.0</version>
+                    </path>
                 </annotationProcessorPaths>
             </configuration>
         </plugin>
@@ -180,6 +188,79 @@ List<OrderExportRes> orderExportResEs = orderExportMapper.orderExportsToOrderExp
 
 + [mapstruct 高级用法自定义转换规则-参考案例](https://blog.csdn.net/sunboylife/article/details/115706803?utm_medium=distribute.pc_aggpage_search_result.none-task-blog-2~aggregatepage~first_rank_v2~rank_aggregation-1-115706803.pc_agg_rank_aggregation&utm_term=mapstruct+%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2&spm=1000.2123.3001.4430)
 + [mapstruct+lombok+validator，简化代码三剑客-参考案例](https://blog.csdn.net/MingLiang000/article/details/82726571?utm_medium=distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~default-18.base&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~default-18.base)
+
+## 六， Mapstruct - 如何在Generated Mapper类中注入spring依赖项
+
++ 如果需要在生成的mapper实现中注入一个spring服务类,以便我可以通过它来使用它 `@Mapping(target="x", expression="java(myservice.findById(id))")"`
+
++ 我发现这一点的唯一方法是:
+1、将我的mapper接口转换为抽象类
+2、在抽象类中注入服务
+3、注入的服务使用protected修饰,以便抽象类的"实现"具有访问权限
+
+正在使用的CDI,但它应该与Spring相同
+
+```java
+@Mapper(
+unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE,
+componentModel = "spring",
+uses = {
+// My other mappers...
+})
+public abstract class ResourceTagMapStructMapper {
+
+    public static final ResourceTagMapStructMapper INSTANCE = Mappers.getMapper(ResourceTagMapStructMapper.class);
+
+    @Autowired
+    protected TagCacheRepository tagCacheRepository;
+
+    /**
+     * 对象转换
+     * @param db
+     * @return
+     */
+    @Mapping(target = "associatedResourcesNum",
+            expression = "java( tagCacheRepository.getResourceCountByTypeIdTagId(db.getResourceTypeId(), db.getResourceTagId()).intValue())")
+    public abstract ResourceTagListAppDto dOtoResourceTagListAppDto(ResourceTagDO db);
+
+
+    /**
+     * 转换page 对象，此处是 Mybatis-plus 中的Page类型
+     * @param tagDOPage
+     * @return
+     */
+    public abstract Page<ResourceTagListAppDto> toPageDTO(Page<ResourceTagDO> tagDOPage);
+
+}
+
+```
+
++ 定义好的抽象类 ResourceTagMapStructMapper 如何使用：
+
+```java
+@Service
+public class ResourceTagQueryServiceImpl implements ResourceTagQueryService {
+
+    @Autowired
+    private ResourceTagRepository resourceTagRepository;
+
+    @Autowired
+    private ResourceTagMapStructMapper resourceTagMapStructMapper;
+
+
+    @Override
+    public Page<ResourceTagListAppDto> tagList(Page requestPageParam, ResourceTagListAppVO conditionVo) {
+
+        Page<ResourceTagDO> tagDOPage = resourceTagRepository.tagPage(requestPageParam, conditionVo);
+
+        // 在此处调用，实现数据类型的转换
+        return resourceTagMapStructMapper.toPageDTO(tagDOPage);
+    }
+}
+
+```
+
++ [Mapstruct - 如何在Generated Mapper类中注入spring依赖项的参考链接](!https://app.yinxiang.com/fx/77938c8e-291d-4f5f-b970-ec71a5f33f90)
 
 ## 在低于jdk8版本中mapstruct的使用--待验证
 
