@@ -214,7 +214,7 @@ uses = {
 })
 public abstract class ResourceTagMapStructMapper {
 
-    public static final ResourceTagMapStructMapper INSTANCE = Mappers.getMapper(ResourceTagMapStructMapper.class);
+    //public static final ResourceTagMapStructMapper INSTANCE = Mappers.getMapper(ResourceTagMapStructMapper.class);
 
     @Autowired
     protected TagCacheRepository tagCacheRepository;
