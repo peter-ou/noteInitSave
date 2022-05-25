@@ -327,3 +327,275 @@ public class ResourceTagQueryServiceImpl implements ResourceTagQueryService {
 2、在低于jdk8版本中mapstruct的使用的例子
 
 + [对应的参考例子githup地址](https://github.com/mmzsblog/mapstructDemo)
+
+
+## 七，我的封装使用经验
+
++ 基础接口封装
+
+```java
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeansException;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
+/**
+ * 类型转换接口，定义了默认的通用方法
+ *
+ * @author osc
+ * @createTime 2021-12-07 14:18
+ */
+public interface BaseMapStructMapper {
+
+    /**
+     * <p> List<T>集合中的类型转换，适应于集合中的类属性名称一样的转换 <p/>
+     *
+     * @param clazz      返回的类型对象
+     * @param sourceList 转换前的List集合，k泛型参数
+     * @return 返回转换后的List集合
+     */
+    default <K, T> List<T> toTargetList(List<K> sourceList, Class<T> clazz) {
+
+        if (sourceList != null && !sourceList.isEmpty()) {
+
+            return sourceList.stream().map(e -> {
+                T target = newClass(clazz);
+                BeanUtils.copyProperties(e, target);
+                return target;
+            }).collect(Collectors.toList());
+        }
+
+        return Collections.emptyList();
+    }
+
+
+    /**
+     * 属性名称有就一致的对象 之间转换 方法
+     *
+     * @param k     泛型参数
+     * @param clazz 返回的类对象
+     * @return 返回转换后的类型对象实例
+     */
+
+    default <K, T> T toTargetObj(K k, Class<T> clazz) {
+
+        try {
+            if (k != null) {
+                T target = newClass(clazz);
+                if (target != null) {
+                    BeanUtils.copyProperties(k, target);
+                    return target;
+                }
+            }
+        } catch (BeansException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    /**
+     * List集合数据的拷贝
+     *
+     * @param sources: 数据源类
+     * @param target:  目标类::new(eg: UserVO::new)
+     * @return 集合对象
+     */
+    default <S, T> List<T> copyListProperties(List<S> sources, Supplier<T> target) {
+
+        return copyListProperties(sources, target, null);
+    }
+
+
+    /**
+     * 带回调函数的list集合数据的拷贝（可自定义字段拷贝规则）
+     *
+     * @param sources:  数据源类
+     * @param target:   目标类::new(eg: UserVO::new)
+     * @param callBack: 回调函数
+     *                  List<UserVO> userVOList = obj.copyListProperties(userDOList, UserVO::new, (userDO, userVO) -> {
+     *                  // 这里可以定义特定的转换规则
+     *                  userVO.setSex(SexEnum.getDescByCode(userDO.getSex()).getDesc());
+     *                  });
+     * @return 集合对象
+     */
+    default <S, T> List<T> copyListProperties(List<S> sources, Supplier<T> target, BeanUtilCopyCallBack<S, T> callBack) {
+        List<T> list = new ArrayList<>(sources.size());
+
+        for (S source : sources) {
+            T t = target.get();
+            BeanUtils.copyProperties(source, t);
+            list.add(t);
+            if (callBack != null) {
+                callBack.callBack(source, t);
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 字符串集合转换成 long集合
+     *
+     * @param resourceIds 字符串集合
+     * @return long集合
+     */
+    default List<Long> toLongList(List<String> resourceIds) {
+
+        List<Long> longList = new ArrayList<>(16);
+        if (!resourceIds.isEmpty()) {
+            longList = resourceIds.stream().filter(StringUtils::isNotBlank).map(
+                    Long::parseLong
+            ).collect(Collectors.toList());
+        }
+
+        return longList;
+    }
+
+    /**
+     * 根据泛型创建对象
+     *
+     * @param clazz 类对象
+     * @return 返回 对应类的实例
+     */
+    private static <T> T newClass(Class<T> clazz) {
+
+        //jdk11 推荐
+        T target = null;
+        try {
+            target = clazz.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return target;
+
+    }
+}
+
+```
+
++ 使用参考类
+
+```java
+
+package com.wangxiao.marketing.application.assembler;
+
+import com.wangxiao.marketing.application.query.dto.ProductAppDTO;
+import com.wangxiao.marketing.application.query.dto.SubjectProductAppDTO;
+import com.wangxiao.marketing.infrastructure.db.dataobject.ProjectSubjectTreeDO;
+import com.wangxiao.marketing.infrastructure.dto.ProductListDTO;
+import com.wangxiao.marketing.preference.enums.MarketingEnums;
+import com.wangxiao.marketing.preference.utils.BaseMapStructMapper;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
+import java.util.List;
+
+/**
+ * 通用功能应用层 类型转换类；
+ * componentModel = "spring" 让此类注入了spring容器中
+ *
+ * @author osc
+ * @create 2022-03-24 17:03
+ */
+
+@Mapper(componentModel = "spring", imports = {MarketingEnums.class})
+//uses = {StringMapperA.class} 引入spring 容器中的对象
+//@Mapper(componentModel = "spring", uses = {StringMapperA.class})
+public abstract class CommonManageAppAssembler implements BaseMapStructMapper {
+
+
+//    也可以这样注入
+//    @Autowired
+//    protected StringMapperB stringMapperB;
+
+    /**
+     * 给加上默认值 proTypeId
+     *
+     * @param product 参数
+     * @return 转换后的值
+     */
+     
+     // 也可以这样使用
+     //@Mapping(target = "personList", expression = "java(stringMapperB.xyz(product.getPersonList()))")
+    @Mapping(target = "proTypeName", expression = "java(getMessageByCode(product.getProductType()))")
+    public abstract ProductAppDTO toProductAppDTO(ProductListDTO product);
+
+
+    /**
+     * 集合转换
+     *
+     * @param productList 集合对象
+     * @return 转换后集合
+     */
+    public abstract List<ProductAppDTO> toProductAppList(List<ProductListDTO> productList);
+
+    /**
+     * 转换成科目对象
+     *
+     * @param projectSubjectTree 参数
+     * @return 科目对象
+     */
+    @Mapping(target = "subjectId", source = "id")
+    @Mapping(target = "subjectName", source = "name")
+    public abstract SubjectProductAppDTO toSubjectProductAppDTO(ProjectSubjectTreeDO projectSubjectTree);
+
+    /**
+     * 转换成科目对象集合
+     *
+     * @param projectSubjectTreeList 参数
+     * @return 科目对象集合
+     */
+    public abstract List<SubjectProductAppDTO> toSubjectProductAppList(List<ProjectSubjectTreeDO> projectSubjectTreeList);
+
+
+    /**
+     * 根据数字获取相应的名称
+     *
+     * @param code 数据号
+     * @return 名称
+     */
+    static String getMessageByCode(Integer code) {
+
+        String message = "";
+
+        if (code == null) {
+            return null;
+        }
+        switch (code) {
+            case 1:
+                message = MarketingEnums.PRE_TYPE.QUE.getMessage();
+                break;
+
+            case 2:
+                message = MarketingEnums.PRE_TYPE.COURSE.getMessage();
+                break;
+
+            case 3:
+                message = MarketingEnums.PRE_TYPE.MATERIAL.getMessage();
+                break;
+            default:
+                message = "未知类型";
+        }
+        return message;
+    }
+
+}
+
+
+// spring 容器中的对象
+@Component
+public static class StringMapperB {
+    
+    public List<PersonDto> xyz(List<Person> list) {
+        return list.stream().map(p -> new PersonDto(p.getBoy())).collect(Collectors.toList());
+    }
+}
+
+```
