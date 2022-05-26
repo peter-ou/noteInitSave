@@ -18,6 +18,8 @@
 
 + 方案一: jdk1.8 以上能使用，jdk1.8和jdk11已经验证过了，指定对应的jdk版本即可，其他不变。
   
+> jdk8 的pom.xml
+
 ~~~xml
 
 <properties>
@@ -90,6 +92,143 @@
 </build>
 
 ~~~
+
+> jdk11的pom.xml
+
+```xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>wangxiao-manage-platform</artifactId>
+        <groupId>com.wangxiao</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>wangxiao-system-base</artifactId>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.version>3.8.1</maven.compiler.version>
+        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+        <spring-boot.version>2.3.2.RELEASE</spring-boot.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
+        <lombok.version>1.18.20</lombok.version>
+    </properties>
+
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.20</version>
+            <scope>provided</scope>
+        </dependency>
+
+    </dependencies>
+    <dependencyManagement>
+        <dependencies>
+        <!-- springboot 声明式依赖，并不实际依赖，用于管理版本号 -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.version}</version>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${org.mapstruct.version}</version>
+                        </path>
+
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok-mapstruct-binding</artifactId>
+                            <!-- 如果是0.1.0 有可能出现生成了maptruct的实现类，但该类只创建了对象，没有进行赋值 -->
+                            <version>0.2.0</version>
+                        </path>
+
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.5.4</version>
+                <configuration>
+                    <!-- 指定该Main Class为全局的唯一入口 -->
+                    <mainClass>com.wangxiao.base.SystemBaseApplication</mainClass>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <!--可以把依赖的包都打包到生成的Jar包中-->
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>1.2.2</version>
+                <configuration>
+                    <!-- 镜像名称  -->
+<!--                    <imageName>172.16.1.124:8082/${project.artifactId}</imageName>-->
+                    <imageName>172.16.1.235:8082/${project.artifactId}</imageName>
+                    <dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
+                    <!-- docker远程服务地址 ，前提是docker服务器需开启远程访问-->
+<!--                    <dockerHost>http://172.16.1.124:2375</dockerHost>-->
+                    <dockerHost>http://172.16.1.235:2375</dockerHost>
+                    <resources>
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <!-- 资源所在目录 -->
+                            <directory>${project.build.directory}</directory>
+                            <!-- 生成的.jar文件 -->
+                            <include>${project.build.finalName}.jar</include>
+                        </resource>
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <!-- 资源所在目录 -->
+                            <directory>${project.build.outputDirectory}</directory>
+                        </resource>
+                    </resources>
+                    <serverId>zhongda-docker</serverId>
+                    <forceTags>true</forceTags>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+```
+
 
 + 方案二
   
@@ -328,7 +467,6 @@ public class ResourceTagQueryServiceImpl implements ResourceTagQueryService {
 
 + [对应的参考例子githup地址](https://github.com/mmzsblog/mapstructDemo)
 
-
 ## 七，我的封装使用经验
 
 + 基础接口封装
@@ -419,7 +557,7 @@ public interface BaseMapStructMapper {
      *
      * @param sources:  数据源类
      * @param target:   目标类::new(eg: UserVO::new)
-     * @param callBack: 回调函数
+     * @param callBack: 回调函数  //BeanUtilCopyCallBack 自定义函数式接口
      *                  List<UserVO> userVOList = obj.copyListProperties(userDOList, UserVO::new, (userDO, userVO) -> {
      *                  // 这里可以定义特定的转换规则
      *                  userVO.setSex(SexEnum.getDescByCode(userDO.getSex()).getDesc());
