@@ -555,16 +555,15 @@ public interface BaseMapStructMapper {
     /**
      * 带回调函数的list集合数据的拷贝（可自定义字段拷贝规则）
      *
-     * @param sources:  数据源类
-     * @param target:   目标类::new(eg: UserVO::new)
-     * @param callBack: 回调函数  //BeanUtilCopyCallBack 自定义函数式接口
-     *                  List<UserVO> userVOList = obj.copyListProperties(userDOList, UserVO::new, (userDO, userVO) -> {
-     *                  // 这里可以定义特定的转换规则
-     *                  userVO.setSex(SexEnum.getDescByCode(userDO.getSex()).getDesc());
-     *                  });
+     * @param sources: 数据源类
+     * @param target: 目标类::new(eg: UserVO::new)
+     * @param callBack: 回调函数 List<UserVO> userVOList = obj.copyListProperties(userDOList,
+     *     UserVO::new, (userDO, userVO) -> { // 这里可以定义特定的转换规则
+     *     userVO.setSex(SexEnum.getDescByCode(userDO.getSex()).getDesc()); });
      * @return 集合对象
      */
-    default <S, T> List<T> copyListProperties(List<S> sources, Supplier<T> target, BeanUtilCopyCallBack<S, T> callBack) {
+    default <S, T> List<T> copyListProperties(
+            List<S> sources, Supplier<T> target, BiConsumer<S, T> callBack) {
         List<T> list = new ArrayList<>(sources.size());
 
         for (S source : sources) {
@@ -572,7 +571,7 @@ public interface BaseMapStructMapper {
             BeanUtils.copyProperties(source, t);
             list.add(t);
             if (callBack != null) {
-                callBack.callBack(source, t);
+                callBack.accept(source, t);
             }
         }
         return list;
