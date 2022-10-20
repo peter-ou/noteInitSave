@@ -59,7 +59,7 @@ UML 从目标系统的不同角度出发，定义了用例图、类图、对象�
 
 在UML类图中，类使用包含类名、属性(field) 和方法(method) 且带有分割线的矩形来表示，比如下图表示一个Employee类，它包含name,age和address这3个属性，以及work()方法。 
 
-![](./img/Employee.jpg)
+![](img/Employee.jpg)
 
 属性/方法名称前加的加号和减号表示了这个属性/方法的可见性，UML类图中表示可见性的符号有三种：
 
