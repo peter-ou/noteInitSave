@@ -33,13 +33,16 @@
 <div align='center'><img src=./images/git-Demo/git-Demo_2019-12-31-12-50-58.png width='80%'/></div><br/>
 
 3，执行git init 建好git 的本地仓库（可以有多个）,就是在本地创建一个版本库（即文件夹），通过git init把它变成一个Git仓库；
-```
+
+```shell
 git init
 ```
+
 假如我们建好的本地git仓库是： /d/studyNote/noteInit (master)
 
 4，配置本地git信息
-```
+
+```shell
 //说明：双引号中需要你的用户名，这个可以随便输入，比如“zhangsan”
 git config --global user.name "user.name"  ##回车
 //双引号中需要输入你的有效邮箱，比如“12131312@qq.com”
@@ -47,6 +50,7 @@ git config --global user.email "yourmail@youremail.com.cn"  ##回车
 // 查看配置结果 
 git config --list  ##回车  
 ```
+
 5,查看密钥ssh keys 是否存在? 不存在则生成，存在则找到其位置。
 ```
 cd ~/.ssh

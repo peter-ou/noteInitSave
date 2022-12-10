@@ -229,7 +229,6 @@
 
 ```
 
-
 + 方案二
   
 ```xml
@@ -728,9 +727,9 @@ public abstract class CommonManageAppAssembler implements BaseMapStructMapper {
 
 // spring 容器中的对象
 @Component
-public static class StringMapperB {
+public class StringMapperB {
     
-    public List<PersonDto> xyz(List<Person> list) {
+    public  List<PersonDto> xyz(List<Person> list) {
         return list.stream().map(p -> new PersonDto(p.getBoy())).collect(Collectors.toList());
     }
 }

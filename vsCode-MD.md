@@ -52,7 +52,7 @@
 <div align='center'><img src=./images/vsCode-MD/vsCode-MD_2020-05-23-12-09-06.png width='80%'/></div><br/>
    
  > + 查询到Paste Image 的快捷键，编辑成自己想要的快捷键
- ，我自己的粘贴的快捷键我设置成了 **ctral+alt+A**
+ ，我自己的粘贴的快捷键我设置成了 **ctrl+alt+A**
 
 <div align='center'><img src=./images/vsCode-MD/vsCode-MD_2020-05-23-12-10-34.png width='80%'/></div><br/>
 
