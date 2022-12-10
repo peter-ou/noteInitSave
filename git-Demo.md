@@ -7,6 +7,9 @@
 - [后续git提交内容到GitHub仓库中操作](#后续git提交内容到github仓库中操作)
 - [使用常用命令（表格命令前要加git）](#使用常用命令表格命令前要加git)
 - [git学习参考教程](#git学习参考教程)
+- [工作实践中有用到的](#工作实践中有用到的)
+    - [1，git拉取远程某分支强制覆盖本地代码分支（与git远程仓库保持一致,例如master分支）](#1git拉取远程某分支强制覆盖本地代码分支与git远程仓库保持一致例如master分支)
+    - [2，不同分支的合并命令;(例如我们要实现master 合并到 develop)](#2不同分支的合并命令例如我们要实现master-合并到-develop)
 
 # 实现的总体思路
 ```
@@ -231,3 +234,124 @@ $ git push github master
 # git学习参考教程
 - [廖雪峰的Git教程](https://www.liaoxuefeng.com/wiki/896043488029600)
 - [1小时学会Git](https://www.cnblogs.com/best/p/7474442.html#_label0)
+
+# 工作实践中有用到的
+
+### 1，git拉取远程某分支强制覆盖本地代码分支（与git远程仓库保持一致,例如master分支）
+
+第一种方式: reset --hard 参数
+
+```shell
+git fetch --all  
+git reset --hard origin/master
+git pull
+
+# 命令说明：
+
+# 第一个是：拉取所有更新，不同步；
+# 第二个是：本地代码同步线上最新版本(会覆盖本地所有与远程仓库上同名的文件)；
+# 第三个是：再更新一次（其实也可以不用，第二步命令做过了其实）
+
+```
+
+单条执行
+`git fetch --all &&  git reset --hard origin/master && git pull`
+
+> 说明：命令连接符 && 的意思是： 前一条命令执行成功才执行后一条命令。
+扩展命令连接符 ;; 的意思是：不论前一条是否执行成功都继续执行后一条命令。
+
+第二种方式(情况)：pull --force参数
+
+有的时候，已经知道远程分支与本地分支有不同的commit，比如本地分支有一个临时的commit,远程分支并没有。是不能简单执行git pull的，会报错。
+此时如果只是想放弃本地的临时提交，强制将远程仓库的代码覆盖到本地分支。就要用到--force参数，强制拉取功能，命令格式如下：
+
+```shell
+$ git pull --force  <远程主机名> <远程分支名>:<本地分支名>
+# 示例：
+$ git pull --force origin dev:dev
+```
+
+### 2，不同分支的合并命令;(例如我们要实现master 合并到 develop)
+
++ 如果本地有未提交的代码，首先要将代码提交到本地git仓库，无论你当前在哪个分支
+
+```shell
+git add .
+git commit -m "提交的备注信息XXXX"
+
+```
+
++ 查看当前分支的状态`git status`
+
+```shell
+F:\ideaHupZdSass\yingcai-manager-server>git status
+On branch master
+Your branch is up to date with 'origin/master'.
+
+nothing to commit, working tree clean
+
+```
+
++ 如果不是master分支，则用以下命令切换到master 分支
+  
+```shell
+git checkout master
+
+```
+
++ 拉取当前分支最新的远程仓库代码 `git pull`
+
+```shell
+F:\ideaHupZdSass\yingcai-manager-server>git pull
+warning: redirecting to http://gitlab.wangxiao.cn:9090/wuchengkun/yingcai-manager-server.git/
+Already up to date.
+
+```
+
++ 如果master 分支拉取最新代码时，有冲突，则需要先手动解决冲突，然后提交到本地git仓库；
+
+```shell
+git add .
+git commit -m "解决冲突"
+
+```
+
++ 切换到你所在分支dev (develop)
+
+```shell
+F:\ideaHupZdSass\yingcai-manager-server>git checkout develop
+Switched to branch 'develop'
+Your branch is up to date with 'origin/develop'.
+
+```
+
++ 合并master到自己的分支dev上
+
+```shell
+git merge master
+```
+
++ 此处如果有冲突会给出提示哪个文件有冲突，修改冲突文件后再继续下面的步骤。
+将master上合并的文件add和commit到自己的dev分支
+
+```shell
+git add . 
+
+git commit -m "merge master"
+```
+
++ 将自己分支dev上的代码提交到远程
+
+```shell
+git push
+
+# 或者
+
+git push origin develop （develop与远程git仓库分支同名，origin为默认的远程仓库名称）
+
+# 或者
+
+# 将本地的develop分支强制推送到origin主机，一般不用此场景
+# git push -u origin develop
+
+```
