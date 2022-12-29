@@ -24,6 +24,12 @@ mvn clean deploy -Dmaven.test.skip=true
 # 查看该pom对应的项目受影响的pom配置
 # 即有效的依赖配置内容及mavne插件配置内容
 mvn help:effective-pom -Dverbose
+# 参数说明-pl可选，指定需要处理的工程，多个使用英文逗号分隔，取值是artifactId
+# -am可选，同时处理 pl参数 指定模块的依赖模块
+# -amd可选，同时处理依赖于 pl参数指定模块的模块
+# -N可选，表示不递归子模块，只会打包父工程
+# 请参考链接的讲解：https://juejin.cn/post/6892994376247558152
+mvn clean install -pl wangxiao-resources  -am -Dmaven.test.skip=true
 
 ```
 
