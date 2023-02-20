@@ -8,10 +8,11 @@
 - [使用常用命令（表格命令前要加git）](#使用常用命令表格命令前要加git)
 - [git学习参考教程](#git学习参考教程)
 - [工作实践中有用到的](#工作实践中有用到的)
-    - [1，git拉取远程某分支强制覆盖本地代码分支（与git远程仓库保持一致,例如master分支）](#1git拉取远程某分支强制覆盖本地代码分支与git远程仓库保持一致例如master分支)
-    - [2，不同分支的合并命令;(例如我们要实现master 合并到 develop)](#2不同分支的合并命令例如我们要实现master-合并到-develop)
+  - [1，git拉取远程某分支强制覆盖本地代码分支（与git远程仓库保持一致,例如master分支）](#1git拉取远程某分支强制覆盖本地代码分支与git远程仓库保持一致例如master分支)
+  - [2，不同分支的合并命令;(例如我们要实现master 合并到 develop)](#2不同分支的合并命令例如我们要实现master-合并到-develop)
 
 # 实现的总体思路
+
 ```
 1、在本地创建一个版本库（即文件夹），通过git init把它变成Git仓库；
 
@@ -27,7 +28,7 @@
 
 # git和github的相关联具体操作
 
-1，下载Git软件：https://git-scm.com/downloads，据说ios自带的有git软件，这个我就不太清楚了。
+1，下载Git软件：<https://git-scm.com/downloads，据说ios自带的有git软件，这个我就不太清楚了。>
 
 2，下载之后安装就很简单了，一路下一步就可以了。安装完成后鼠标右击和者开始->程序会出现（如下图），打开Git Bash，进入bash界面。
 <div align='center'><img src=./images/git-Demo/git-Demo_2019-12-31-12-50-58.png width='80%'/></div><br/>
@@ -52,15 +53,16 @@ git config --list  ##回车
 ```
 
 5,查看密钥ssh keys 是否存在? 不存在则生成，存在则找到其位置。
+
 ```
 cd ~/.ssh
 ```
+
 若出现“No such file or directory”,则表示需要创建一个ssh keys。执行命令
 `
 ssh-keygen -t rsa -C yourmail@youremail.com.cn"
 `
 <div align='center'><img src=./images/git-Demo/git-Demo_2019-12-31-14-03-36.png width='80%'/></div><br/>
-
 
 如果没有出现，就执行命名ssh-keygen，找到之前生成好的密钥的位置
 
@@ -91,6 +93,7 @@ git@github.com:peter-ou/noteInitSave.git
 
 11，git status来查看你当前的状态，如果文件内有东西会出现红色的字，不是绿色，这是正常的。
 >查看代码或文件的状态（所处哪个区域）
+
 ```
 git status
 红色：工作区，还未提交到暂存区。
@@ -100,12 +103,14 @@ git status
 
 12，然后通过git add把项目添加到仓库（或git add .把该目录下的所有文件添加到仓库，注意点是用空格隔开的）。
 >工作区提交到暂存区
+
 ```
 git add xxx  //指定文件提交到暂存区
 git add .   //全部提交到暂存区，包含修改和增加的，但不包含删除的
 git add -u  //全部提交到暂存区，包含修改和删除的，但不包含新增的
 git add -A  //  . 并且 -u
 ```
+
 <div align='center'><img src=./images/git-Demo/git-Demo_2019-12-31-15-17-14.png width='80%'/></div><br/>
 
 13, 用git commit -m "注释" 把项目提交到本地Git仓库。
@@ -121,12 +126,14 @@ git reflog ：查看所有历史记录
 <div align='center'><img src=./images/git-Demo/git-Demo_2019-12-31-15-18-43.png width='80%'/></div><br/>
 
 14, 现在远程gitGitHub仓库 和 本地git仓库及内容都已经准备好了。接下来我们进行本地git仓库和GitHub仓库的关联，实现将本地git仓库内容托管到GitHub上
+
 ```
 1, git remote add origin git@github.com:peter-ou/noteInitSave.git(第9点复制的GitHub仓库地址)  // 添加远程仓库地址
 2, git push -u origin master //关联好之后我们就可以把本地库的所有内容推送到远程仓库（也就是Github）上了. 
 3, git push origin master //由于新建的远程仓库是空的，所以要加上-u 这个参数，等远程仓库里面有了内容之后，下次再从本地库上传内容的时候只需这样就可以了.
  
 ```
+
 <div align='center'><img src=./images/git-Demo/git-Demo_2019-12-31-15-42-21.png width='80%'/></div><br/>
 
 15, 去GitHub上看我们提交的内容如下：
@@ -137,6 +144,7 @@ git reflog ：查看所有历史记录
 # 后续git提交内容到GitHub仓库中操作
 
 - **命令如下（重要，常用）：**
+
 ```
 //add只是将文件或目录添加到了index暂存区
 //使用commit可以实现将暂存区的文件提交到git本地仓库，[message]为备注信息
@@ -230,12 +238,32 @@ $ git push github master
 <br/>
 
 3，可以用一张图直观地看出以上主要的命令对仓库的影响。
+
+- 示图一：
+
+<div align='center'><img src=./images/git-Demo/git-Demo_2023-02-20-11-46-23.png width='100%'/></div><br/>
+
+例如需要回退最近的一个commit，我们的操作命令参考如下：
+参考地址：<https://blog.csdn.net/m0_61682705/article/details/127831663>
+
+```shell
+git status //查看当状态
+git log //显示从近到远的日志记录，按向下键来查看更多，按 ​​​Q​​​ 键退出查看日志
+或者
+git log --pretty=oneline //简洁显示日志记录,按 ​​​Q​​​ 键退出查看日志
+git reset --mixed 版本号 //来源于上面的日志id，取第二个即commit前一个id 例如：dd98badd0b51d0b494fd959af91386f175b98986
+
+```
+
+- 示图二：
+
 <div align='center'><img src=./images/git-Demo/git-Demo_2019-12-31-16-09-17.png width='80%'/></div><br/>
 
 下面图片来自：工作区和暂存区 - 廖雪峰的官方网站 （做了点修改）
 <div align='center'><img src=./images/git-Demo/git-Demo_2019-12-31-16-09-54.png width='80%'/></div><br/>
 
 # git学习参考教程
+
 - [廖雪峰的Git教程](https://www.liaoxuefeng.com/wiki/896043488029600)
 - [1小时学会Git](https://www.cnblogs.com/best/p/7474442.html#_label0)
 
@@ -277,7 +305,7 @@ $ git pull --force origin dev:dev
 
 ### 2，不同分支的合并命令;(例如我们要实现master 合并到 develop)
 
-+ 如果本地有未提交的代码，首先要将代码提交到本地git仓库，无论你当前在哪个分支
+- 如果本地有未提交的代码，首先要将代码提交到本地git仓库，无论你当前在哪个分支
 
 ```shell
 git add .
@@ -285,7 +313,7 @@ git commit -m "提交的备注信息XXXX"
 
 ```
 
-+ 查看当前分支的状态`git status`
+- 查看当前分支的状态`git status`
 
 ```shell
 F:\ideaHupZdSass\yingcai-manager-server>git status
@@ -296,14 +324,14 @@ nothing to commit, working tree clean
 
 ```
 
-+ 如果不是master分支，则用以下命令切换到master 分支
+- 如果不是master分支，则用以下命令切换到master 分支
   
 ```shell
 git checkout master
 
 ```
 
-+ 拉取当前分支最新的远程仓库代码 `git pull`
+- 拉取当前分支最新的远程仓库代码 `git pull`
 
 ```shell
 F:\ideaHupZdSass\yingcai-manager-server>git pull
@@ -312,7 +340,7 @@ Already up to date.
 
 ```
 
-+ 如果master 分支拉取最新代码时，有冲突，则需要先手动解决冲突，然后提交到本地git仓库；
+- 如果master 分支拉取最新代码时，有冲突，则需要先手动解决冲突，然后提交到本地git仓库；
 
 ```shell
 git add .
@@ -320,7 +348,7 @@ git commit -m "解决冲突"
 
 ```
 
-+ 切换到你所在分支dev (develop)
+- 切换到你所在分支dev (develop)
 
 ```shell
 F:\ideaHupZdSass\yingcai-manager-server>git checkout develop
@@ -329,13 +357,13 @@ Your branch is up to date with 'origin/develop'.
 
 ```
 
-+ 合并master到自己的分支dev上
+- 合并master到自己的分支dev上
 
 ```shell
 git merge master
 ```
 
-+ 此处如果有冲突会给出提示哪个文件有冲突，修改冲突文件后再继续下面的步骤。
+- 此处如果有冲突会给出提示哪个文件有冲突，修改冲突文件后再继续下面的步骤。
 将master上合并的文件add和commit到自己的dev分支
 
 ```shell
@@ -344,7 +372,7 @@ git add .
 git commit -m "merge master"
 ```
 
-+ 将自己分支dev上的代码提交到远程
+- 将自己分支dev上的代码提交到远程
 
 ```shell
 git push
