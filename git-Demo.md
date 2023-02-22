@@ -247,11 +247,25 @@ $ git push github master
 参考地址：<https://blog.csdn.net/m0_61682705/article/details/127831663>
 
 ```shell
+git branch  //列出本地已经存在的分支，并且当前分支会用*标记
+git checkout xxx // 切换本地xxx分支
 git status //查看当状态
 git log //显示从近到远的日志记录，按向下键来查看更多，按 ​​​Q​​​ 键退出查看日志
 或者
 git log --pretty=oneline //简洁显示日志记录,按 ​​​Q​​​ 键退出查看日志
 git reset --mixed 版本号 //来源于上面的日志id，取第二个即commit前一个id 例如：dd98badd0b51d0b494fd959af91386f175b98986
+
+// 查看分支的命令
+git branch  //列出本地已经存在的分支，并且当前分支会用*标记
+git branch -r //查看远程版本库的分支列表
+git branch -a //查看所有分支列表（包括本地和远程，remotes/开头的表示远程分支）
+git branch -v //查看一个分支的最后一次提交
+git branch --merged  //查看哪些分支已经合并到当前分支
+git branch --no-merged //查看所有未合并工作的分支
+
+//检出分支
+git checkout -b 本地分支名字 origin/远程分支名
+git fetch origin dev(dev是远程仓库的分支名)  // 把远程分支拉到本地
 
 ```
 
