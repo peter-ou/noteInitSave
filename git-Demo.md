@@ -374,7 +374,9 @@ Your branch is up to date with 'origin/develop'.
 - 合并master到自己的分支dev上
 
 ```shell
+# 这个地方是将命令中的分支合并的当前分支
 git merge master
+
 ```
 
 - 此处如果有冲突会给出提示哪个文件有冲突，修改冲突文件后再继续下面的步骤。
