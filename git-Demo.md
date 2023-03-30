@@ -253,7 +253,7 @@ git status //查看当状态
 git log //显示从近到远的日志记录，按向下键来查看更多，按 ​​​Q​​​ 键退出查看日志
 或者
 git log --pretty=oneline //简洁显示日志记录,按 ​​​Q​​​ 键退出查看日志
-git reset --mixed 版本号 //来源于上面的日志id，取第二个即commit前一个id 例如：dd98badd0b51d0b494fd959af91386f175b98986
+git reset --mixed XXX版本号 //来源于上面的日志id，取第二个即commit前一个id 例如：dd98badd0b51d0b494fd959af91386f175b98986
 
 // 查看分支的命令
 git branch  //列出本地已经存在的分支，并且当前分支会用*标记
