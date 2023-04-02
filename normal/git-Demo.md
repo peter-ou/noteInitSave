@@ -190,7 +190,7 @@ $ git push github master
 如果想将本地的master分支与远程的master对应起来:
 执行 git branch --set-upstream-to 命令，将本地的分支关联到远程仓库的分支
 git branch --set-upstream-to=gitee/远程分支名称 本地分支名称
-具体如下：
+具体如下(pull时只有一个有效--后面执行的覆盖前面的,push时两个都有效)：
 $ git branch --set-upstream-to=gitee/master master
 branch 'master' set up to track 'gitee/master'.
 
@@ -206,7 +206,7 @@ branch 'master' set up to track 'githup/master'.
  //从 Gitee上拉取下来(注意只能一个有效，另一个后面需要加分支名称，例如： master)
  $ git pull gitee
  //从 GitHub 上拉取下来
- $ git pull github
+ $ git pull github (master)
 
 6, 强制推送到GitHub上指令，
 //使用强制推送不会对项目造成影响,一般不推荐强制push。初始化的新项目可以用的。
