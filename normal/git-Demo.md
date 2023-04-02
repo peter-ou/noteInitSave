@@ -203,7 +203,7 @@ branch 'master' set up to track 'githup/master'.
  //推到Github 远程仓库上去
  $ git push github
 
- //从 Gitee上拉取下来
+ //从 Gitee上拉取下来(注意只能一个有效，另一个后面需要加分支名称，例如： master)
  $ git pull gitee
  //从 GitHub 上拉取下来
  $ git pull github
