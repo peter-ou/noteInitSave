@@ -1,0 +1,10 @@
+{
+    "php.validate.executablePath": "",
+
+    "pasteImage.insertPattern": "<div align='center'><img src=${imageFilePath} width='100%'/></div><br/>",
+    "pasteImage.namePrefix": "${currentFileNameWithoutExt}_",
+    "pasteImage.path": "${currentFileDir}/img/${currentFileNameWithoutExt}",
+    "pasteImage.basePath": "${currentFileDir}",
+    "pasteImage.forceUnixStyleSeparator": true,
+    "pasteImage.prefix": "./",
+}
