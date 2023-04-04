@@ -187,9 +187,9 @@ $ git push github master
  //从 GitHub 上拉取下来
  $ git pull github master
 
-如果想将本地的master分支与远程的master对应起来:
+如果想省掉4和5的master，则需要将本地的master分支与远程的master对应起来:
 执行 git branch --set-upstream-to 命令，将本地的分支关联到远程仓库的分支
-git branch --set-upstream-to=gitee/远程分支名称 本地分支名称
+git branch --set-upstream-to=gitee(远程库名称的别名，默认是origin)/远程分支名称 本地分支名称
 具体如下(pull时只有一个有效--后面执行的覆盖前面的,push时两个都有效)：
 $ git branch --set-upstream-to=gitee/master master
 branch 'master' set up to track 'gitee/master'.
